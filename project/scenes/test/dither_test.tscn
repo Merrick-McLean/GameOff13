@@ -1,18 +1,18 @@
 [gd_scene load_steps=9 format=3 uid="uid://dlep3tn72tvdc"]
 
-[ext_resource type="Shader" path="res://shaders/dither.gdshader" id="1_78fj8"]
-[ext_resource type="Texture2D" uid="uid://bisw3a062q3rs" path="res://sprites/test_palette.png" id="2_c2k25"]
-[ext_resource type="Texture2D" uid="uid://chfl6q7xhru6r" path="res://sprites/16px_bayer_matrix.png" id="3_74a7k"]
-[ext_resource type="Script" path="res://scenes/rotating_box.gd" id="4_4bdqb"]
+[ext_resource type="Shader" path="res://shaders/dither.gdshader" id="1_3jww7"]
+[ext_resource type="Texture2D" uid="uid://bisw3a062q3rs" path="res://sprites/test_palette.png" id="2_r1gkj"]
+[ext_resource type="Texture2D" uid="uid://chfl6q7xhru6r" path="res://sprites/16px_bayer_matrix.png" id="3_aussj"]
+[ext_resource type="Script" path="res://scenes/rotating_box.gd" id="4_20hc5"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_r6w7f"]
-shader = ExtResource("1_78fj8")
+shader = ExtResource("1_3jww7")
 shader_parameter/u_bit_depth = 32
 shader_parameter/u_contrast = 2.0
 shader_parameter/u_offset = 0.0
 shader_parameter/u_dither_size = 2
-shader_parameter/u_dither_tex = ExtResource("3_74a7k")
-shader_parameter/u_color_tex = ExtResource("2_c2k25")
+shader_parameter/u_dither_tex = ExtResource("3_aussj")
+shader_parameter/u_color_tex = ExtResource("2_r1gkj")
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_xtfei"]
 sky_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
@@ -44,8 +44,8 @@ render_target_update_mode = 4
 [node name="Node3D" type="Node3D" parent="SubViewport"]
 
 [node name="CSGBox3D" type="CSGBox3D" parent="SubViewport/Node3D"]
-transform = Transform3D(-0.833185, -0.258844, -0.488674, 0.252581, -0.964254, 0.0801047, -0.491941, -0.0566878, 0.86878, 0, 0, 0)
-script = ExtResource("4_4bdqb")
+transform = Transform3D(-0.517386, 0.850299, -0.0964545, -0.260416, -0.0490762, 0.964248, 0.815166, 0.524007, 0.246823, 0, 0, 0)
+script = ExtResource("4_20hc5")
 
 [node name="Camera3D" type="Camera3D" parent="SubViewport/Node3D"]
 transform = Transform3D(0.936886, 0, 0.349635, 0, 1, 0, -0.349635, 0, 0.936886, 0.851067, 0.659195, 2.48332)

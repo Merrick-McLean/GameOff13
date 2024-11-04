@@ -1,16 +1,7 @@
-extends Node
+extends SettingsAbstract
 
-const DISK_PATH := "user://settings.json"
-const SETTINGS : Array[StringName] = [
-	&"is_in_fullscreen",
-	&"is_fullscreen_exclusive",
-	&"is_window_maximized",
-	&"is_music_muted",
-	&"are_sfx_muted",
-	&"is_debug_enabled",
-]
 
-var is_save_to_disk_queued := false
+
 
 #region Settings
 
@@ -44,19 +35,21 @@ var are_sfx_muted := false :
 		AudioServer.set_bus_mute(AudioServer.get_bus_index(&"SFX"), are_sfx_muted)
 		queue_save_to_disk()
 
-var is_debug_enabled := false :
-	set(new_value):
-		Debug.is_enabled = new_value
-		queue_save_to_disk()
-	get:
-		return Debug.is_enabled
+
 
 #endregion
 
 func _ready() -> void:
-	for setting_name in SETTINGS:
-		assert(get(setting_name) != null)
-	load_from_disk()
+	DISK_PATH = "user://settings.json"
+	SETTINGS  = [
+		&"is_in_fullscreen",
+		&"is_fullscreen_exclusive",
+		&"is_window_maximized",
+		&"is_music_muted",
+		&"are_sfx_muted",
+	]
+	
+	super._ready()
 
 
 func _process(delta: float) -> void:
@@ -74,39 +67,8 @@ func _process(delta: float) -> void:
 		is_fullscreen_exclusive = false
 	
 	
-	if is_save_to_disk_queued:
-		save_to_disk()
+	super._process(delta)
 
-#region Saving to Disk
-
-func load_from_disk() -> void:
-	var settings_on_disk := JSONUtils.load_json(DISK_PATH)
-	
-	for setting_name: StringName in SETTINGS:
-		if setting_name in settings_on_disk:
-			set(setting_name, settings_on_disk.get(setting_name))
-		else:
-			push_warning("Setting value not found on disk for " + setting_name + ". Using default value.")
-
-
-func queue_save_to_disk() -> void:
-	is_save_to_disk_queued = true
-
-
-func save_to_disk() -> void:
-	is_save_to_disk_queued = false
-	
-	var json := {}
-	
-	for setting_name: StringName in SETTINGS:
-		json[setting_name] = get(setting_name)
-	
-	var was_successful := JSONUtils.save_json(DISK_PATH, json)
-	
-	if not was_successful:
-		push_warning("Failed to save settings to disk!")
-
-#endregion
 
 func _update_window() -> void:
 	queue_save_to_disk()
