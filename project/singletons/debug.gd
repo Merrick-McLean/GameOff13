@@ -52,7 +52,7 @@ func _process(delta: float) -> void:
 		if Input.is_action_just_pressed("debug_set_start_scene"):
 			use_start_scene_id = true
 			start_scene_id = SceneManager.scene_id
-		if Input.is_action_just_pressed("debug_clear_start_scene"):
+		if Input.is_action_just_pressed("debug_toggle_start_scene"):
 			use_start_scene_id = !use_start_scene_id
 		if Input.is_action_just_pressed("debug_quit_game"):
 			get_tree().quit()
