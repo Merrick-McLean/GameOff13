@@ -1,6 +1,9 @@
 extends SettingsAbstract
 
 var can_be_enabled := OS.is_debug_build()
+
+#region Settings
+
 var is_enabled := can_be_enabled :
 	set(new_value):
 		is_enabled = new_value and can_be_enabled
@@ -18,6 +21,8 @@ var use_start_scene_id := false :
 		use_start_scene_id = new_value
 		print(("Enabled" if use_start_scene_id else "Disabled") + " debug start scene")
 		queue_save_to_disk()
+
+#endregion
 
 func _ready() -> void:
 	if not can_be_enabled:
@@ -38,13 +43,24 @@ func _ready() -> void:
 
 
 func _process(delta: float) -> void:
+	assert(Debug.can_be_enabled)
+	
 	if Input.is_action_just_pressed("debug_enable"):
 		is_enabled = !is_enabled
-	if Input.is_action_just_pressed("debug_set_start_scene"):
-		use_start_scene_id = true
-		start_scene_id = SceneManager.scene_id
-	if Input.is_action_just_pressed("debug_clear_start_scene"):
-		use_start_scene_id = !use_start_scene_id
-	if Input.is_action_just_pressed("debug_quit_game"):
-		get_tree().quit()
+	
+	if is_enabled:
+		if Input.is_action_just_pressed("debug_set_start_scene"):
+			use_start_scene_id = true
+			start_scene_id = SceneManager.scene_id
+		if Input.is_action_just_pressed("debug_clear_start_scene"):
+			use_start_scene_id = !use_start_scene_id
+		if Input.is_action_just_pressed("debug_quit_game"):
+			get_tree().quit()
+		if Input.is_action_just_pressed("debug_next_level"):
+			SceneManager.goto_next_scene()
+		if Input.is_action_just_pressed("debug_previous_level"):
+			SceneManager.goto_previous_scene()
+		if Input.is_action_just_pressed("debug_reset_level"):
+			SceneManager.goto_current_scene()
+	
 	super._process(delta)

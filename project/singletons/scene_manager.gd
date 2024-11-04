@@ -34,14 +34,6 @@ func _ready() -> void:
 func goto_current_scene() -> void:
 	goto_scene(scene_id)
 
-func _process(delta: float) -> void:
-	if Input.is_action_just_pressed("next_level") and Debug.is_enabled:
-		goto_next_scene()
-	if Input.is_action_just_pressed("previous_level") and Debug.is_enabled:
-		goto_previous_scene()
-	if Input.is_action_just_pressed("reset_level") and Debug.is_enabled:
-		goto_current_scene()
-
 
 func goto_next_scene() -> void:
 	goto_scene(scene_id + 1)
