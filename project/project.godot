@@ -11,5 +11,6 @@ config_version=5
 [application]
 
 config/name="GameOff13"
+run/main_scene="res://scenes/dither_test.tscn"
 config/features=PackedStringArray("4.3", "Forward Plus")
 config/icon="res://sprites/icon.svg"
