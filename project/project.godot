@@ -14,3 +14,10 @@ config/name="GameOff13"
 run/main_scene="res://scenes/dither_test.tscn"
 config/features=PackedStringArray("4.3", "Forward Plus")
 config/icon="res://sprites/icon.svg"
+
+[debug]
+
+file_logging/enable_file_logging=true
+gdscript/warnings/untyped_declaration=1
+gdscript/warnings/inferred_declaration=1
+gdscript/warnings/return_value_discarded=1
