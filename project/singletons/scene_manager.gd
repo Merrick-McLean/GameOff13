@@ -20,13 +20,14 @@ enum { # Define level enum here
 	SCENE_COUNT, # not an actual scene
 }
 
-const SCENES = {
+const SCENES = { # Add scene paths here
 	DITHER_TEST: "res://scenes/test/dither_test.tscn",
 	MOVEMENT_TEST: "res://scenes/test/movement_test.tscn",
 }
 
 func _ready() -> void:
-	for scene_id: int in SCENES:
+	for scene_id: int in SCENE_COUNT:
+		assert(SCENES.has(scene_id), "Missing scene path for " + str(scene_id))
 		var scene_path : String = SCENES[scene_id]
 		assert(ResourceLoader.exists(scene_path), "Scene does not exist at path " + scene_path)
 
