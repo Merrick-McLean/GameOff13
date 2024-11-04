@@ -8,7 +8,7 @@ var is_initialized := false :
 		if is_initialized:
 			goto_current_scene()
 
-var scene_id := MOVEMENT_TEST :
+var scene_id : int = MOVEMENT_TEST :
 	set(new_value):
 		scene_id = new_value % SCENE_COUNT
 
@@ -26,9 +26,9 @@ const SCENES = { # Add scene paths here
 }
 
 func _ready() -> void:
-	for scene_id: int in SCENE_COUNT:
-		assert(SCENES.has(scene_id), "Missing scene path for " + str(scene_id))
-		var scene_path : String = SCENES[scene_id]
+	for id: int in SCENE_COUNT:
+		assert(SCENES.has(id), "Missing scene path for " + str(id))
+		var scene_path : String = SCENES[id]
 		assert(ResourceLoader.exists(scene_path), "Scene does not exist at path " + scene_path)
 
 

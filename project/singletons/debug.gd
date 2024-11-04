@@ -29,7 +29,7 @@ func _ready() -> void:
 		set_process(false)
 		return
 	
-	DISK_PATH = "user://settings.json"
+	DISK_PATH = "user://debug_settings.json"
 	SETTINGS  = [
 		&"is_enabled",
 		&"start_scene_id",
