@@ -13,13 +13,14 @@ uniform sampler2D u_color_tex;
 uniform int u_bit_depth;
 uniform float u_contrast;
 uniform float u_offset;
-uniform int u_dither_size;
+uniform float u_dither_size;
+uniform vec2 u_dither_offset;
 
 void fragment() 
 {
 	// sample the screen texture at the desired output resolution (according to u_dither_size)
 	// this will effectively pixelate the resulting output
-	vec2 screen_size = vec2(textureSize(TEXTURE, 0)) / float(u_dither_size);
+	vec2 screen_size = vec2(textureSize(TEXTURE, 0)) / u_dither_size;
 	vec2 screen_sample_uv = floor(UV * screen_size) / screen_size;
 	vec3 screen_col = texture(TEXTURE, screen_sample_uv).rgb;
 	
@@ -59,7 +60,7 @@ void fragment()
 	ivec2 noise_size = textureSize(u_dither_tex, 0);
 	vec2 inv_noise_size = vec2(1.0 / float(noise_size.x), 1.0 / float(noise_size.y));
 	vec2 noise_uv = UV * inv_noise_size * vec2(float(screen_size.x), float(screen_size.y));
-	float threshold = texture(u_dither_tex, noise_uv).r;
+	float threshold = texture(u_dither_tex, noise_uv + u_dither_offset).r;
 	
 	// adjust the dither slightly so min and max aren't quite at 0.0 and 1.0
 	// otherwise we wouldn't get fullly dark and fully light dither patterns at lum 0.0 and 1.0
