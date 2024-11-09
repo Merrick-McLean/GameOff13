@@ -1,4 +1,7 @@
-@icon("./assets/responses_menu.svg")
+[gd_scene load_steps=2 format=3 uid="uid://f1hvfx2nisdh"]
+
+[sub_resource type="GDScript" id="GDScript_dt04q"]
+script/source = "@icon(\"./assets/responses_menu.svg\")
 
 ## A [Container] for dialogue responses provided by [b]Dialogue Manager[/b].
 class_name DialogueResponsesMenu extends Container
@@ -12,7 +15,7 @@ signal response_selected(response)
 @export var response_template: Control
 
 ## The action for accepting a response (is possibly overridden by parent dialogue balloon).
-@export var next_action: StringName = &""
+@export var next_action: StringName = &\"\"
 
 ## The list of dialogue responses.
 var responses: Array = []:
@@ -37,19 +40,19 @@ var responses: Array = []:
 					item.show()
 				else:
 					item = Button.new()
-				item.name = "Response%d" % get_child_count()
+				item.name = \"Response%d\" % get_child_count()
 				if not response.is_allowed:
-					item.name = String(item.name) + "Disallowed"
+					item.name = String(item.name) + \"Disallowed\"
 					item.disabled = true
 
 				# If the item has a response property then use that
-				if "response" in item:
+				if \"response\" in item:
 					item.response = response
 				# Otherwise assume we can just set the text
 				else:
 					item.text = response.text
 
-				item.set_meta("response", response)
+				item.set_meta(\"response\", response)
 
 				add_child(item)
 
@@ -71,7 +74,7 @@ func get_menu_items() -> Array:
 	var items: Array = []
 	for child in get_children():
 		if not child.visible: continue
-		if "Disallowed" in child.name: continue
+		if \"Disallowed\" in child.name: continue
 		items.append(child)
 
 	return items
@@ -111,7 +114,7 @@ func _configure_focus() -> void:
 			item.focus_next = items[i + 1].get_path()
 
 		item.mouse_entered.connect(_on_response_mouse_entered.bind(item))
-		item.gui_input.connect(_on_response_gui_input.bind(item, item.get_meta("response")))
+		item.gui_input.connect(_on_response_gui_input.bind(item, item.get_meta(\"response\")))
 
 	items[0].grab_focus()
 
@@ -122,20 +125,38 @@ func _configure_focus() -> void:
 
 
 func _on_response_mouse_entered(item: Control) -> void:
-	if "Disallowed" in item.name: return
+	if \"Disallowed\" in item.name: return
 
 	item.grab_focus()
 
 
 func _on_response_gui_input(event: InputEvent, item: Control, response) -> void:
-	if "Disallowed" in item.name: return
+	if \"Disallowed\" in item.name: return
 
 	get_viewport().set_input_as_handled()
 
 	if event is InputEventMouseButton and event.is_pressed() and event.button_index == MOUSE_BUTTON_LEFT:
 		response_selected.emit(response)
-	elif event.is_action_pressed(&"ui_accept" if next_action.is_empty() else next_action) and item in get_menu_items():
+	elif event.is_action_pressed(&\"ui_accept\" if next_action.is_empty() else next_action) and item in get_menu_items():
 		response_selected.emit(response)
 
 
 #endregion
+"
+
+[node name="DialogueOptions" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="DialogueResponsesMenu" type="Container" parent="."]
+layout_mode = 0
+offset_right = 207.0
+offset_bottom = 299.0
+script = SubResource("GDScript_dt04q")
+
+[node name="Label" type="Label" parent="DialogueResponsesMenu"]
+layout_mode = 2
