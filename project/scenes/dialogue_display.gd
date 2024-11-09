@@ -1,11 +1,11 @@
 extends Control
 
 
-const DialogueOptionsScene = preload("res://scenes/ui/dialogue_options.tscn")
+const DialogueOptionsUIScene = preload("res://scenes/ui/dialogue_options.tscn")
 
 @export var viewport : Viewport
 
-var dialogue_options := []
+var dialogue_options_uis := []
 
 
 
@@ -14,10 +14,9 @@ func _ready() -> void:
 	assert(viewport, "No viewport!")
 	
 	for i in range(Dialogue.Actor.COUNT):
-		var dialogue_options : DialogueOptions = DialogueOptionsScene.instantiate()
-		dialogue_options.hide()
-		dialogue_options.append(dialogue_options)
-	
+		var dialogue_options_ui : DialogueOptionsUI = DialogueOptionsUIScene.instantiate()
+		add_child(dialogue_options_ui)
+		dialogue_options_uis.append(dialogue_options_ui)
 
 
 func _process(delta: float) -> void:
@@ -34,5 +33,12 @@ func _process(delta: float) -> void:
 			var displacement := Vector2(viewport.size) / 2 - unprojected_position
 			var actor := dialogue_point.actor
 			
+			
+			
 			assert(not encountered_actors[actor], "Two DialoguePoints exist for the same actor")
 			encountered_actors[actor] = true
+			
+			var dialogue_options_ui : DialogueOptionsUI = dialogue_options_uis[actor]
+			dialogue_options_ui.position = unprojected_position / 2 - dialogue_options_ui.size / 2
+			dialogue_options_ui.modulate.a = clamp(remap(displacement.length(), 150, 200, 1.0, 0.0), 0.0, 1.0)
+			dialogue_options_ui.visible = dialogue_options_ui.modulate.a > 0

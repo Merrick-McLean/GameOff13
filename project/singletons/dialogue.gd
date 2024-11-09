@@ -1,6 +1,8 @@
 extends Node
 
 
+const MAX_OPTIONS = 3
+
 
 enum Actor {
 	CAPTAIN,
@@ -19,7 +21,7 @@ func get_dialogue_options(actor: Actor) -> Array[String]:
 		Actor.PIRATE_LEFT:
 			result = ["Test 1", "How are ya?", "Test 2"]
 	
-	assert(result.size() <= 3)
+	assert(result.size() <= MAX_OPTIONS)
 	return result
 	
 	
