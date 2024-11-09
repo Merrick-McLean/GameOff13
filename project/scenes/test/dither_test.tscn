@@ -1,9 +1,10 @@
-[gd_scene load_steps=9 format=3 uid="uid://dlep3tn72tvdc"]
+[gd_scene load_steps=10 format=3 uid="uid://dlep3tn72tvdc"]
 
 [ext_resource type="Shader" path="res://shaders/dither.gdshader" id="1_3jww7"]
 [ext_resource type="Texture2D" uid="uid://bisw3a062q3rs" path="res://sprites/test_palette.png" id="2_r1gkj"]
 [ext_resource type="Texture2D" uid="uid://chfl6q7xhru6r" path="res://sprites/16px_bayer_matrix.png" id="3_aussj"]
 [ext_resource type="Script" path="res://scenes/rotating_box.gd" id="4_20hc5"]
+[ext_resource type="PackedScene" uid="uid://b16hssfbhsywa" path="res://scenes/game_room.tscn" id="5_fy1vc"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_r6w7f"]
 shader = ExtResource("1_3jww7")
@@ -42,14 +43,14 @@ size = Vector2i(1152, 648)
 render_target_update_mode = 4
 
 [node name="Node3D" type="Node3D" parent="SubViewport"]
+visible = false
 
 [node name="CSGBox3D" type="CSGBox3D" parent="SubViewport/Node3D"]
-transform = Transform3D(-0.779014, 0.559822, 0.282377, 0.430144, 0.149493, 0.890296, 0.456194, 0.815017, -0.357261, 0, 0, 0)
+transform = Transform3D(0.875599, 0.480899, 0.0454177, 0.0259145, 0.0471228, -0.998552, -0.482343, 0.875509, 0.0287984, 0, 0, 0)
 script = ExtResource("4_20hc5")
 
 [node name="Camera3D" type="Camera3D" parent="SubViewport/Node3D"]
 transform = Transform3D(0.936886, 0, 0.349635, 0, 1, 0, -0.349635, 0, 0.936886, 0.851067, 0.659195, 2.48332)
-current = true
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="SubViewport/Node3D"]
 transform = Transform3D(-0.866023, -0.433016, 0.250001, 0, 0.499998, 0.866027, -0.500003, 0.749999, -0.43301, 0, 0, 0)
@@ -57,3 +58,5 @@ shadow_enabled = true
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="SubViewport/Node3D"]
 environment = SubResource("Environment_6aa6d")
+
+[node name="GameRoom" parent="SubViewport" instance=ExtResource("5_fy1vc")]
