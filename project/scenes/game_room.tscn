@@ -89,12 +89,12 @@ transform = Transform3D(0.124619, 0, -0.0834878, 0, 0.15, 0, 0.0834878, 0, 0.124
 transform = Transform3D(0.149991, 0, 0.00166763, 0, 0.15, 0, -0.00166763, 0, 0.149991, 0.0337915, 0.662155, 0.628924)
 
 [node name="DialoguePoint" parent="." instance=ExtResource("3_ig5u6")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.05046, 0.904216, -0.213782)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.05046, 0.627823, -0.213782)
 actor = 1
 
 [node name="DialoguePoint2" parent="." instance=ExtResource("3_ig5u6")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0331475, 0.904216, -0.544169)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0331475, 0.627823, -0.544169)
 
 [node name="DialoguePoint3" parent="." instance=ExtResource("3_ig5u6")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.05185, 0.904216, -0.192945)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.05, 0.628, -0.214)
 actor = 2

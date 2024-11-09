@@ -17,6 +17,9 @@ func _ready() -> void:
 		var dialogue_options_ui : DialogueOptionsUI = DialogueOptionsUIScene.instantiate()
 		add_child(dialogue_options_ui)
 		dialogue_options_uis.append(dialogue_options_ui)
+	
+	dialogue_options_uis[Dialogue.Actor.CAPTAIN].load_options(["TEST"])
+	dialogue_options_uis[Dialogue.Actor.PIRATE_RIGHT].load_options(["TEST", "other one"])
 
 
 func _process(delta: float) -> void:
@@ -40,5 +43,5 @@ func _process(delta: float) -> void:
 			
 			var dialogue_options_ui : DialogueOptionsUI = dialogue_options_uis[actor]
 			dialogue_options_ui.position = unprojected_position / 2 - dialogue_options_ui.size / 2
-			dialogue_options_ui.modulate.a = clamp(remap(displacement.length(), 150, 200, 1.0, 0.0), 0.0, 1.0)
-			dialogue_options_ui.visible = dialogue_options_ui.modulate.a > 0
+			var weighted_displacement := (displacement * Vector2(1.2, 2.2)).length()
+			dialogue_options_ui.visible_percentage = clamp(remap(weighted_displacement, 170, 220, 1.0, 0.0), 0.0, 1.0)
