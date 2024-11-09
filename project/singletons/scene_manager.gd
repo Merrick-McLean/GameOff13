@@ -17,12 +17,14 @@ var scene_id : int = MOVEMENT_TEST :
 enum { # Define level enum here
 	DITHER_TEST,
 	MOVEMENT_TEST,
+	DICE_TEST,
 	SCENE_COUNT, # not an actual scene
 }
 
 const SCENES = { # Add scene paths here
 	DITHER_TEST: "res://scenes/test/dither_test.tscn",
 	MOVEMENT_TEST: "res://scenes/test/movement_test.tscn",
+	DICE_TEST: "res://scenes/dice_roll.tscn",
 }
 
 func _ready() -> void:
