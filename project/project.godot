@@ -21,6 +21,7 @@ Init="*res://singletons/init.gd"
 Debug="*res://singletons/debug.gd"
 Settings="*res://singletons/settings.gd"
 SceneManager="*res://singletons/scene_manager.gd"
+Dialogue="*res://singletons/dialogue.gd"
 
 [debug]
 

@@ -1,10 +1,11 @@
-[gd_scene load_steps=10 format=3 uid="uid://dlep3tn72tvdc"]
+[gd_scene load_steps=11 format=3 uid="uid://dlep3tn72tvdc"]
 
 [ext_resource type="Shader" path="res://shaders/dither.gdshader" id="1_3jww7"]
 [ext_resource type="Texture2D" uid="uid://bisw3a062q3rs" path="res://sprites/test_palette.png" id="2_r1gkj"]
 [ext_resource type="Texture2D" uid="uid://ganpsgv4yc3b" path="res://sprites/2px_bayer_matrix.png" id="3_pyf06"]
 [ext_resource type="Script" path="res://scenes/rotating_box.gd" id="4_20hc5"]
 [ext_resource type="PackedScene" uid="uid://b16hssfbhsywa" path="res://scenes/game_room.tscn" id="5_fy1vc"]
+[ext_resource type="PackedScene" uid="uid://f1hvfx2nisdh" path="res://scenes/ui/dialogue_options.tscn" id="6_ksa1n"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_r6w7f"]
 shader = ExtResource("1_3jww7")
@@ -39,14 +40,14 @@ stretch = true
 
 [node name="SubViewport" type="SubViewport" parent="."]
 handle_input_locally = false
-size = Vector2i(480, 270)
+size = Vector2i(960, 540)
 render_target_update_mode = 4
 
 [node name="Node3D" type="Node3D" parent="SubViewport"]
 visible = false
 
 [node name="CSGBox3D" type="CSGBox3D" parent="SubViewport/Node3D"]
-transform = Transform3D(-0.877148, 0.479414, -0.027813, 0.0138388, 0.0831283, 0.996443, 0.48002, 0.873644, -0.0795503, 0, 0, 0)
+transform = Transform3D(0.785191, -0.510787, -0.350101, -0.177921, -0.727607, 0.66252, -0.593141, -0.457916, -0.662191, 0, 0, 0)
 script = ExtResource("4_20hc5")
 
 [node name="Camera3D" type="Camera3D" parent="SubViewport/Node3D"]
@@ -60,3 +61,9 @@ shadow_enabled = true
 environment = SubResource("Environment_6aa6d")
 
 [node name="GameRoom" parent="SubViewport" instance=ExtResource("5_fy1vc")]
+
+[node name="UI" type="CanvasLayer" parent="."]
+scale = Vector2(2, 2)
+transform = Transform2D(2, 0, 0, 2, 0, 0)
+
+[node name="DialogueOptionPicker" parent="UI" instance=ExtResource("6_ksa1n")]

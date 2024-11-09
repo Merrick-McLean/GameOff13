@@ -1,7 +1,8 @@
-[gd_scene load_steps=10 format=3 uid="uid://b16hssfbhsywa"]
+[gd_scene load_steps=11 format=3 uid="uid://b16hssfbhsywa"]
 
 [ext_resource type="PackedScene" uid="uid://co6ie20fg1lmn" path="res://scenes/player_camera.tscn" id="1_1eld7"]
 [ext_resource type="PackedScene" uid="uid://xdcxk1fy1a4c" path="res://models/dice.glb" id="2_0bn8d"]
+[ext_resource type="PackedScene" uid="uid://cgp7patwx3511" path="res://scenes/dialogue_point.tscn" id="3_ig5u6"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_pqux5"]
 sky_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
@@ -86,3 +87,7 @@ transform = Transform3D(0.124619, 0, -0.0834878, 0, 0.15, 0, 0.0834878, 0, 0.124
 
 [node name="Sketchfab_Scene3" parent="." instance=ExtResource("2_0bn8d")]
 transform = Transform3D(0.149991, 0, 0.00166763, 0, 0.15, 0, -0.00166763, 0, 0.149991, 0.0337915, 0.662155, 0.628924)
+
+[node name="DialoguePoint" parent="." instance=ExtResource("3_ig5u6")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.05046, 0.904216, -0.213782)
+actor = 1
