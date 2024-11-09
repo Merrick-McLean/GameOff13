@@ -73,16 +73,16 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.65933, 0.420823, -0.656537)
 mesh = SubResource("CapsuleMesh_xrd7f")
 
 [node name="Sketchfab_Scene" parent="." instance=ExtResource("2_0bn8d")]
-transform = Transform3D(0.2, 0, 0, 0, -8.74228e-09, -0.2, 0, 0.2, -8.74228e-09, -0.156108, 0.662155, 0.450931)
+transform = Transform3D(0.15, 0, 0, 0, -6.55671e-09, -0.15, 0, 0.15, -6.55671e-09, 0.010868, 0.662155, 0.671695)
 
 [node name="Sketchfab_Scene4" parent="." instance=ExtResource("2_0bn8d")]
-transform = Transform3D(0.173478, -0.099525, 4.35038e-09, 0, -8.74228e-09, -0.2, 0.099525, 0.173478, -7.58298e-09, -0.106985, 0.662155, 0.501859)
+transform = Transform3D(0.130109, -0.0746438, 3.26278e-09, 0, -6.55671e-09, -0.15, 0.0746438, 0.130109, -5.68724e-09, 0.0599913, 0.662155, 0.722623)
 
 [node name="Sketchfab_Scene5" parent="." instance=ExtResource("2_0bn8d")]
-transform = Transform3D(0.173478, -0.099525, 4.35038e-09, 0, -8.74228e-09, -0.2, 0.099525, 0.173478, -7.58298e-09, -0.186704, 0.662155, 0.507612)
+transform = Transform3D(0.130109, -0.0746438, 3.26278e-09, 0, -6.55671e-09, -0.15, 0.0746438, 0.130109, -5.68724e-09, 0.00635973, 0.662155, 0.716703)
 
 [node name="Sketchfab_Scene2" parent="." instance=ExtResource("2_0bn8d")]
-transform = Transform3D(0.166158, 0, -0.111317, 0, 0.2, 0, 0.111317, 0, 0.166158, -0.0682061, 0.662155, 0.450931)
+transform = Transform3D(0.124619, 0, -0.0834878, 0, 0.15, 0, 0.0834878, 0, 0.124619, 0.0601211, 0.662154, 0.671695)
 
 [node name="Sketchfab_Scene3" parent="." instance=ExtResource("2_0bn8d")]
-transform = Transform3D(0.199988, 0, 0.00222351, 0, 0.2, 0, -0.00222351, 0, 0.199988, -0.105688, 0.662155, 0.408161)
+transform = Transform3D(0.149991, 0, 0.00166763, 0, 0.15, 0, -0.00166763, 0, 0.149991, 0.0337915, 0.662155, 0.628924)

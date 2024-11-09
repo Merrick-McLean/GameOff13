@@ -20,7 +20,7 @@ func _ready() -> void:
 	is_active = true
 
 func _process(delta: float) -> void:
-	var percent_from_center = get_viewport().get_mouse_position() / Vector2(get_viewport().size)
+	var percent_from_center := get_viewport().get_mouse_position() / Vector2(get_viewport().size)
 	percent_from_center = percent_from_center.clamp(Vector2.ZERO, Vector2.ONE)
 	
 	
