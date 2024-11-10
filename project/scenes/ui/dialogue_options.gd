@@ -36,8 +36,8 @@ func load_options(options: Array) -> void:
 	
 	var scale = [
 		Vector2(1, 2),
-		Vector2(1, 1.2),
-		Vector2(1, 1.2),
+		Vector2(1, 1.1),
+		Vector2(1, 1.1),
 	][options.size() - 1]
 	
 	vbox.add_theme_constant_override(&"separation", [

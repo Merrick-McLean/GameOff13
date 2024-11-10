@@ -22,12 +22,14 @@ func _ready() -> void:
 		dialogue_options_uis.append(dialogue_options_ui)
 		dialogue_options_ui.option_chosen.connect(
 			func(index: int) -> void: 
-				last_result = Dialogue.OptionsResult.new(actor, index)
+				last_result = Dialogue.OptionResult.new(actor, index)
 				option_chosen.emit(last_result)
 		)
 	
 	dialogue_options_uis[Dialogue.Actor.CAPTAIN].load_options(["TEST"])
 	dialogue_options_uis[Dialogue.Actor.PIRATE_RIGHT].load_options(["TEST", "other one"])
+	
+	Dialogue.display = self
 
 
 func _process(delta: float) -> void:
@@ -52,9 +54,13 @@ func _process(delta: float) -> void:
 			dialogue_options_ui.visible_percentage = clamp(remap(weighted_displacement, 170, 220, 1.0, 0.0), 0.0, 1.0)
 
 
-func say(new_speaker: Dialogue.Actor, unparsed_line: String) -> void:
+func say(new_speaker: Dialogue.Actor, unparsed_line: String, wait_for_continue := true) -> void:
 	subtitles.init_new_line(new_speaker, unparsed_line)
-	await subtitles.line_finished
+	
+	if wait_for_continue:
+		await subtitles.line_continued
+	else:
+		await subtitles.line_finished
 
 func push_options(option_sets: Array[Dialogue.OptionSet]) -> Dialogue.OptionResult:
 	var seen_actors := ArrayUtils.filled(Dialogue.Actor.COUNT, false)
@@ -62,6 +68,7 @@ func push_options(option_sets: Array[Dialogue.OptionSet]) -> Dialogue.OptionResu
 		var actor := option_set.actor
 		assert(not seen_actors[option_set.actor], "Submitted 2 DialogueOptionSets with the same actor!")
 		dialogue_options_uis[actor].load_options(option_set.options)
+		seen_actors[actor] = true
 	
 	for actor: int in range(seen_actors.size()):
 		if not seen_actors[actor]:

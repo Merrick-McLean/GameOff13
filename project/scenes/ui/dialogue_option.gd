@@ -11,7 +11,10 @@ var text := "" :
 	set(new_value):
 		text = new_value
 		label.text = text
-
+var is_hovered := false :
+	set(new_value):
+		is_hovered = new_value
+		modulate.r = 1.0 if is_hovered else 0.4
 
 
 func _process(delta: float) -> void:
@@ -19,7 +22,7 @@ func _process(delta: float) -> void:
 	rect.position += hitbox_offset - (hitbox_scale - Vector2.ONE) * rect.size / 2
 	rect.size *= hitbox_scale
 	
-	if rect.has_point(get_viewport_rect().get_center() / 2):
-		modulate.r = 1.0
-	else:
-		modulate.r = 0.4
+	is_hovered = rect.has_point(get_viewport_rect().get_center() / 2)
+	
+	if visible and is_hovered and Input.is_action_just_pressed("interact"):
+		selected.emit()
