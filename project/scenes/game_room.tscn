@@ -2,7 +2,7 @@
 
 [ext_resource type="PackedScene" uid="uid://co6ie20fg1lmn" path="res://scenes/player_camera.tscn" id="1_1eld7"]
 [ext_resource type="PackedScene" uid="uid://xdcxk1fy1a4c" path="res://models/dice.glb" id="2_0bn8d"]
-[ext_resource type="PackedScene" uid="uid://cgp7patwx3511" path="res://scenes/dialogue_point.tscn" id="3_ig5u6"]
+[ext_resource type="PackedScene" path="res://scenes/dialogue_point.tscn" id="3_ig5u6"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_pqux5"]
 sky_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
