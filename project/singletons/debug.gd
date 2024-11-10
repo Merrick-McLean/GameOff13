@@ -64,3 +64,15 @@ func _process(delta: float) -> void:
 			SceneManager.goto_current_scene()
 	
 	super._process(delta)
+
+
+func is_just_pressed(control_name: StringName) -> bool:
+	return is_enabled and Input.is_action_just_pressed(control_name)
+
+
+func is_pressed(control_name: StringName) -> bool:
+	return is_enabled and Input.is_action_pressed(control_name)
+
+
+func is_just_released(control_name: StringName) -> bool:
+	return is_enabled and Input.is_action_just_released(control_name)

@@ -48,7 +48,7 @@ mesh = SubResource("PlaneMesh_hlxrk")
 material = SubResource("StandardMaterial3D_1qv4o")
 
 [node name="CSGBox3D" type="CSGBox3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0330603, 0.132052, 0.127819)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.132, 0.128)
 size = Vector3(1.12222, 1, 1.4)
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="CSGBox3D"]

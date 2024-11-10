@@ -14,7 +14,6 @@ enum Actor {
 
 
 
-
 func dialogue() -> void:
 	assert(display)
 	await display.say(Dialogue.Actor.PIRATE_LEFT, "Hello there sir, how are you?")
