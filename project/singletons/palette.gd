@@ -8,19 +8,19 @@ var texture : ImageTexture :
 		texture = new_value
 		texture_changed.emit(old_texture, texture)
 
-var color_0 := Color.RED :
+var color_0 := Color.BLACK :
 	set(new_value):
 		color_0 = new_value
 		is_texture_update_queued = true
-var color_1 := Color.RED :
+var color_1 := Color.DARK_SLATE_BLUE :
 	set(new_value):
 		color_1 = new_value
 		is_texture_update_queued = true
-var color_2 := Color.RED :
+var color_2 := Color.STEEL_BLUE :
 	set(new_value):
 		color_2 = new_value
 		is_texture_update_queued = true
-var color_3 := Color.RED :
+var color_3 := Color.LIGHT_STEEL_BLUE :
 	set(new_value):
 		color_3 = new_value
 		is_texture_update_queued = true
