@@ -19,13 +19,13 @@ func _process(delta: float) -> void:
 		print(result.index)
 	if Debug.is_just_pressed(&"test_2"):
 		display.push_options([])
-		await display.say(Actor.PIRATE_LEFT, "[center]Pirate 1: I can talk normally,[set speed=5] I can talk slow,[set speed=200] and I can talk fast![/center]")
-		await display.say(Actor.PIRATE_LEFT, "[center]Pirate 1: I can also pause,[set pause_time=0.9] dramatically[set pause_time=2][set speed=5]...")
-		await display.say(Actor.PIRATE_LEFT, "[center]Pirate 1: Anyway what do you think lad? Is that cool or what?[/center]", false)
+		await display.say(Actor.PIRATE_LEFT, "Pirate 1: I can talk normally,[set speed=5] I can talk slow,[set speed=200] and I can talk fast")
+		await display.say(Actor.PIRATE_LEFT, "Pirate 1: I can also pause,[set pause_time=0.9] dramatically[set pause_time=2][set speed=5]...")
+		await display.say(Actor.PIRATE_LEFT, "Pirate 1: Anyway what do you think lad? Is that cool or what?", false)
 		var result := await display.push_options([OptionSet.new(Actor.PIRATE_LEFT, ["Yes. Super Cool", "No..."])])
 		match result.index:
-			0: await display.say(Actor.PIRATE_LEFT, "[center]That's the [wave amp=20.0 freq=5.0 connected=1]spirit[/wave]![/center]")
-			1: await display.say(Actor.PIRATE_LEFT, "[center]Fuck you.[/center]")
+			0: await display.say(Actor.PIRATE_LEFT, "That's the [wave amp=20.0 freq=5.0 connected=1]spirit[/wave]")
+			1: await display.say(Actor.PIRATE_LEFT, "Fuck you.")
 
 func dialogue() -> void:
 	assert(display)

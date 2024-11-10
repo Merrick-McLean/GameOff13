@@ -21,7 +21,8 @@ func _ready() -> void:
 	for i: int in range(Dialogue.MAX_OPTIONS):
 		var dialogue_option : DialogueOptionUI = DialogueOptionUIScene.instantiate()
 		dialogue_options.append(dialogue_option)
-		dialogue_option.selected.connect(func() -> void: option_chosen.emit(i))
+		var error := dialogue_option.selected.connect(func() -> void: option_chosen.emit(i))
+		assert(not error)
 		vbox.add_child(dialogue_option)
 		
 		if i < Dialogue.MAX_OPTIONS - 1:
@@ -34,7 +35,7 @@ func load_options(options: Array) -> void:
 	
 	assert(options.size() <= Dialogue.MAX_OPTIONS)
 	
-	var scale = [
+	var scale : Vector2 = [
 		Vector2(1, 2),
 		Vector2(1, 1.1),
 		Vector2(1, 1.1),

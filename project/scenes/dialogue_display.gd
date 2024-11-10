@@ -20,11 +20,12 @@ func _ready() -> void:
 		var dialogue_options_ui : DialogueOptionsUI = DialogueOptionsUIScene.instantiate()
 		add_child(dialogue_options_ui)
 		dialogue_options_uis.append(dialogue_options_ui)
-		dialogue_options_ui.option_chosen.connect(
+		var error := dialogue_options_ui.option_chosen.connect(
 			func(index: int) -> void: 
 				last_result = Dialogue.OptionResult.new(actor, index)
 				option_chosen.emit(last_result)
 		)
+		assert(not error)
 	
 	dialogue_options_uis[Dialogue.Actor.CAPTAIN].load_options(["TEST"])
 	dialogue_options_uis[Dialogue.Actor.PIRATE_RIGHT].load_options(["TEST", "other one"])

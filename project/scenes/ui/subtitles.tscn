@@ -11,6 +11,7 @@ anchor_bottom = 0.5
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_vp6tu")
+font = ExtResource("1_p0exl")
 
 [node name="Label" type="RichTextLabel" parent="."]
 layout_mode = 1
@@ -19,8 +20,10 @@ anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
 offset_top = -30.0
+offset_right = 2.0
 grow_horizontal = 2
 grow_vertical = 0
 theme_override_fonts/normal_font = ExtResource("1_p0exl")
 bbcode_enabled = true
 text = "[center]Textasdsdsdasdasd[/center][wait 0]"
+scroll_active = false

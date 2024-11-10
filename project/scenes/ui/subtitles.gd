@@ -5,6 +5,14 @@ signal line_finished
 signal line_continued
 
 const DEFAULT_SPEED := 30.0
+const FONT_SIZE := 12
+
+@export var font: Font :
+	set(new_value):
+		font = new_value
+		if not is_node_ready():
+			await ready
+		label.add_theme_font_override(&"normal_font", font)
 
 var regex : RegEx
 var speed := DEFAULT_SPEED
@@ -23,6 +31,12 @@ var char_index := 0.0 :
 	set(new_value):
 		char_index = new_value
 		label.visible_characters = floor(max(char_index, 0.0))
+		
+		if line:
+			label.size.x = font.get_string_size(line.bbcodeless_text.left(get_visible_character_count())).x
+			print(label.size.x)
+
+
 
 var current_speaker : Dialogue.Actor
 
@@ -31,7 +45,8 @@ var current_speaker : Dialogue.Actor
 func _ready() -> void:
 	regex = RegEx.new()
 	#regex.compile("(\\[set [_a-zA-Z]\\w*=[\\w\\.]+\\])|(\\[call [_a-zA-Z]\\w*])")
-	regex.compile("\\[.*?\\]")
+	var error := regex.compile("\\[.*?\\]")
+	assert(not error)
 
 
 func init_new_line(new_speaker: Dialogue.Actor, unparsed_line: String) -> void:
@@ -85,7 +100,7 @@ func parse_line(new_line: String) -> ParsedLine:
 				var parts := function_arguments.split("=")
 				var variable_name := parts[0]
 				var value_name := parts[1]
-				var current_variable_value = get(variable_name)
+				var current_variable_value : Variant = get(variable_name)
 				var value : Variant = value_name
 				
 				if current_variable_value is String:
@@ -104,9 +119,8 @@ func parse_line(new_line: String) -> ParsedLine:
 			"unskippable":
 				can_skip = false
 	
-	var parsed_line := ParsedLine.new()
-	parsed_line.text = new_line
-	parsed_line.commands = commands
+	var parsed_line := ParsedLine.new(new_line, commands)
+	
 	
 	return parsed_line
 
@@ -114,6 +128,12 @@ func parse_line(new_line: String) -> ParsedLine:
 func skip_to_end() -> void:
 	char_index = INF
 
+
+func get_visible_character_count() -> int:
+	if label.visible_characters < 0:
+		return line.bbcodeless_text.length()
+	else:
+		return label.visible_characters
 
 func _process(delta: float) -> void:
 	if line:
@@ -150,6 +170,14 @@ func at_end_of_line() -> bool:
 
 
 
+
+
 class ParsedLine:
 	var text := ""
+	var bbcodeless_text := ""
 	var commands := {}
+	
+	func _init(p_text, p_commands) -> void:
+		text = p_text
+		bbcodeless_text = StringUtils.strip_bbcode(text)
+		commands = p_commands

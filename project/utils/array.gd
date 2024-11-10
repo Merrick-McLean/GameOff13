@@ -18,6 +18,7 @@ static func intersection(arr1: Array, arr2: Array) -> Array:
 static func filled(size: int, value: Variant) -> Array:
 	assert(size >= 0)
 	var array := []
-	array.resize(size)
+	var error := array.resize(size)
+	assert(not error)
 	array.fill(value)
 	return array
