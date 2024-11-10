@@ -32,6 +32,7 @@ func _ready() -> void:
 	_update_texture()
 
 func _process(delta: float) -> void:
+	
 	if is_texture_update_queued:
 		_update_texture()
 
