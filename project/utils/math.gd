@@ -11,3 +11,9 @@ static func in_range_ii(a: float, min: float, max: float) -> bool:
 # inclusive on min, exclusive on max
 static func in_range_ie(a: float, min: float, max: float) -> bool:
 	return a >= min and a < max
+
+static func factorial(n: int) -> int:
+	if(n == 1):
+		return 1
+	else:
+		return n * factorial(n-1)
