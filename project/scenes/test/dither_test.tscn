@@ -20,12 +20,12 @@ shader_parameter/u_color_tex = ExtResource("2_r1gkj")
 sky_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
 ground_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
 
-[sub_resource type="Sky" id="Sky_nxw06"]
+[sub_resource type="Sky" id="Sky_y64ih"]
 sky_material = SubResource("ProceduralSkyMaterial_xtfei")
 
 [sub_resource type="Environment" id="Environment_6aa6d"]
 background_mode = 2
-sky = SubResource("Sky_nxw06")
+sky = SubResource("Sky_y64ih")
 tonemap_mode = 2
 glow_enabled = true
 
