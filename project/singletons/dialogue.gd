@@ -26,6 +26,11 @@ func _process(delta: float) -> void:
 		match result.index:
 			0: await display.say(Actor.PIRATE_LEFT, "That's the [wave amp=20.0 freq=5.0 connected=1]spirit[/wave]")
 			1: await display.say(Actor.PIRATE_LEFT, "Fuck you.")
+	if Debug.is_just_pressed(&"test_3"):
+		display.push_options([])
+		await display.say(Actor.PIRATE_LEFT, "Pirate 1: I'm talking over here on the left.")
+		await display.say(Actor.PIRATE_RIGHT, "Pirate 2: I talk over here on the right.")
+		await display.say(Actor.CAPTAIN, "Captain: And I talk in[set pause_time=0.2] the[set pause_time=0.2] middle.")
 
 func dialogue() -> void:
 	assert(display)

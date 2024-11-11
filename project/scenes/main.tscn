@@ -6,7 +6,7 @@
 [ext_resource type="Script" path="res://scenes/rotating_box.gd" id="4_d2njp"]
 [ext_resource type="Script" path="res://scenes/game_viewport_container.gd" id="4_os500"]
 [ext_resource type="PackedScene" uid="uid://b16hssfbhsywa" path="res://scenes/game_room.tscn" id="5_tyn2c"]
-[ext_resource type="PackedScene" path="res://scenes/dialogue_display.tscn" id="6_0o7ya"]
+[ext_resource type="PackedScene" uid="uid://cft13twrbtor" path="res://scenes/dialogue_display.tscn" id="6_0o7ya"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_r6w7f"]
 shader = ExtResource("1_kkj7l")
@@ -52,7 +52,7 @@ render_target_update_mode = 4
 visible = false
 
 [node name="CSGBox3D" type="CSGBox3D" parent="GameViewportContainer/SubViewport/Node3D"]
-transform = Transform3D(0.989875, 0.0132579, -0.141314, -0.0698598, 0.912189, -0.403773, 0.123552, 0.409558, 0.903879, 0, 0, 0)
+transform = Transform3D(0.997276, -0.00556284, -0.0735356, -0.0358545, 0.834788, -0.549404, 0.0644428, 0.550545, 0.832315, 0, 0, 0)
 script = ExtResource("4_d2njp")
 
 [node name="Camera3D" type="Camera3D" parent="GameViewportContainer/SubViewport/Node3D"]

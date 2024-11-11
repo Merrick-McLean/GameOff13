@@ -51,6 +51,10 @@ func _process(delta: float) -> void:
 			
 			var dialogue_options_ui : DialogueOptionsUI = dialogue_options_uis[actor]
 			dialogue_options_ui.position = unprojected_position / 2 - dialogue_options_ui.size / 2
+			
+			if subtitles.current_speaker == actor:
+				subtitles.target_x = unprojected_position.x / 2
+			
 			var weighted_displacement := (displacement * Vector2(1.2, 2.2)).length()
 			dialogue_options_ui.visible_percentage = clamp(remap(weighted_displacement, 170, 220, 1.0, 0.0), 0.0, 1.0)
 

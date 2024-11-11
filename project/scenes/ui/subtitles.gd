@@ -6,6 +6,7 @@ signal line_continued
 
 const DEFAULT_SPEED := 30.0
 const FONT_SIZE := 12
+const SIDE_BUFFER := 10
 
 @export var font: Font :
 	set(new_value):
@@ -34,8 +35,14 @@ var char_index := 0.0 :
 		
 		if line:
 			label.size.x = font.get_string_size(line.bbcodeless_text.left(get_visible_character_count())).x
-			print(label.size.x)
+		
+		_update_position()
 
+
+var target_x := 0.0 :
+	set(new_value):
+		target_x = new_value
+		_update_position()
 
 
 var current_speaker : Dialogue.Actor
@@ -169,6 +176,9 @@ func at_end_of_line() -> bool:
 	return label.visible_ratio >= 1.0 or label.visible_characters <= -1
 
 
+func _update_position() -> void:
+	position.x = clamp(target_x - label.size.x / 2, SIDE_BUFFER, size.x - label.size.x - SIDE_BUFFER)
+	#position.x = target_x - label.size.x / 2
 
 
 
