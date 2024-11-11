@@ -10,7 +10,6 @@ var scene_id : int = MOVEMENT_TEST :
 enum { # Define level enum here
 	DITHER_TEST,
 	MOVEMENT_TEST,
-	DICE_TEST,
 	GAME_ROOM,
 	MAIN_SCENE,
 	SCENE_COUNT, # not an actual scene
@@ -19,7 +18,6 @@ enum { # Define level enum here
 const SCENES = { # Add scene paths here
 	DITHER_TEST: "res://scenes/test/dither_test.tscn",
 	MOVEMENT_TEST: "res://scenes/test/movement_test.tscn",
-	DICE_TEST: "res://scenes/dice_roll.tscn",
 	GAME_ROOM: "res://scenes/game_room.tscn",
 	MAIN_SCENE: "res://scenes/main.tscn",
 }
