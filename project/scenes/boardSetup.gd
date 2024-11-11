@@ -52,6 +52,8 @@ func _spawn_cup(loc: Vector3) -> void:
 ### DEFAULT ###
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
+	var rng = RandomNumberGenerator.new()
+	_spawn_die(rng.randi_range(1,6), Vector3(0,0,0))
 	pass 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.

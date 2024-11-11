@@ -22,7 +22,7 @@ class Round: # should I jsut merge round and bet? - Simpler to just have one big
 		#pref = {'Crewmate1': [randi_range(0,8), randi_range(0,8)], 'Captain': [randi_range(0,8), randi_range(0,8)], 'Crewmate2': [randi_range(0,8), randi_range(0,8)]}
 		turn_order = players_in_order
 		pass
-
+	
 	func _start_round() -> void:
 		table = _get_table()
 		#values = dice_roll._create_player_dice()
@@ -32,7 +32,7 @@ class Round: # should I jsut merge round and bet? - Simpler to just have one big
 		
 	func _pass_turn() -> void: # HANDLE WHEN SOMEONE IS OUT
 		var prev: int = cur_bet._get_pid()
-		if(self.pid == (turn_order.size() - 1)):
+		if(cur_bet.pid == (turn_order.size() - 1)):
 			cur_bet._set_pid(0)
 			prev_bet._set_pid(prev)
 		else:
@@ -161,7 +161,7 @@ class Round: # should I jsut merge round and bet? - Simpler to just have one big
 		else:
 			# calculate the base, blind probability of the bet being true (without even knowing your own values - we could subtract one die from this, as if the noc plays like they always have exactly 1 die matching the bet
 			var prob: float = (float(Math.factorial(rem_dice))/(float(Math.factorial(req_dice)) * Math.factorial(rem_dice - req_dice))) * (pow((1.0/6.0), req_dice) * pow((5.0/6.0), (rem_dice - req_dice)))
-			var perc_succ: float = prob - ((amount_jump/200.0) + ((expec_value_amount_jump - 1)/200.0 + bet_amount/500.0 ) * reck) - expec_value_amount/500.0
+			var perc_succ: float = prob - ((amount_jump/200.0) + ((expec_value_amount_jump - 1)/200.0 + bet_amount/500.0) * reck) - expec_value_amount/500.0
 			
 			if perc_succ > 0.8:
 				perc_succ = 0.999
