@@ -31,7 +31,7 @@ func _ready() -> void:
 			vbox.add_child(dialogue_separator)
 
 
-func load_options(options: Array) -> void:
+func load_options(options: Array, time_to_accept := 0.0) -> void:
 	
 	assert(options.size() <= Dialogue.MAX_OPTIONS)
 	
@@ -64,5 +64,4 @@ func load_options(options: Array) -> void:
 		dialogue_option.text = option_text
 		dialogue_option.hitbox_scale = hitbox_scale
 		dialogue_option.hitbox_offset = Vector2.ZERO
-		
-		
+		dialogue_option.time_to_accept = time_to_accept

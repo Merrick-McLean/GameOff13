@@ -61,7 +61,7 @@ func init_new_line(new_speaker: Dialogue.Actor, unparsed_line: String) -> void:
 	speed = DEFAULT_SPEED
 	char_index = -1.0
 	can_skip = true
-	line = parse_line("[center]" + unparsed_line)
+	line = parse_line("[center]" + Dialogue.get_actor_name(new_speaker) + ": " +  unparsed_line)
 
 func parse_line(new_line: String) -> ParsedLine:
 	var commands := {}

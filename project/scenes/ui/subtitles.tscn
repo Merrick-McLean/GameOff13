@@ -6,7 +6,11 @@
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_slt1e"]
 shader = ExtResource("3_qk0le")
+shader_parameter/width = 0.0
+shader_parameter/offset_x = 0.0
 shader_parameter/text_color = Color(0.758192, 0.758192, 0.758192, 1)
+shader_parameter/text_color_2 = Color(1, 1, 1, 1)
+shader_parameter/charge_percent = 1.0
 shader_parameter/line_color = Color(0, 0, 0, 1)
 shader_parameter/line_thickness = 1.0
 
