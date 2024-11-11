@@ -34,7 +34,7 @@ var char_index := 0.0 :
 		label.visible_characters = floor(max(char_index, 0.0))
 		
 		if line:
-			label.size.x = font.get_string_size(line.bbcodeless_text.left(get_visible_character_count())).x
+			label.size.x = font.get_string_size(line.bbcodeless_text.left(get_visible_character_count())).x + 4 # + 4 for outline
 		
 		_update_position()
 
@@ -61,7 +61,7 @@ func init_new_line(new_speaker: Dialogue.Actor, unparsed_line: String) -> void:
 	speed = DEFAULT_SPEED
 	char_index = -1.0
 	can_skip = true
-	line = parse_line(unparsed_line)
+	line = parse_line("[center]" + unparsed_line)
 
 func parse_line(new_line: String) -> ParsedLine:
 	var commands := {}
@@ -134,6 +134,7 @@ func parse_line(new_line: String) -> ParsedLine:
 
 func skip_to_end() -> void:
 	char_index = INF
+	line_finished.emit()
 
 
 func get_visible_character_count() -> int:
@@ -187,7 +188,7 @@ class ParsedLine:
 	var bbcodeless_text := ""
 	var commands := {}
 	
-	func _init(p_text, p_commands) -> void:
+	func _init(p_text: String, p_commands: Dictionary) -> void:
 		text = p_text
 		bbcodeless_text = StringUtils.strip_bbcode(text)
 		commands = p_commands

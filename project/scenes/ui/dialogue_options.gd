@@ -12,7 +12,7 @@ var visible_percentage := 0.0 :
 	set(new_value):
 		assert(new_value >= 0.0 and new_value <= 1.0)
 		visible_percentage = new_value
-		modulate.a = visible_percentage
+		modulate.a = ceil(visible_percentage)
 		visible = visible_percentage > 0
 
 @onready var vbox : VBoxContainer = $VBoxContainer
@@ -35,7 +35,7 @@ func load_options(options: Array) -> void:
 	
 	assert(options.size() <= Dialogue.MAX_OPTIONS)
 	
-	var scale : Vector2 = [
+	var hitbox_scale : Vector2 = [
 		Vector2(1, 2),
 		Vector2(1, 1.1),
 		Vector2(1, 1.1),
@@ -62,7 +62,7 @@ func load_options(options: Array) -> void:
 		if dialogue_separator: 
 			dialogue_separator.show()
 		dialogue_option.text = option_text
-		dialogue_option.hitbox_scale = scale
+		dialogue_option.hitbox_scale = hitbox_scale
 		dialogue_option.hitbox_offset = Vector2.ZERO
 		
 		

@@ -29,7 +29,6 @@ Palette="*res://singletons/palette.gd"
 file_logging/enable_file_logging=true
 gdscript/warnings/unused_parameter=0
 gdscript/warnings/untyped_declaration=1
-gdscript/warnings/return_value_discarded=1
 
 [display]
 

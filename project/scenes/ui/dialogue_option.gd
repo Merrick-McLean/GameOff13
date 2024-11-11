@@ -14,7 +14,7 @@ var text := "" :
 var is_hovered := false :
 	set(new_value):
 		is_hovered = new_value
-		modulate.r = 1.0 if is_hovered else 0.4
+		label.material.set_shader_parameter(&"text_color", Color.WHITE if is_hovered else Color.GRAY)
 
 
 func _process(delta: float) -> void:
