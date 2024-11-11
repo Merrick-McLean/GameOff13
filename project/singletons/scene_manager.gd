@@ -12,6 +12,7 @@ enum { # Define level enum here
 	MOVEMENT_TEST,
 	DICE_TEST,
 	GAME_ROOM,
+	MAIN_SCENE,
 	SCENE_COUNT, # not an actual scene
 }
 
@@ -20,6 +21,7 @@ const SCENES = { # Add scene paths here
 	MOVEMENT_TEST: "res://scenes/test/movement_test.tscn",
 	DICE_TEST: "res://scenes/dice_roll.tscn",
 	GAME_ROOM: "res://scenes/game_room.tscn",
+	MAIN_SCENE: "res://scenes/main.tscn",
 }
 
 func _ready() -> void:

@@ -1,0 +1,97 @@
+[gd_scene load_steps=14 format=3 uid="uid://ckdxm5eyc6dyu"]
+
+[ext_resource type="Shader" path="res://shaders/dither.gdshader" id="1_kkj7l"]
+[ext_resource type="Texture2D" uid="uid://bisw3a062q3rs" path="res://sprites/test_palette.png" id="2_frn0b"]
+[ext_resource type="Texture2D" uid="uid://ganpsgv4yc3b" path="res://sprites/2px_bayer_matrix.png" id="3_ykl6o"]
+[ext_resource type="Script" path="res://scenes/rotating_box.gd" id="4_d2njp"]
+[ext_resource type="Script" path="res://scenes/shader_viewport_container.gd" id="4_os500"]
+[ext_resource type="PackedScene" uid="uid://b16hssfbhsywa" path="res://scenes/game_room.tscn" id="5_tyn2c"]
+[ext_resource type="PackedScene" uid="uid://cft13twrbtor" path="res://scenes/dialogue_display.tscn" id="6_0o7ya"]
+[ext_resource type="Shader" path="res://shaders/dither_ui.gdshader" id="8_2vlii"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_r6w7f"]
+shader = ExtResource("1_kkj7l")
+shader_parameter/u_bit_depth = 64
+shader_parameter/u_contrast = 2.0
+shader_parameter/u_offset = 0.0
+shader_parameter/u_dither_size = 2
+shader_parameter/u_dither_tex = ExtResource("3_ykl6o")
+shader_parameter/u_color_tex = ExtResource("2_frn0b")
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_xtfei"]
+sky_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
+ground_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
+
+[sub_resource type="Sky" id="Sky_nxw06"]
+sky_material = SubResource("ProceduralSkyMaterial_xtfei")
+
+[sub_resource type="Environment" id="Environment_6aa6d"]
+background_mode = 2
+sky = SubResource("Sky_nxw06")
+tonemap_mode = 2
+glow_enabled = true
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_83yqs"]
+shader = ExtResource("8_2vlii")
+shader_parameter/u_color_tex = ExtResource("2_frn0b")
+
+[node name="Main" type="Node"]
+
+[node name="GameViewportContainer" type="SubViewportContainer" parent="."]
+texture_filter = 1
+material = SubResource("ShaderMaterial_r6w7f")
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+stretch = true
+script = ExtResource("4_os500")
+
+[node name="SubViewport" type="SubViewport" parent="GameViewportContainer"]
+handle_input_locally = false
+size = Vector2i(960, 540)
+render_target_update_mode = 4
+
+[node name="Node3D" type="Node3D" parent="GameViewportContainer/SubViewport"]
+visible = false
+
+[node name="CSGBox3D" type="CSGBox3D" parent="GameViewportContainer/SubViewport/Node3D"]
+transform = Transform3D(-0.666084, -0.718511, 0.20018, 0.387544, -0.104078, 0.915956, -0.63729, 0.687684, 0.347779, 0, 0, 0)
+script = ExtResource("4_d2njp")
+
+[node name="Camera3D" type="Camera3D" parent="GameViewportContainer/SubViewport/Node3D"]
+transform = Transform3D(0.936886, 0, 0.349635, 0, 1, 0, -0.349635, 0, 0.936886, 0.851067, 0.659195, 2.48332)
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="GameViewportContainer/SubViewport/Node3D"]
+transform = Transform3D(-0.866023, -0.433016, 0.250001, 0, 0.499998, 0.866027, -0.500003, 0.749999, -0.43301, 0, 0, 0)
+shadow_enabled = true
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="GameViewportContainer/SubViewport/Node3D"]
+environment = SubResource("Environment_6aa6d")
+
+[node name="GameRoom" parent="GameViewportContainer/SubViewport" instance=ExtResource("5_tyn2c")]
+
+[node name="UI" type="CanvasLayer" parent="."]
+scale = Vector2(2, 2)
+transform = Transform2D(2, 0, 0, 2, 0, 0)
+
+[node name="SubViewportContainer" type="SubViewportContainer" parent="UI"]
+texture_filter = 1
+material = SubResource("ShaderMaterial_83yqs")
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+stretch = true
+script = ExtResource("4_os500")
+
+[node name="SubViewport" type="SubViewport" parent="UI/SubViewportContainer"]
+transparent_bg = true
+handle_input_locally = false
+size = Vector2i(960, 540)
+render_target_update_mode = 4
+
+[node name="DialogueDisplay" parent="UI/SubViewportContainer/SubViewport" node_paths=PackedStringArray("viewport") instance=ExtResource("6_0o7ya")]
+viewport = NodePath("../../../../GameViewportContainer/SubViewport")

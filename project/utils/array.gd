@@ -13,3 +13,12 @@ static func intersection(arr1: Array, arr2: Array) -> Array:
 		if arr2_dict.get(v, false):
 			in_both_arrays.append(v)
 	return in_both_arrays
+
+
+static func filled(size: int, value: Variant) -> Array:
+	assert(size >= 0)
+	var array := []
+	var error := array.resize(size)
+	assert(not error)
+	array.fill(value)
+	return array
