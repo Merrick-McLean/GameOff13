@@ -23,6 +23,7 @@ Settings="*res://singletons/settings.gd"
 SceneManager="*res://singletons/scene_manager.gd"
 Dialogue="*res://singletons/dialogue.gd"
 Palette="*res://singletons/palette.gd"
+LiarsDice="*res://singletons/liars_dice.gd"
 
 [debug]
 

@@ -15,8 +15,6 @@ enum Actor {
 func _process(delta: float) -> void:
 	if Debug.is_just_pressed(&"test_1"):
 		var result := await display.push_options([OptionSet.new(Actor.PIRATE_LEFT, ["Option 1", "Option 2", "Option 3"])])
-		print(result.actor)
-		print(result.index)
 	if Debug.is_just_pressed(&"test_2"):
 		display.push_options([])
 		await display.say(Actor.PIRATE_LEFT, "I can talk normally,[set speed=5] I can talk slow,[set speed=200] and I can talk fast")
