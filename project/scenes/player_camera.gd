@@ -2,7 +2,7 @@ extends Camera3D
 
 
 const MAX_ROTATION_UP = 0.2
-const MAX_ROTATION_DOWN = 0.6
+const MAX_ROTATION_DOWN = 0.8
 const MAX_ROTATION_SIDEWAYS = 0.5
 
 var is_active := false :

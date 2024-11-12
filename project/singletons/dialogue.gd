@@ -29,6 +29,8 @@ func _process(delta: float) -> void:
 		await display.say(Actor.PIRATE_LEFT, "I'm talking over here on the left.")
 		await display.say(Actor.PIRATE_RIGHT, "I talk over here on the right.")
 		await display.say(Actor.CAPTAIN, "And I talk in[set pause_time=0.2] the[set pause_time=0.2] middle.")
+	if Debug.is_just_pressed(&"test_4"):
+		display.push_options([OptionSet.new(Actor.PIRATE_LEFT, ["Were you expecting me?", "You don’t look... alive."])])
 
 
 func get_actor_name(actor : Actor) -> String:

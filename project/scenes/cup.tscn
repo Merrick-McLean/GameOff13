@@ -1,0 +1,15 @@
+[gd_scene load_steps=3 format=3 uid="uid://dnc48jro3asqu"]
+
+[ext_resource type="Script" path="res://scenes/cup.gd" id="1_2f5ew"]
+[ext_resource type="PackedScene" uid="uid://clhw53e4oh1ns" path="res://models/cup.glb" id="1_xwtfa"]
+
+[node name="Cup" type="Node3D"]
+script = ExtResource("1_2f5ew")
+
+[node name="Body" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.7, 0, 0, 0, 1, 0, 0, 0)
+
+[node name="Model" parent="Body" instance=ExtResource("1_xwtfa")]
+transform = Transform3D(1, 0, 0, 0, -1, 8.74228e-08, 0, -8.74228e-08, -1, 0, 0, 0)
+
+[node name="Dice" type="Node3D" parent="."]

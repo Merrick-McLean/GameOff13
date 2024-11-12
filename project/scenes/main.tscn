@@ -57,7 +57,7 @@ render_target_update_mode = 4
 visible = false
 
 [node name="CSGBox3D" type="CSGBox3D" parent="GameViewportContainer/SubViewport/Node3D"]
-transform = Transform3D(0.62267, -0.778886, 0.07495, -0.0510957, 0.0551073, 0.997171, -0.780813, -0.624739, -0.00548413, 0, 0, 0)
+transform = Transform3D(-0.365532, -0.693661, -0.62066, 0.553253, 0.374316, -0.744175, 0.748529, -0.615403, 0.246946, 0, 0, 0)
 script = ExtResource("4_d2njp")
 
 [node name="Camera3D" type="Camera3D" parent="GameViewportContainer/SubViewport/Node3D"]
