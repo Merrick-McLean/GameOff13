@@ -1,22 +1,36 @@
+@tool
+class_name Cup
 extends Node3D
 
 
-@export var player : LiarsDice.Player
-
-@onready var body := $Body
-
-var target_raised := false : 
+@export var player : LiarsDice.Player :
 	set(new_value):
-		target_raised = new_value
-		body.position.y = int(target_raised) * 0.2
+		player = new_value
+		if not is_node_ready(): await ready
+		if player != LiarsDice.Player.SELF:
+			zoom_in_region.collision_layer = 0
+		else:
+			zoom_in_region.collision_layer = 2
 
+@onready var body : Node3D = $Body
+@onready var zoom_in_region : Area3D = $ZoomInRegion
+@onready var rest_point : Node3D = $Points/RestPoint
+@onready var raise_point : Node3D = $Points/RaisePoint
+@onready var origin_point : Node3D = $Points/OriginPoint
+
+@export var amount_raised := 0.0 :
+	set(new_value):
+		amount_raised = clamp(new_value, 0.0, 1.0)
+		var to_rest := rest_point.global_position - origin_point.global_position
+		var to_raise := raise_point.global_position - origin_point.global_position
+		var quaternion_rest := Quaternion.from_euler(rest_point.global_rotation)
+		var quaternion_raise := Quaternion.from_euler(raise_point.global_rotation)
+		var from_origin := to_rest.slerp(to_raise, amount_raised)
+		body.global_position = origin_point.global_position + from_origin
+		body.global_rotation = quaternion_rest.slerp(quaternion_raise, amount_raised).get_euler()
+
+var target_raised := false
 
 
 func _process(delta: float) -> void:
-	if player == LiarsDice.Player.SELF:
-		var camera := get_viewport().get_camera_3d()
-		var center := get_viewport().get_visible_rect().get_center()
-		target_raised = center.distance_to(camera.unproject_position(global_position)) < 100 / sin(deg_to_rad(camera.fov))
-		camera.fov = lerp(camera.fov, 25.0 if target_raised else 55.0, 10.0 * delta)
-		#camera.fov = 30
-		print(center.distance_to(camera.unproject_position(global_position)))
+	amount_raised = lerp(amount_raised, float(target_raised), delta * 10)
