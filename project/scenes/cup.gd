@@ -8,9 +8,9 @@ extends Node3D
 		player = new_value
 		if not is_node_ready(): await ready
 		if player != LiarsDice.Player.SELF:
-			zoom_in_region.collision_layer = 0
+			zoom_in_region.collision_layer = CollisionLayer.NONE
 		else:
-			zoom_in_region.collision_layer = 2
+			zoom_in_region.collision_layer = CollisionLayer.ZOOM
 
 @onready var body : Node3D = $Body
 @onready var zoom_in_region : Area3D = $ZoomInRegion

@@ -57,7 +57,7 @@ render_target_update_mode = 4
 visible = false
 
 [node name="CSGBox3D" type="CSGBox3D" parent="GameViewportContainer/SubViewport/Node3D"]
-transform = Transform3D(0.662783, 0.402832, 0.631223, 0.393222, 0.530148, -0.75121, -0.637254, 0.746102, 0.192971, 0, 0, 0)
+transform = Transform3D(0.916247, -0.310432, 0.25322, 0.128839, 0.826845, 0.547472, -0.379327, -0.468995, 0.797591, 0, 0, 0)
 script = ExtResource("4_d2njp")
 
 [node name="Camera3D" type="Camera3D" parent="GameViewportContainer/SubViewport/Node3D"]
@@ -77,6 +77,7 @@ scale = Vector2(2, 2)
 transform = Transform2D(2, 0, 0, 2, 0, 0)
 
 [node name="SubViewportContainer" type="SubViewportContainer" parent="UI"]
+visible = false
 texture_filter = 1
 material = SubResource("ShaderMaterial_83yqs")
 anchors_preset = 15
@@ -84,6 +85,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+mouse_filter = 2
 stretch = true
 script = ExtResource("4_os500")
 
@@ -91,7 +93,9 @@ script = ExtResource("4_os500")
 transparent_bg = true
 handle_input_locally = false
 size = Vector2i(960, 540)
-render_target_update_mode = 4
+render_target_update_mode = 0
 
 [node name="DialogueDisplay" parent="UI/SubViewportContainer/SubViewport" node_paths=PackedStringArray("viewport") instance=ExtResource("6_0o7ya")]
+visible = false
+mouse_filter = 1
 viewport = NodePath("../../../../GameViewportContainer/SubViewport")
