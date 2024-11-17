@@ -3,7 +3,7 @@ extends Node3D
 
 
 # Used for checking if the mouse is inside the Area3D.
-var is_mouse_inside := true
+var is_mouse_inside := false
 # The last processed input touch/mouse event. To calculate relative movement.
 var last_mouse_position : Variant = null
 # The time of the last event in seconds since engine start.

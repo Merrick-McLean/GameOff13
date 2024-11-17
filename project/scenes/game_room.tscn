@@ -1,6 +1,7 @@
-[gd_scene load_steps=12 format=3 uid="uid://b16hssfbhsywa"]
+[gd_scene load_steps=13 format=3 uid="uid://b16hssfbhsywa"]
 
 [ext_resource type="PackedScene" uid="uid://co6ie20fg1lmn" path="res://scenes/player_camera.tscn" id="1_1eld7"]
+[ext_resource type="PackedScene" uid="uid://dgnuycsjsc12" path="res://scenes/cup_point.tscn" id="3_b0lh7"]
 [ext_resource type="PackedScene" uid="uid://c85itrrhsdk6l" path="res://scenes/dialogue_point.tscn" id="3_ig5u6"]
 [ext_resource type="PackedScene" uid="uid://dnc48jro3asqu" path="res://scenes/cup.tscn" id="4_2c5sg"]
 [ext_resource type="PackedScene" uid="uid://dvl383ispakmn" path="res://scenes/gui_panel/gui_panel_3d.tscn" id="5_bbb0q"]
@@ -85,20 +86,66 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0331475, 0.627823, -0.54416
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.05, 0.628, -0.214)
 actor = 2
 
-[node name="Cup" parent="." instance=ExtResource("4_2c5sg")]
+[node name="CupPlayerPoint" parent="." instance=ExtResource("3_b0lh7")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.188497, 0.733587, 0.697288)
 
-[node name="Cup2" parent="." instance=ExtResource("4_2c5sg")]
+[node name="CupPlayerPoint2" parent="." instance=ExtResource("3_b0lh7")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.01484, 0.719, -0.135417)
-player = 1
-
-[node name="Cup3" parent="." instance=ExtResource("4_2c5sg")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.834184, 0.719, -0.135417)
 player = 3
 
-[node name="Cup4" parent="." instance=ExtResource("4_2c5sg")]
+[node name="CupPlayerPoint3" parent="." instance=ExtResource("3_b0lh7")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.834184, 0.719, -0.135417)
+player = 1
+
+[node name="CupPlayerPoint4" parent="." instance=ExtResource("3_b0lh7")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0348978, 0.719, -0.314128)
 player = 2
+
+[node name="CupRevealPoint" parent="." instance=ExtResource("3_b0lh7")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.734, 0.285539)
+type = 1
+
+[node name="CupRevealPoint2" parent="." instance=ExtResource("3_b0lh7")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.108765, 0.719, 0.183764)
+player = 3
+type = 1
+
+[node name="CupRevealPoint3" parent="." instance=ExtResource("3_b0lh7")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.110329, 0.719, 0.181778)
+player = 1
+type = 1
+
+[node name="CupRevealPoint4" parent="." instance=ExtResource("3_b0lh7")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.719, 0.081)
+player = 2
+type = 1
+
+[node name="Cup" parent="." instance=ExtResource("4_2c5sg")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.734, 0.285539)
+amount_raised = 1.0
+target_raised = true
+target_state = 1
+
+[node name="Cup2" parent="." instance=ExtResource("4_2c5sg")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.110329, 0.719, 0.181778)
+player = 1
+amount_raised = 1.0
+target_raised = true
+target_state = 1
+
+[node name="Cup3" parent="." instance=ExtResource("4_2c5sg")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.108765, 0.719, 0.183764)
+player = 3
+amount_raised = 1.0
+target_raised = true
+target_state = 1
+
+[node name="Cup4" parent="." instance=ExtResource("4_2c5sg")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.719, 0.081)
+player = 2
+amount_raised = 1.0
+target_raised = true
+target_state = 1
 
 [node name="GUIPanel3D" parent="." instance=ExtResource("5_bbb0q")]
 transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0.0611959, 0.705481, 0.716212)
