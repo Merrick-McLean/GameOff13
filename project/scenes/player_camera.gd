@@ -31,7 +31,7 @@ var current_ui : GuiPanel :
 	set(new_value):
 		if current_ui == new_value: return
 		if current_ui:
-			current_ui.update_mouse_position(Vector3.INF)
+			current_ui.update_mouse_position(Vector3.ZERO, false)
 		current_ui = new_value
 
 var mouse_position := Vector2.ONE / 2 :

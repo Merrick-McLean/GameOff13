@@ -20,21 +20,26 @@ var mouse_position := Vector2.ZERO
 func _unhandled_input(event: InputEvent) -> void:
 	
 	# Check if the event is a non-mouse/non-touch event
-	for mouse_event: Variant in [InputEventMouseButton, InputEventScreenTouch]:
-		if is_instance_of(event, mouse_event):
-			# If the event is a mouse/touch event, then we can ignore it here, because it will be
-			# handled via Physics Picking.
-			handle_input_event(event)
-			break
+	if is_mouse_inside:
+		for mouse_event: Variant in [InputEventMouseButton, InputEventScreenTouch]:
+			if is_instance_of(event, mouse_event):
+				# If the event is a mouse/touch event, then we can ignore it here, because it will be
+				# handled via Physics Picking.
+				handle_input_event(event)
+				break
 	node_viewport.push_input(event)
 
 
 
 func _process(delta: float) -> void:
-	handle_input_event(InputEventMouseMotion.new())
+	if is_mouse_inside:
+		handle_input_event(InputEventMouseMotion.new())
 
 
-func update_mouse_position(event_position: Vector3) -> void:
+func update_mouse_position(event_position: Vector3, in_region := true) -> void:
+	is_mouse_inside = in_region
+	if not is_mouse_inside: return
+	
 	var quad_mesh_size : Vector2 = node_quad.mesh.size
 	event_position = node_quad.global_transform.affine_inverse() * event_position
 	var event_position_2d := Vector2(event_position.x, -event_position.y)
@@ -43,6 +48,8 @@ func update_mouse_position(event_position: Vector3) -> void:
 
 
 func handle_input_event(event: InputEvent) -> void:
+	assert(is_mouse_inside)
+	
 	event.position = mouse_position
 	if event is InputEventMouse:
 		event.global_position = mouse_position

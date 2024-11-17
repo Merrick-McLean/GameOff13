@@ -1,0 +1,11 @@
+[gd_scene load_steps=3 format=3 uid="uid://c30xeocvlomln"]
+
+[ext_resource type="PackedScene" uid="uid://xdcxk1fy1a4c" path="res://models/dice.glb" id="1_83iww"]
+[ext_resource type="Script" path="res://scenes/die.gd" id="1_bsxf0"]
+
+[node name="Die" type="Node3D"]
+transform = Transform3D(1, 0, 0, 0, 1, -1.74846e-07, 0, 1.74846e-07, 1, 0, 0, 0)
+script = ExtResource("1_bsxf0")
+
+[node name="Model" parent="." instance=ExtResource("1_83iww")]
+transform = Transform3D(0.15, 0, 0, 0, 1.78873e-09, 0.15, 0, -0.15, 1.78873e-09, 0, 0, 0)
