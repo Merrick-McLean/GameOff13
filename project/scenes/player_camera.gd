@@ -27,6 +27,13 @@ var current_cup : Cup :
 		current_cup = new_value
 		if current_cup:	current_cup.target_raised = true
 
+var current_ui : GuiPanel :
+	set(new_value):
+		if current_ui == new_value: return
+		if current_ui:
+			current_ui.update_mouse_position(Vector3.INF)
+		current_ui = new_value
+
 var mouse_position := Vector2.ONE / 2 :
 	set(new_value):
 		mouse_position = new_value
@@ -44,6 +51,7 @@ func _unhandled_input(event: InputEvent) -> void:
 func _process(delta: float) -> void:
 	var is_colliding := detector.is_colliding()
 	var new_cup : Cup = null
+	var new_ui : GuiPanel = null
 	if is_colliding:
 		var mask : int = detector.get_collider().collision_layer
 		if mask & CollisionLayer.ZOOM:
@@ -51,10 +59,13 @@ func _process(delta: float) -> void:
 			new_cup = collider.cup if collider else null
 		if mask & CollisionLayer.UI:
 			var collider := detector.get_collider()
-			collider.gui_panel.update_mouse_position(detector.get_collision_point())
+			new_ui = collider.gui_panel
+			new_ui.update_mouse_position(detector.get_collision_point())
 	
 	# update zoom
 	current_cup = new_cup
+	current_ui = new_ui
+	
 	fov = lerp(fov, ZOOMED_FOV if current_cup else NORMAL_FOV, 10.0 * delta)
 	
 	#rotation.y = lerp(MAX_ROTATION_SIDEWAYS, -MAX_ROTATION_SIDEWAYS, mouse_position.x)
