@@ -26,6 +26,7 @@ var zoom_in_region_enabled := false :
 var STATE_POINTS : Array
 
 @onready var body : Node3D = $Body
+@onready var materials : Array[StandardMaterial3D] = []
 @onready var zoom_in_region : Area3D = $ZoomInRegion
 @onready var rest_point : Node3D = $Points/RestPoint
 @onready var raise_point : Node3D = $Points/RaisePoint
@@ -50,6 +51,14 @@ var STATE_POINTS : Array
 		target_state = new_value
 		_update_zoom_in_region_enabled()
 
+@export var alpha := 1.0 :
+	set(new_value):
+		var old_alpha := alpha
+		alpha = clamp(new_value, 0.0, 1.0)
+		if old_alpha == alpha: return
+		for material: StandardMaterial3D in materials:
+			material.albedo_color.a = alpha
+
 func _ready() -> void:
 	assert(dice.get_child_count() == LiarsDice.PLAYER_DIE_COUNT)
 	
@@ -64,10 +73,25 @@ func _ready() -> void:
 	
 	set_dice([_r(), _r(), _r(), _r(), _r()])
 	_update_zoom_in_region_enabled()
+	
+	# enable transparency
+	for node: Node in body.find_children("*"):
+		if not node is MeshInstance3D: continue
+		var model := node as MeshInstance3D
+		model.mesh = model.mesh.duplicate(true)
+		for i: int in model.mesh.get_surface_count():
+			var material := model.mesh.surface_get_material(i)
+			material = material.duplicate()
+			model.mesh.surface_set_material(i, material)
+			if not material is StandardMaterial3D: continue
+			var standard_material := material as StandardMaterial3D
+			standard_material.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+			materials.append(standard_material)
 
 
 func _process(delta: float) -> void:
 	amount_raised = lerp(amount_raised, float(target_raised), delta * 10)
+	alpha = lerp(alpha, get_target_alpha(), delta*10)
 	global_position = global_position.lerp(STATE_POINTS[target_state].global_position, delta * 5)
 
 
@@ -86,6 +110,11 @@ func _r() -> int:
 func _update_zoom_in_region_enabled() -> void:
 	zoom_in_region_enabled = player == LiarsDice.Player.SELF and target_state == State.AT_PLAYER
 
+
+func get_target_alpha() -> float:
+	if target_state == State.AT_REVEAL and target_raised:
+		return 0.0
+	return 1.0
 
 #func spawn_dice(values: Array) -> void:
 	#for i in LiarsDice.PLAYER_DIE_COUNT:

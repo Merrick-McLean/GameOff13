@@ -9,7 +9,7 @@
 height = 0.14767
 radius = 0.104197
 
-[node name="Cup" type="Node3D"]
+[node name="Cup" type="Node3D" groups=["Cups"]]
 script = ExtResource("1_2f5ew")
 
 [node name="Body" type="Node3D" parent="."]
@@ -19,25 +19,27 @@ transform = Transform3D(0.591324, 0, 0.806432, 0, 0.7, 0, -0.806434, 0, 0.591322
 transform = Transform3D(1, 0, 0, 0, -1, 8.74228e-08, 0, -8.74228e-08, -1, 0, 0, 0)
 
 [node name="Dice" type="Node3D" parent="."]
-transform = Transform3D(0.47186, 0, -0.881674, 0, 1, 0, 0.881674, 0, 0.47186, 0, -0.0639447, 0)
+transform = Transform3D(0.208246, 0, -0.978077, 0, 1, 0, 0.978077, 0, 0.208246, 0, -0.0639447, 0)
 
 [node name="Die" parent="Dice" instance=ExtResource("3_qt4yw")]
 transform = Transform3D(0.872069, 8.55666e-08, 0.489382, 0, 1, -1.74846e-07, -0.489382, 1.52478e-07, 0.872069, 0, 0, 0.0428023)
-face = 3
+face = 4
 
 [node name="Die2" parent="Dice" instance=ExtResource("3_qt4yw")]
 transform = Transform3D(0.987669, -2.7373e-08, -0.156555, 0, 1, -1.74846e-07, 0.156555, 1.7269e-07, 0.987669, 0.0335828, 0, 0.016266)
-face = 2
+face = 3
 
 [node name="Die3" parent="Dice" instance=ExtResource("3_qt4yw")]
 transform = Transform3D(0.867766, -8.68939e-08, -0.496974, 0, 1, -1.74846e-07, 0.496974, 1.51725e-07, 0.867765, 0, 0, 0)
+face = 5
 
 [node name="Die4" parent="Dice" instance=ExtResource("3_qt4yw")]
 transform = Transform3D(-0.163754, -1.72486e-07, -0.986501, 0, 1, -1.74846e-07, 0.986501, -2.86318e-08, -0.163754, 0, 0, -0.0392922)
-face = 2
+face = 4
 
 [node name="Die5" parent="Dice" instance=ExtResource("3_qt4yw")]
 transform = Transform3D(0.999938, 1.94385e-09, 0.0111175, 0, 1, -1.74846e-07, -0.0111175, 1.74835e-07, 0.999938, -0.0405214, 0, 0)
+face = 4
 
 [node name="ZoomInRegion" type="Area3D" parent="." node_paths=PackedStringArray("cup")]
 collision_layer = 4
