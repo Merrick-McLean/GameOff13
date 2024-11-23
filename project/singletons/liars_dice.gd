@@ -15,7 +15,7 @@ enum Player {
 }
 
 var round : Round
-
+var physical : LiarsDicePhysical
 
 
 

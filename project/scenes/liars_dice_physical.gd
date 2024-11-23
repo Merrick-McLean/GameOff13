@@ -10,6 +10,7 @@ signal interact_pressed
 func _ready() -> void:
 	assert(player_camera, "Missing player camera!")
 	cups.sort_custom(func(a: Cup, b: Cup) -> bool: return a.player < b.player)
+	LiarsDice.physical = self
 
 
 func _process(delta: float) -> void:
