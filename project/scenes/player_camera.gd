@@ -22,7 +22,6 @@ var tween : Tween :
 var transition_percent := 0.0 :
 	set(new_value):
 		transition_percent = clamp(new_value, 0.0, 1.0)
-		print(transition_percent)
 		if transition_percent >= 1.0:
 			var old := old_state
 			old_state = state

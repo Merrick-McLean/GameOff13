@@ -74,6 +74,12 @@ class Round: # should I jsut merge round and bet? - Simpler to just have one big
 		absolute_target = determined_target.duplicate()
 		absolute_target.amount += global_die_table.undetermined_count
 		ideal_target = get_last_bet_with_probability(global_die_table, ideal_probability)
+		print("Ideal target: ", ideal_target.amount, " ", ideal_target.value, "s")
+		
+		for player: Player in turn_order:
+			print("Player roll ", player, ": ", player_rolls[player].get_dice_array())
+		
+		print("Global roll: ", global_die_table.get_dice_array())
 	
 	
 	func regenerate_global_die_table() -> void:
@@ -100,7 +106,7 @@ class Round: # should I jsut merge round and bet? - Simpler to just have one big
 		var loser := Player.NOONE
 		while true:
 			if is_npc(get_current_player()):
-				var bet := get_npc_bet(get_current_player(), current_bet, 4, 8) # TODO: get this range finding properly
+				var bet := get_npc_bet(get_current_player(), current_bet, 1, 8) # TODO: get this range finding properly
 				make_bet(bet)
 				await npc_say_bet(get_current_player(), bet)
 				var call := await prompt_player_call(get_current_player())
@@ -156,7 +162,7 @@ class Round: # should I jsut merge round and bet? - Simpler to just have one big
 		assert(bet.get_abs() > current_bet.get_abs())
 		current_bet = bet
 		highest_bid_table.set_face_count(current_bet.value, current_bet.amount) # update highest bid table
-		print("Bet made: ", current_bet.to_string())
+		#print("Bet made: ", current_bet.to_string())
 	
 	
 	# returns the player id of the given player_index
@@ -209,7 +215,7 @@ class Round: # should I jsut merge round and bet? - Simpler to just have one big
 		while get_bet_valid_probability(known_amount + extra_dice, known_amount, total_unknown) >= min_probability:
 			extra_dice += 1
 		
-		return Bet.new(last_face, known_amount + extra_dice - 1)
+		return Bet.new(known_amount + extra_dice - 1, last_face)
 	
 	
 	# logic for npc making a bet
@@ -315,12 +321,14 @@ class Round: # should I jsut merge round and bet? - Simpler to just have one big
 		
 		var known_dice := get_known_dice(npc)
 		var call_probability := 1.0 - get_bet_valid_probability(bet.amount, known_dice.get_face_count(bet.value), known_dice.undetermined_count)
+		
+		print("Raw call probability for npc ", npc, ": ", call_probability)
 		call_probability += recklessness
 		
 		call_probability = clamp(call_probability, 0.0, 1.0)
 		
 		const MAX_CUTOFF = 0.8
-		const MIN_CUTOFF = 0.4
+		const MIN_CUTOFF = 0.7
 		
 		# see https://www.desmos.com/calculator/fusev4nrki
 		return clamp(1.0 / (MAX_CUTOFF - MIN_CUTOFF) * (call_probability - MIN_CUTOFF), 0.0, 1.0)
@@ -338,6 +346,7 @@ class Round: # should I jsut merge round and bet? - Simpler to just have one big
 			# Favour that the NPC makes a call so we don't to force kill the player
 			var crew_mates := turn_order.filter(is_crewmate)
 			if crew_mates.size() > 0:
+				print("Crewmate save captain!")
 				return crew_mates.pick_random()
 			return Player.CAPTAIN
 		
@@ -547,13 +556,13 @@ class Round: # should I jsut merge round and bet? - Simpler to just have one big
 		# returns the faces that are used the most. result is ordered from smallest face to largest
 		func get_max_faces() -> Array[int]:
 			var result : Array[int] = []
-			var max_face := 0
-			for i: int in range(DIE_MAX):
+			var max_face := 1
+			for i: int in range(1, DIE_MAX + 1):
 				if get_face_count(max_face) < get_face_count(i):
 					result.clear()
 					max_face = i
 				if get_face_count(max_face) <= get_face_count(i):
-					result.append(i + 1)
+					result.append(i)
 			
 			return result
 		
