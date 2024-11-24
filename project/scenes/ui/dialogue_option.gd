@@ -34,9 +34,9 @@ func _process(delta: float) -> void:
 	is_hovered = rect.has_point(get_viewport_rect().get_center() / 2)
 	
 	if visible and is_hovered:
-		if time_to_accept == 0.0 and Input.is_action_just_pressed("interact"):
+		if time_to_accept == 0.0 and Input.is_action_just_pressed("interact") and GameMaster.player_in_world:
 			selected.emit()
-		elif get_hold_percentage() < 1.0 and Input.is_action_pressed("interact"):
+		elif get_hold_percentage() < 1.0 and Input.is_action_pressed("interact") and GameMaster.player_in_world:
 			hold_time += delta
 		else:
 			hold_time = 0.0

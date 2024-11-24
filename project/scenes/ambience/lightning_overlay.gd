@@ -1,14 +1,33 @@
 extends Control
 
+signal flashed
 
 @onready var animation_player := $AnimationPlayer
-@onready var flash := $Flash
+@onready var flash_white := $Flash
 
 func _ready() -> void:
-	flash.visible = false
+	flash_white.visible = false
 
 
 func _process(delta: float) -> void:
 	if Debug.is_just_pressed("test_6"):
-		animation_player.stop()
-		animation_player.play(["lightning_0", "lightning_1", "lightning_2", "lightning_3"].pick_random())
+		flash()
+
+
+func flash() -> void:
+	animation_player.stop()
+	animation_player.play(["lightning_0", "lightning_1", "lightning_2", "lightning_3"].pick_random())
+
+func _on_flash_visibility_changed() -> void:
+	if not is_node_ready(): await ready
+	if flash_white.visible:
+		flashed.emit()
+
+
+func _on_gun_shot_overlay_transition_requested() -> void:
+	flash()
+
+
+func kill() -> void:
+	animation_player.stop()
+	animation_player.play("RESET")

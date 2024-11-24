@@ -2,6 +2,7 @@ class_name LiarsDicePhysical
 extends Node
 
 signal interact_pressed
+signal player_shot
 
 @export var player_camera : PlayerCamera
 @export var gui_panel : GuiPanel
@@ -28,7 +29,7 @@ func _process(delta: float) -> void:
 
 
 func _input(event: InputEvent):
-	if event.is_action_pressed(&"interact"):
+	if event.is_action_pressed(&"interact") and GameMaster.player_in_world:
 		interact_pressed.emit()
 
 
@@ -70,10 +71,13 @@ func reveal_dice() -> void:
 
 func update_alive_players() -> void:
 	for player: LiarsDice.Player in LiarsDice.Player.COUNT:
-		if player == LiarsDice.Player.SELF: continue
-		if player in LiarsDice.alive_players:
-			player_models[player].alive = true
-			cups[player].visible = true
+		if player == LiarsDice.Player.SELF:
+			if not player in LiarsDice.alive_players:
+				player_shot.emit()
 		else:
-			player_models[player].alive = false
-			cups[player].visible = false
+			if player in LiarsDice.alive_players:
+				player_models[player].alive = true
+				cups[player].visible = true
+			else:
+				player_models[player].alive = false
+				cups[player].visible = false

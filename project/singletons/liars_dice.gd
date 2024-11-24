@@ -414,7 +414,7 @@ class Round: # should I jsut merge round and bet? - Simpler to just have one big
 		else:
 			await Dialogue.play(DialogueInstance.Id.CAPTAIN_SHOOTS).finished
 		
-		LiarsDice.physical.update_alive_players()
+		await LiarsDice.physical.update_alive_players()
 		
 		pass
 	

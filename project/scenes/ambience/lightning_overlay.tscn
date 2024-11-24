@@ -213,17 +213,23 @@ grow_vertical = 2
 
 [node name="1" type="AudioStreamPlayer" parent="LightningSounds"]
 stream = ExtResource("2_0uqiw")
+bus = &"SFX"
 
 [node name="2" type="AudioStreamPlayer" parent="LightningSounds"]
 stream = ExtResource("1_k1aro")
+bus = &"SFX"
 
 [node name="3" type="AudioStreamPlayer" parent="LightningSounds"]
 stream = ExtResource("4_fh135")
+bus = &"SFX"
 
 [node name="4" type="AudioStreamPlayer" parent="LightningSounds"]
 stream = ExtResource("5_3qeic")
+bus = &"SFX"
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 libraries = {
 "": SubResource("AnimationLibrary_lniwu")
 }
+
+[connection signal="visibility_changed" from="Flash" to="." method="_on_flash_visibility_changed"]

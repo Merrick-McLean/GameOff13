@@ -147,14 +147,14 @@ func get_visible_character_count() -> int:
 func _process(delta: float) -> void:
 	if line:
 		if not at_end_of_line():
-			if can_skip and Input.is_action_just_pressed(&"interact"):
+			if can_skip and Input.is_action_just_pressed(&"interact") and GameMaster.player_in_world:
 				skip_to_end()
 			elif pause_time <= 0.0:
 				talk(delta)
 			else:
 				pause_time = max(pause_time - delta, 0.0)
 		else:
-			if Input.is_action_just_pressed(&"interact"):
+			if Input.is_action_just_pressed(&"interact") and GameMaster.player_in_world:
 				line_continued.emit()
 		
 		 

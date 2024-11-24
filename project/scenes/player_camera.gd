@@ -74,7 +74,7 @@ func _ready() -> void:
 
 
 func _unhandled_input(event: InputEvent) -> void:
-	if event is InputEventMouseMotion:
+	if event is InputEventMouseMotion and GameMaster.player_in_world:
 		mouse_position += event.relative * SENSITIVITY
 
 func _process(delta: float) -> void:
