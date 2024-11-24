@@ -53,7 +53,7 @@ func _process(delta: float) -> void:
 			label.visible_ratio = 1.0
 	
 	if animation_player.current_animation == "fade":
-		ringing_loudness -= delta * 0.33
+		ringing_loudness -= delta * 0.2
 
 
 func _on_lightning_overlay_flashed() -> void:
