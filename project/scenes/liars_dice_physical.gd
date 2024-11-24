@@ -6,13 +6,17 @@ signal interact_pressed
 @export var player_camera : PlayerCamera
 @export var gui_panel : GuiPanel
 @onready var cups := get_tree().get_nodes_in_group(&"Cups")
+@onready var player_models := get_tree().get_nodes_in_group(&"PlayerModels")
 @onready var better : Better = gui_panel.better
 
 func _ready() -> void:
 	assert(player_camera, "Missing player camera!")
 	assert(better, "Missing better!")
 	cups.sort_custom(func(a: Cup, b: Cup) -> bool: return a.player < b.player)
+	player_models.sort_custom(func(a: PlayerModel, b: PlayerModel) -> bool: return a.player < b.player)
+	player_models.insert(0, null)
 	LiarsDice.physical = self
+	update_alive_players()
 	better.hide()
 
 
@@ -62,3 +66,14 @@ func reveal_dice() -> void:
 	player_camera.transition_state(PlayerCamera.State.IN_GAME)
 	
 	await player_camera.state_transition_completed
+
+
+func update_alive_players() -> void:
+	for player: LiarsDice.Player in LiarsDice.Player.COUNT:
+		if player == LiarsDice.Player.SELF: continue
+		if player in LiarsDice.alive_players:
+			player_models[player].alive = true
+			cups[player].visible = true
+		else:
+			player_models[player].alive = false
+			cups[player].visible = false

@@ -4,6 +4,7 @@
 [ext_resource type="PackedScene" uid="uid://dp3dcgh3rplsu" path="res://scenes/camera_point.tscn" id="2_hvt05"]
 [ext_resource type="PackedScene" uid="uid://dgnuycsjsc12" path="res://scenes/cup_point.tscn" id="3_b0lh7"]
 [ext_resource type="PackedScene" uid="uid://c85itrrhsdk6l" path="res://scenes/dialogue_point.tscn" id="3_ig5u6"]
+[ext_resource type="PackedScene" uid="uid://dwmxnlp6u7b1h" path="res://scenes/player_model.tscn" id="3_t73bs"]
 [ext_resource type="PackedScene" uid="uid://dnc48jro3asqu" path="res://scenes/cup.tscn" id="4_2c5sg"]
 [ext_resource type="PackedScene" uid="uid://dvl383ispakmn" path="res://scenes/gui_panel/gui_panel_3d.tscn" id="5_bbb0q"]
 [ext_resource type="Script" path="res://scenes/liars_dice_physical.gd" id="7_324yd"]
@@ -31,8 +32,6 @@ albedo_color = Color(0.513726, 1, 1, 1)
 top_radius = 0.7
 bottom_radius = 0.7
 height = 1.0
-
-[sub_resource type="CapsuleMesh" id="CapsuleMesh_xrd7f"]
 
 [node name="GameRoom" type="Node3D"]
 
@@ -72,17 +71,17 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.57503, 0, 0.013)
 mesh = SubResource("CylinderMesh_8qvhb")
 skeleton = NodePath("../..")
 
-[node name="CSGMesh3D" type="CSGMesh3D" parent="."]
+[node name="PlayerModel" parent="." instance=ExtResource("3_t73bs")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.538026, -1.2693)
-mesh = SubResource("CapsuleMesh_xrd7f")
+player = 2
 
-[node name="CSGMesh3D2" type="CSGMesh3D" parent="."]
+[node name="PlayerModel2" parent="." instance=ExtResource("3_t73bs")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.57225, 0.420823, -0.701345)
-mesh = SubResource("CapsuleMesh_xrd7f")
+player = 3
 
-[node name="CSGMesh3D3" type="CSGMesh3D" parent="."]
+[node name="PlayerModel3" parent="." instance=ExtResource("3_t73bs")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.65933, 0.420823, -0.656537)
-mesh = SubResource("CapsuleMesh_xrd7f")
+player = 1
 
 [node name="DialoguePoint" parent="." instance=ExtResource("3_ig5u6")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.05046, 0.627823, -0.213782)

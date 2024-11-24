@@ -101,10 +101,6 @@ func set_dice(faces: Array[int], y_rotation := randf() * TAU) -> void:
 		var die : Die = dice.get_child(i)
 		die.face = faces[i]
 
-# TEMPORARY FUNCTION, REAL ROLLING WILL BE DONE IN LAIRS DICE
-func _r() -> int:
-	return randf_range(1, LiarsDice.DIE_MAX)
-
 
 func _update_zoom_in_region_enabled() -> void:
 	zoom_in_region_enabled = player == LiarsDice.Player.SELF and target_state == State.AT_PLAYER

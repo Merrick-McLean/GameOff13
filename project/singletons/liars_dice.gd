@@ -16,20 +16,30 @@ enum Player {
 
 var round : Round
 var physical : LiarsDicePhysical
+var alive_players : Array[Player]
 
 
 func _ready() -> void:
 	randomize()
+	reset()
+
+func reset() -> void:
+	round = null
+	alive_players = [Player.SELF, Player.PIRATE_RIGHT, Player.CAPTAIN, Player.PIRATE_LEFT]
+	if physical: physical.update_alive_players()
+
 
 func _process(delta: float) -> void:
-	if Debug.is_just_pressed("test_7"):
-		var round := Round.new([Player.SELF, Player.PIRATE_RIGHT, Player.CAPTAIN, Player.PIRATE_LEFT], {
-			Player.SELF: 5,
-			Player.PIRATE_RIGHT: 4,
-			Player.CAPTAIN: 4,
-			Player.PIRATE_LEFT: 4
-		})
-		await round.start()
+	if Debug.is_just_pressed("test_7") and round == null:
+		while Player.SELF in alive_players:
+			var round := Round.new(alive_players, {
+				Player.SELF: 5,
+				Player.PIRATE_RIGHT: 4,
+				Player.CAPTAIN: 4,
+				Player.PIRATE_LEFT: 4
+			})
+			await round.start()
+		reset()
 
 
 
@@ -128,7 +138,6 @@ class Round: # should I jsut merge round and bet? - Simpler to just have one big
 			await pass_turn()
 		
 		await kill_player(loser)
-		
 	
 	
 	func roll(total_die_count: int, determined_dice_count := total_die_count) -> DieTable:
@@ -229,15 +238,19 @@ class Round: # should I jsut merge round and bet? - Simpler to just have one big
 		
 		
 		
+		
+		if npc == Player.CAPTAIN:
+			max_distance = max(max_distance, DIE_MAX)
 		# adjust max distance to try to stay within current range
-		if last_bet.distance_to(absolute_target) > max_distance:
-			max_distance = last_bet.distance_to(absolute_target) - 1
-		elif last_bet.distance_to(ideal_target) > max_distance:
-			max_distance = last_bet.distance_to(ideal_target) - 1
-		elif last_bet.distance_to(determined_target) > max_distance:
-			pass # it's okay to go into ideal range
 		else:
-			pass
+			if last_bet.distance_to(absolute_target) > max_distance:
+				max_distance = last_bet.distance_to(absolute_target) - 1
+			elif last_bet.distance_to(ideal_target) > max_distance:
+				max_distance = last_bet.distance_to(ideal_target) - 1
+			elif last_bet.distance_to(determined_target) > max_distance:
+				pass # it's okay to go into ideal range
+			else:
+				pass
 		min_distance = min(min_distance, max_distance)
 		assert(min_distance >= 1)
 		
@@ -338,9 +351,13 @@ class Round: # should I jsut merge round and bet? - Simpler to just have one big
 	func get_caller(player_bet: Bet) -> Player:
 		assert(get_current_player() == Player.SELF)
 		
+		# never call a 1 bet
+		if player_bet.amount == 1:
+			return Player.NOONE
+		
 		# FORCE CALL IF CAPTAIN CAN'T MAKE REASONABLE BET
 		var distance_to_captain := get_player_distance(Player.SELF, Player.CAPTAIN)
-		var bet_distance := player_bet.distance_to(ideal_target)
+		var bet_distance := player_bet.distance_to(absolute_target)
 		
 		if distance_to_captain > bet_distance:
 			# Favour that the NPC makes a call so we don't to force kill the player
@@ -368,22 +385,37 @@ class Round: # should I jsut merge round and bet? - Simpler to just have one big
 	
 	
 	func npc_say_bet(last_better: Player, last_bet: Bet) -> void:
-		await Dialogue.play(DialogueInstance.Id.PIRATE_BET_1, {&"actor": Dialogue.get_actor(last_better), &"bet": last_bet}).finished
+		Dialogue.play(DialogueInstance.Id.PIRATE_BET_1, {&"actor": Dialogue.get_actor(last_better), &"bet": last_bet}).finished
 	
 	
 	func npc_say_call(caller: Player, last_bet: Bet) -> void:
 		await Dialogue.play(DialogueInstance.Id.PIRATE_CALL_1, {&"actor": Dialogue.get_actor(caller), &"bet": last_bet}).finished
 	
 	
-	func npc_react_result(caller: Player, loser: Player) -> void:
-		if caller == loser:
-			await Dialogue.play(DialogueInstance.Id.PIRATE_LOSE_1, {&"actor": Dialogue.get_actor(caller)}).finished
+	func npc_react_result(caller: Player, callee: Player, loser: Player) -> void:
+		if is_npc(caller):
+			if caller == loser:
+				await Dialogue.play(DialogueInstance.Id.PIRATE_LOSE_1, {&"actor": Dialogue.get_actor(caller)}).finished
+			else:
+				await Dialogue.play(DialogueInstance.Id.PIRATE_WIN_1, {&"actor": Dialogue.get_actor(caller)}).finished
 		else:
-			await Dialogue.play(DialogueInstance.Id.PIRATE_WIN_1, {&"actor": Dialogue.get_actor(caller)}).finished
+			if callee == loser:
+				await Dialogue.play(DialogueInstance.Id.PIRATE_LOSE_1, {&"actor": Dialogue.get_actor(callee)}).finished
+			else:
+				await Dialogue.play(DialogueInstance.Id.PIRATE_WIN_1, {&"actor": Dialogue.get_actor(callee)}).finished
+			
 	
 	
 	func kill_player(player: Player) -> void:
 		assert(player != Player.CAPTAIN)
+		LiarsDice.alive_players.erase(player)
+		if is_npc(player):
+			await Dialogue.play(DialogueInstance.Id.PIRATE_DEATH_1, {&"actor": Dialogue.get_actor(player)}).finished
+		else:
+			await Dialogue.play(DialogueInstance.Id.CAPTAIN_SHOOTS).finished
+		
+		LiarsDice.physical.update_alive_players()
+		
 		pass
 	
 	
@@ -391,7 +423,12 @@ class Round: # should I jsut merge round and bet? - Simpler to just have one big
 	# TODO: Implement
 	func prompt_player_call(last_better: Player) -> bool:
 		assert(last_better != Player.SELF)
-		return false
+		
+		dialogue_instance = Dialogue.play(DialogueInstance.Id.QUERY_LIAR, {&"actor": Dialogue.get_actor(last_better)})
+		var result : Dictionary = await dialogue_instance.finished
+		
+		
+		return result.called
 	
 	
 	# Prompts dialogue options to show up
@@ -431,8 +468,8 @@ class Round: # should I jsut merge round and bet? - Simpler to just have one big
 		
 		# REVEAL AND REACT
 		await LiarsDice.physical.reveal_dice()
-		await npc_react_result(caller, loser)
-		return caller
+		await npc_react_result(caller, callee, loser)
+		return loser
 	
 	
 	func is_npc(player: Player) -> bool:
@@ -471,7 +508,8 @@ class Round: # should I jsut merge round and bet? - Simpler to just have one big
 			var extra_needed_to_win := bet.amount - current_count_of_die
 			var misses_need_to_lose := global_die_table.undetermined_count - extra_needed_to_win + 1
 			assert(misses_need_to_lose >= 0)
-			var miss_faces := range(1, DIE_MAX + 1).filter(func(f: int): f != bet.value)
+			var miss_faces := range(1, DIE_MAX + 1)
+			miss_faces.erase(bet.value)
 			
 			for i: int in misses_need_to_lose:
 				var die_table : DieTable = die_tables_with_undetermined_dice.pick_random()
@@ -528,7 +566,7 @@ class Round: # should I jsut merge round and bet? - Simpler to just have one big
 		func _init(p_face_counts: Array, p_undetermined_count: int) -> void:
 			assert(face_counts.size() == DIE_MAX)
 			face_counts = p_face_counts
-			p_undetermined_count = p_undetermined_count
+			undetermined_count = p_undetermined_count
 		
 		
 		static func create_empty() -> DieTable:
@@ -552,6 +590,9 @@ class Round: # should I jsut merge round and bet? - Simpler to just have one big
 			
 			undetermined_count -= other.undetermined_count
 		
+		
+		func increment_face(face: int, amount: int) -> void:
+			face_counts[face - 1] += amount
 		
 		# returns the faces that are used the most. result is ordered from smallest face to largest
 		func get_max_faces() -> Array[int]:
