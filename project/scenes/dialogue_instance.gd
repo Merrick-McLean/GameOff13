@@ -7,14 +7,19 @@ enum Id {
 	TEST_1,
 	TEST_2,
 	ROUND_START_1,
+	PIRATE_BET_1,
+	PIRATE_CALL_1,
+	PIRATE_LOSE_1,
+	PIRATE_WIN_1
 }
 
 var display : DialogueDisplay
 var id : Id
+var args : Dictionary
 var is_playing := false
 
 var dialogues : Dictionary = {
-	Id.TEST_1: func() -> int:
+	Id.TEST_1: func(args: Dictionary) -> int:
 		display.clear_options()
 		await display.say(Dialogue.Actor.PIRATE_LEFT, "I can talk normally,[set speed=5] I can talk slow,[set speed=200] and I can talk fast")
 		await display.say(Dialogue.Actor.PIRATE_LEFT, "I can also pause,[set pause_time=0.9] dramatically[set pause_time=2][set speed=5]...")
@@ -25,30 +30,65 @@ var dialogues : Dictionary = {
 			1: await display.say(Dialogue.Actor.PIRATE_LEFT, "Fuck you.")
 		return 0,
 	
-	Id.TEST_2: func() -> int:
-		display.push_options([])
+	Id.TEST_2: func(args: Dictionary) -> int:
+		display.clear_options()
 		await display.say(Dialogue.Actor.PIRATE_LEFT, "I'm talking over here on the left.")
 		await display.say(Dialogue.Actor.PIRATE_RIGHT, "I talk over here on the right.")
 		await display.say(Dialogue.Actor.CAPTAIN, "And I talk in[set pause_time=0.2] the[set pause_time=0.2] middle.")
 		return 0,
 	
-	Id.ROUND_START_1: func() -> int:
-		display.push_options([])
+	Id.ROUND_START_1: func(args: Dictionary) -> int:
+		display.clear_options()
 		await display.say(Dialogue.Actor.CAPTAIN, "Alright lad, now make your bet.")
+		display.clear_speach()
+		return 0,
+	
+	Id.PIRATE_BET_1: func(args: Dictionary) -> int:
+		var actor : Dialogue.Actor = args.actor
+		var bet : LiarsDice.Round.Bet = args.bet
+		
+		display.clear_options()
+		await display.say(actor, "I bet " + str(bet.amount) + " " + Dialogue.get_die_face_string(bet.value, bet.amount != 1))
+		display.clear_speach()
+		return 0,
+	
+	Id.PIRATE_CALL_1: func(args: Dictionary) -> int:
+		var actor : Dialogue.Actor = args.actor
+		var bet : LiarsDice.Round.Bet = args.bet
+		
+		display.clear_options()
+		await display.say(actor, str(bet.amount) + " " + Dialogue.get_die_face_string(bet.value, bet.amount != 1) + "? You're a liar!")
+		display.clear_speach()
+		return 0,
+	
+	Id.PIRATE_LOSE_1: func(args: Dictionary) -> int:
+		var actor : Dialogue.Actor = args.actor
+		
+		display.clear_options()
+		await display.say(actor, "Well played lad.")
+		display.clear_speach()
+		return 0,
+	
+	Id.PIRATE_WIN_1: func(args: Dictionary) -> int:
+		var actor : Dialogue.Actor = args.actor
+		
+		display.clear_options()
+		await display.say(actor, "I knew it. Goodbye lad.")
 		display.clear_speach()
 		return 0,
 }
 
 
-func _init(p_id: Id, p_display: DialogueDisplay) -> void:
+func _init(p_id: Id, p_display: DialogueDisplay, p_args := {}) -> void:
 	display = p_display
 	id = p_id
+	args = p_args
 
 
 func play() -> void:
 	assert(not is_playing)
 	is_playing = true
-	var result : int = await dialogues[id].call()
+	var result : int = await dialogues[id].call(args)
 	finished.emit(result)
 	free()
 
