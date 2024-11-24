@@ -1,14 +1,14 @@
 class_name DialogueDisplay
 extends Control
 
-signal option_chosen(result: Dialogue.OptionResult)
+signal option_chosen(result: DialogueInstance.OptionResult)
 
 const DialogueOptionsUIScene = preload("res://scenes/ui/dialogue_options.tscn")
 
 @export var viewport : Viewport
 
 var dialogue_options_uis := []
-var last_result : Dialogue.OptionResult
+var last_result : DialogueInstance.OptionResult
 
 @onready var subtitles : Subtitles = $Subtitles
 
@@ -22,7 +22,7 @@ func _ready() -> void:
 		dialogue_options_uis.append(dialogue_options_ui)
 		var error := dialogue_options_ui.option_chosen.connect(
 			func(index: int) -> void: 
-				last_result = Dialogue.OptionResult.new(actor, index)
+				last_result = DialogueInstance.OptionResult.new(actor, index)
 				option_chosen.emit(last_result)
 		)
 		assert(not error)
@@ -67,9 +67,9 @@ func say(new_speaker: Dialogue.Actor, unparsed_line: String, wait_for_continue :
 	else:
 		await subtitles.line_finished
 
-func push_options(option_sets: Array[Dialogue.OptionSet]) -> Dialogue.OptionResult:
+func push_options(option_sets: Array[DialogueInstance.OptionSet]) -> DialogueInstance.OptionResult:
 	var seen_actors := ArrayUtils.filled(Dialogue.Actor.COUNT, false)
-	for option_set: Dialogue.OptionSet in option_sets:
+	for option_set: DialogueInstance.OptionSet in option_sets:
 		var actor := option_set.actor
 		assert(not seen_actors[option_set.actor], "Submitted 2 DialogueOptionSets with the same actor!")
 		dialogue_options_uis[actor].load_options(option_set.options)
@@ -85,3 +85,11 @@ func push_options(option_sets: Array[Dialogue.OptionSet]) -> Dialogue.OptionResu
 		dialogue_options_ui.load_options([])
 	
 	return last_result
+
+
+func clear_options() -> void:
+	var unused := await push_options([])
+
+
+func clear_speach() -> void:
+	subtitles.clear_line()

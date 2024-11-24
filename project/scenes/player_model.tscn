@@ -1,0 +1,11 @@
+[gd_scene load_steps=3 format=3 uid="uid://dwmxnlp6u7b1h"]
+
+[ext_resource type="Script" path="res://scenes/player_model.gd" id="1_ed6li"]
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_4s0jj"]
+
+[node name="PlayerModel" type="Node3D" groups=["PlayerModels"]]
+script = ExtResource("1_ed6li")
+
+[node name="CSGMesh3D" type="CSGMesh3D" parent="."]
+mesh = SubResource("CapsuleMesh_4s0jj")

@@ -12,23 +12,20 @@ enum Actor {
 	COUNT,
 }
 
+
 func _process(delta: float) -> void:
-	if Debug.is_just_pressed(&"test_1"):
-		var result := await display.push_options([OptionSet.new(Actor.PIRATE_LEFT, ["Option 1", "Option 2", "Option 3"])])
-	if Debug.is_just_pressed(&"test_2"):
-		display.push_options([])
-		await display.say(Actor.PIRATE_LEFT, "I can talk normally,[set speed=5] I can talk slow,[set speed=200] and I can talk fast")
-		await display.say(Actor.PIRATE_LEFT, "I can also pause,[set pause_time=0.9] dramatically[set pause_time=2][set speed=5]...")
-		await display.say(Actor.PIRATE_LEFT, "Anyway what do you think lad? Is that cool or what?", false)
-		var result := await display.push_options([OptionSet.new(Actor.PIRATE_LEFT, ["Yes. Super Cool", "No..."])])
-		match result.index:
-			0: await display.say(Actor.PIRATE_LEFT, "That's the [wave amp=20.0 freq=5.0 connected=1]spirit[/wave]")
-			1: await display.say(Actor.PIRATE_LEFT, "Fuck you.")
-	if Debug.is_just_pressed(&"test_3"):
-		display.push_options([])
-		await display.say(Actor.PIRATE_LEFT, "I'm talking over here on the left.")
-		await display.say(Actor.PIRATE_RIGHT, "I talk over here on the right.")
-		await display.say(Actor.CAPTAIN, "And I talk in[set pause_time=0.2] the[set pause_time=0.2] middle.")
+	if Debug.is_just_pressed(&"test_0"):
+		var instance : DialogueInstance
+		instance = play(DialogueInstance.Id.TEST_1)
+		await instance.finished
+		instance = play(DialogueInstance.Id.TEST_2)
+		await instance.finished
+
+
+func play(dialogue_id: DialogueInstance.Id, args := {}) -> DialogueInstance:
+	var instance := DialogueInstance.new(dialogue_id, display, args)
+	instance.play()
+	return instance
 
 
 func get_actor_name(actor : Actor) -> String:
@@ -40,23 +37,22 @@ func get_actor_name(actor : Actor) -> String:
 	][actor]
 
 
-func dialogue() -> void:
-	assert(display)
-	await display.say(Actor.PIRATE_LEFT, "Hello there sir, how are you?")
+func get_die_face_string(face: int, plural := false) -> String:
+	assert(face >= 1 and face <= 6)
+	match face:
+		1:	return "ones" if plural else "one"
+		2:	return "twos" if plural else "two"
+		3:	return "threes" if plural else "three"
+		4:	return "fours" if plural else "four"
+		5:	return "fives" if plural else "five"
+		6:	return "sixes" if plural else "six"
+	return ""
 
-class OptionSet:
-	var actor : Actor
-	var options : Array
-	
-	func _init(p_actor: Actor, p_options: Array) -> void:
-		actor = p_actor
-		assert(options.size() <= MAX_OPTIONS)
-		options = p_options
 
-class OptionResult:
-	var actor : Actor
-	var index : int
-	
-	func _init(p_actor: Actor, p_index: int) -> void:
-		actor = p_actor
-		index = p_index
+func get_actor(player: LiarsDice.Player) -> Actor:
+	match player:
+		LiarsDice.Player.CAPTAIN: return Actor.CAPTAIN
+		LiarsDice.Player.PIRATE_RIGHT: return Actor.PIRATE_RIGHT
+		LiarsDice.Player.PIRATE_LEFT: return Actor.PIRATE_LEFT
+	assert(false)
+	return Actor.CAPTAIN

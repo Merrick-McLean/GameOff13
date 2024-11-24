@@ -57,6 +57,7 @@ func _ready() -> void:
 
 
 func init_new_line(new_speaker: Dialogue.Actor, unparsed_line: String) -> void:
+	show()
 	current_speaker = new_speaker
 	speed = DEFAULT_SPEED
 	char_index = -1.0
@@ -181,6 +182,9 @@ func _update_position() -> void:
 	position.x = clamp(target_x - label.size.x / 2, SIDE_BUFFER, size.x - label.size.x - SIDE_BUFFER)
 	#position.x = target_x - label.size.x / 2
 
+
+func clear_line() -> void:
+	hide()
 
 
 class ParsedLine:

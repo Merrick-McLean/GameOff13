@@ -1,8 +1,13 @@
-[gd_scene load_steps=11 format=3 uid="uid://b16hssfbhsywa"]
+[gd_scene load_steps=15 format=3 uid="uid://b16hssfbhsywa"]
 
 [ext_resource type="PackedScene" uid="uid://co6ie20fg1lmn" path="res://scenes/player_camera.tscn" id="1_1eld7"]
-[ext_resource type="PackedScene" uid="uid://xdcxk1fy1a4c" path="res://models/dice.glb" id="2_0bn8d"]
+[ext_resource type="PackedScene" uid="uid://dp3dcgh3rplsu" path="res://scenes/camera_point.tscn" id="2_hvt05"]
+[ext_resource type="PackedScene" uid="uid://dgnuycsjsc12" path="res://scenes/cup_point.tscn" id="3_b0lh7"]
 [ext_resource type="PackedScene" uid="uid://c85itrrhsdk6l" path="res://scenes/dialogue_point.tscn" id="3_ig5u6"]
+[ext_resource type="PackedScene" uid="uid://dwmxnlp6u7b1h" path="res://scenes/player_model.tscn" id="3_t73bs"]
+[ext_resource type="PackedScene" uid="uid://dnc48jro3asqu" path="res://scenes/cup.tscn" id="4_2c5sg"]
+[ext_resource type="PackedScene" uid="uid://dvl383ispakmn" path="res://scenes/gui_panel/gui_panel_3d.tscn" id="5_bbb0q"]
+[ext_resource type="Script" path="res://scenes/liars_dice_physical.gd" id="7_324yd"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_pqux5"]
 sky_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
@@ -28,8 +33,6 @@ top_radius = 0.7
 bottom_radius = 0.7
 height = 1.0
 
-[sub_resource type="CapsuleMesh" id="CapsuleMesh_xrd7f"]
-
 [node name="GameRoom" type="Node3D"]
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
@@ -40,8 +43,15 @@ shadow_enabled = true
 environment = SubResource("Environment_bj380")
 
 [node name="PlayerCamera" parent="." instance=ExtResource("1_1eld7")]
-transform = Transform3D(1, 0, 0, 0, 0.97183, 0.235685, 0, -0.235685, 0.97183, 0, 1.1, 1.11775)
+transform = Transform3D(1, 0, 0, 0, 0.772157, 0.635432, 0, -0.635432, 0.772157, 0, 1.20637, 0.648128)
 fov = 65.0
+
+[node name="MainCameraPoint" parent="." instance=ExtResource("2_hvt05")]
+transform = Transform3D(1, 0, 0, 0, 0.97183, 0.235685, 0, -0.235685, 0.97183, 0, 1.1, 1.11775)
+
+[node name="RevealCameraPoint" parent="." instance=ExtResource("2_hvt05")]
+transform = Transform3D(1, 0, 0, 0, 0.888905, 0.458091, 0, -0.458091, 0.888905, 0, 1.20637, 0.648128)
+type = 1
 
 [node name="GroundMesh" type="CSGMesh3D" parent="."]
 mesh = SubResource("PlaneMesh_hlxrk")
@@ -61,32 +71,17 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.57503, 0, 0.013)
 mesh = SubResource("CylinderMesh_8qvhb")
 skeleton = NodePath("../..")
 
-[node name="CSGMesh3D" type="CSGMesh3D" parent="."]
+[node name="PlayerModel" parent="." instance=ExtResource("3_t73bs")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.538026, -1.2693)
-mesh = SubResource("CapsuleMesh_xrd7f")
+player = 2
 
-[node name="CSGMesh3D2" type="CSGMesh3D" parent="."]
+[node name="PlayerModel2" parent="." instance=ExtResource("3_t73bs")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.57225, 0.420823, -0.701345)
-mesh = SubResource("CapsuleMesh_xrd7f")
+player = 3
 
-[node name="CSGMesh3D3" type="CSGMesh3D" parent="."]
+[node name="PlayerModel3" parent="." instance=ExtResource("3_t73bs")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.65933, 0.420823, -0.656537)
-mesh = SubResource("CapsuleMesh_xrd7f")
-
-[node name="Sketchfab_Scene" parent="." instance=ExtResource("2_0bn8d")]
-transform = Transform3D(0.15, 0, 0, 0, -6.55671e-09, -0.15, 0, 0.15, -6.55671e-09, 0.010868, 0.662155, 0.671695)
-
-[node name="Sketchfab_Scene4" parent="." instance=ExtResource("2_0bn8d")]
-transform = Transform3D(0.130109, -0.0746438, 3.26278e-09, 0, -6.55671e-09, -0.15, 0.0746438, 0.130109, -5.68724e-09, 0.0599913, 0.662155, 0.722623)
-
-[node name="Sketchfab_Scene5" parent="." instance=ExtResource("2_0bn8d")]
-transform = Transform3D(0.130109, -0.0746438, 3.26278e-09, 0, -6.55671e-09, -0.15, 0.0746438, 0.130109, -5.68724e-09, 0.00635973, 0.662155, 0.716703)
-
-[node name="Sketchfab_Scene2" parent="." instance=ExtResource("2_0bn8d")]
-transform = Transform3D(0.124619, 0, -0.0834878, 0, 0.15, 0, 0.0834878, 0, 0.124619, 0.0601211, 0.662154, 0.671695)
-
-[node name="Sketchfab_Scene3" parent="." instance=ExtResource("2_0bn8d")]
-transform = Transform3D(0.149991, 0, 0.00166763, 0, 0.15, 0, -0.00166763, 0, 0.149991, 0.0337915, 0.662155, 0.628924)
+player = 1
 
 [node name="DialoguePoint" parent="." instance=ExtResource("3_ig5u6")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.05046, 0.627823, -0.213782)
@@ -98,3 +93,76 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0331475, 0.627823, -0.54416
 [node name="DialoguePoint3" parent="." instance=ExtResource("3_ig5u6")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.05, 0.628, -0.214)
 actor = 2
+
+[node name="CupPlayerPoint" parent="." instance=ExtResource("3_b0lh7")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.188497, 0.733587, 0.697288)
+
+[node name="CupPlayerPoint2" parent="." instance=ExtResource("3_b0lh7")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.01484, 0.719, -0.135417)
+player = 3
+
+[node name="CupPlayerPoint3" parent="." instance=ExtResource("3_b0lh7")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.834184, 0.719, -0.135417)
+player = 1
+
+[node name="CupPlayerPoint4" parent="." instance=ExtResource("3_b0lh7")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0348978, 0.719, -0.314128)
+player = 2
+
+[node name="CupRevealPoint" parent="." instance=ExtResource("3_b0lh7")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.734, 0.285539)
+type = 1
+
+[node name="CupRevealPoint2" parent="." instance=ExtResource("3_b0lh7")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.108765, 0.719, 0.183764)
+player = 3
+type = 1
+
+[node name="CupRevealPoint3" parent="." instance=ExtResource("3_b0lh7")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.110329, 0.719, 0.181778)
+player = 1
+type = 1
+
+[node name="CupRevealPoint4" parent="." instance=ExtResource("3_b0lh7")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.719, 0.081)
+player = 2
+type = 1
+
+[node name="Cup" parent="." instance=ExtResource("4_2c5sg")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.734, 0.285539)
+amount_raised = 1.0
+target_raised = true
+target_state = 1
+alpha = 0.0
+
+[node name="Cup2" parent="." instance=ExtResource("4_2c5sg")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.110329, 0.719, 0.181778)
+player = 1
+amount_raised = 1.0
+target_raised = true
+target_state = 1
+alpha = 0.0
+
+[node name="Cup3" parent="." instance=ExtResource("4_2c5sg")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.108765, 0.719, 0.183764)
+player = 3
+amount_raised = 1.0
+target_raised = true
+target_state = 1
+alpha = 0.0
+
+[node name="Cup4" parent="." instance=ExtResource("4_2c5sg")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.719, 0.081)
+player = 2
+amount_raised = 1.0
+target_raised = true
+target_state = 1
+alpha = 0.0
+
+[node name="GUIPanel3D" parent="." instance=ExtResource("5_bbb0q")]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0.136297, 0.645246, 0.654077)
+
+[node name="LiarsDicePhysical" type="Node" parent="." node_paths=PackedStringArray("player_camera", "gui_panel")]
+script = ExtResource("7_324yd")
+player_camera = NodePath("../PlayerCamera")
+gui_panel = NodePath("../GUIPanel3D")

@@ -24,6 +24,7 @@ SceneManager="*res://singletons/scene_manager.gd"
 Dialogue="*res://singletons/dialogue.gd"
 Palette="*res://singletons/palette.gd"
 LiarsDice="*res://singletons/liars_dice.gd"
+CollisionLayer="*res://singletons/collision_layer.gd"
 
 [debug]
 

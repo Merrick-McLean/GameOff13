@@ -7,18 +7,39 @@ const UNDETERMINED = 0
 
 enum Player {
 	SELF,		# this is the actual "player" player
-	PIRATE_1,
+	PIRATE_RIGHT,
 	CAPTAIN,
-	PIRATE_2,
+	PIRATE_LEFT,
 	COUNT,
 	NOONE
 }
 
 var round : Round
+var physical : LiarsDicePhysical
+var alive_players : Array[Player]
 
 
+func _ready() -> void:
+	randomize()
+	reset()
+
+func reset() -> void:
+	round = null
+	alive_players = [Player.SELF, Player.PIRATE_RIGHT, Player.CAPTAIN, Player.PIRATE_LEFT]
+	if physical: physical.update_alive_players()
 
 
+func _process(delta: float) -> void:
+	if Debug.is_just_pressed("test_7") and round == null:
+		while Player.SELF in alive_players:
+			var round := Round.new(alive_players, {
+				Player.SELF: 5,
+				Player.PIRATE_RIGHT: 4,
+				Player.CAPTAIN: 4,
+				Player.PIRATE_LEFT: 4
+			})
+			await round.start()
+		reset()
 
 
 
@@ -37,7 +58,8 @@ class Round: # should I jsut merge round and bet? - Simpler to just have one big
 	var ideal_target : Bet # the ideal maximum bet, that has a certain probability >= ideal_probability of being valid
 	var absolute_target : Bet # the maximum valid bet if all undetermined dice are the same number
 	
-	var rng := RandomNumberGenerator.new()
+	var dialogue_instance : DialogueInstance
+	var maximum_bet : Bet
 	
 	## SETUP
 	# determined_dice_count maps player ids to how many determined dice they should have
@@ -47,29 +69,85 @@ class Round: # should I jsut merge round and bet? - Simpler to just have one big
 		current_bet = Bet.create_empty()
 		turn_order = p_turn_order
 		highest_bid_table = DieTable.create_empty()
-		global_die_table = DieTable.create_empty()
+		maximum_bet = Bet.new(get_player_count() * PLAYER_DIE_COUNT, DIE_MAX)
 		
 		# ROLL DICE
 		for player: Player in turn_order:
-			var player_die_table := roll(determined_dice_count[player])
+			var player_die_table := roll(PLAYER_DIE_COUNT, determined_dice_count[player])
 			player_rolls[player] = player_die_table
-			global_die_table.add(player_die_table)
+		
+		regenerate_global_die_table()
 		
 		# FIND TARGETS
-		determined_target = global_die_table.get_max_faces().back()
+		var max_face : int = global_die_table.get_max_faces().back()
+		determined_target = Bet.new(global_die_table.get_face_count(max_face), max_face)
 		absolute_target = determined_target.duplicate()
 		absolute_target.amount += global_die_table.undetermined_count
 		ideal_target = get_last_bet_with_probability(global_die_table, ideal_probability)
+		print("Ideal target: ", ideal_target.amount, " ", ideal_target.value, "s")
 		
+		for player: Player in turn_order:
+			print("Player roll ", player, ": ", player_rolls[player].get_dice_array())
 		
-	func roll(determined_dice_count : int) -> DieTable:
-		assert(determined_dice_count >= 0 and determined_dice_count <= PLAYER_DIE_COUNT)
+		print("Global roll: ", global_die_table.get_dice_array())
+	
+	
+	func regenerate_global_die_table() -> void:
+		global_die_table = DieTable.create_empty()
+		for player: Player in turn_order:
+			global_die_table.add(player_rolls[player])
+	
+	func push_physical_dice(player: Player) -> void:
+		var die_table : DieTable = player_rolls[player]
+		assert(die_table.undetermined_count == 0)
+		var dice : Array[int] = player_rolls[player].get_dice_array()
+		dice.shuffle()
+		LiarsDice.physical.cups[player].set_dice(dice)
+	
+	
+	func start() -> void:
+		# START ROUND
+		await LiarsDice.physical.start_game()
+		push_physical_dice(Player.SELF)
+		dialogue_instance = Dialogue.play(DialogueInstance.Id.ROUND_START_1)
+		await dialogue_instance.finished
+		
+		# MAIN LOOP
+		var loser := Player.NOONE
+		while true:
+			if is_npc(get_current_player()):
+				var bet := get_npc_bet(get_current_player(), current_bet, 1, 8) # TODO: get this range finding properly
+				make_bet(bet)
+				await npc_say_bet(get_current_player(), bet)
+				var call := await prompt_player_call(get_current_player())
+				if call:
+					loser = await call_bet(Player.SELF, get_current_player(), bet)
+					break
+			else:
+				assert(get_current_player() == Player.SELF)
+				prompt_dialogue_options() 
+				var bet := await get_self_bet(current_bet)
+				make_bet(bet)
+				var caller := get_caller(bet)
+				if caller != Player.NOONE:
+					loser = await call_bet(caller, get_current_player(), bet)
+					
+					print("BET CALLED! Loser "  + str(loser))
+					break
+				await npcs_react(get_current_player(), bet)
+			await pass_turn()
+		
+		await kill_player(loser)
+	
+	
+	func roll(total_die_count: int, determined_dice_count := total_die_count) -> DieTable:
+		assert(determined_dice_count >= 0 and determined_dice_count <= total_die_count)
 		var result := DieTable.create_empty()
 		
 		for i:int in range(determined_dice_count):
 			result.face_counts[randi() % DIE_MAX] += 1
 		
-		result.undetermined_count = PLAYER_DIE_COUNT - determined_dice_count
+		result.undetermined_count = total_die_count - determined_dice_count
 		
 		return result
 	
@@ -80,7 +158,7 @@ class Round: # should I jsut merge round and bet? - Simpler to just have one big
 			return global_die_table.duplicate()
 		
 		var result : DieTable = player_rolls[player].duplicate()
-		result.undetermined_dice += (get_player_count() - 1) * PLAYER_DIE_COUNT
+		result.undetermined_count += (get_player_count() - 1) * PLAYER_DIE_COUNT
 		return result
 	
 		
@@ -93,6 +171,7 @@ class Round: # should I jsut merge round and bet? - Simpler to just have one big
 		assert(bet.get_abs() > current_bet.get_abs())
 		current_bet = bet
 		highest_bid_table.set_face_count(current_bet.value, current_bet.amount) # update highest bid table
+		#print("Bet made: ", current_bet.to_string())
 	
 	
 	# returns the player id of the given player_index
@@ -145,7 +224,7 @@ class Round: # should I jsut merge round and bet? - Simpler to just have one big
 		while get_bet_valid_probability(known_amount + extra_dice, known_amount, total_unknown) >= min_probability:
 			extra_dice += 1
 		
-		return Bet.new(last_face, known_amount + extra_dice - 1)
+		return Bet.new(known_amount + extra_dice - 1, last_face)
 	
 	
 	# logic for npc making a bet
@@ -159,16 +238,21 @@ class Round: # should I jsut merge round and bet? - Simpler to just have one big
 		
 		
 		
+		
+		if npc == Player.CAPTAIN:
+			max_distance = max(max_distance, DIE_MAX)
 		# adjust max distance to try to stay within current range
-		if last_bet.distance_to(absolute_target) > max_distance:
-			max_distance = last_bet.distance_to(absolute_target) - 1
-		elif last_bet.distance_to(ideal_target) > max_distance:
-			max_distance = last_bet.distance_to(ideal_target) - 1
-		elif last_bet.distance_to(determined_target) > max_distance:
-			pass # it's okay to go into ideal range
 		else:
-			pass
+			if last_bet.distance_to(absolute_target) > max_distance:
+				max_distance = last_bet.distance_to(absolute_target) - 1
+			elif last_bet.distance_to(ideal_target) > max_distance:
+				max_distance = last_bet.distance_to(ideal_target) - 1
+			elif last_bet.distance_to(determined_target) > max_distance:
+				pass # it's okay to go into ideal range
+			else:
+				pass
 		min_distance = min(min_distance, max_distance)
+		assert(min_distance >= 1)
 		
 		if max_distance <= 0:
 			var new_bet := last_bet.duplicate()
@@ -185,7 +269,7 @@ class Round: # should I jsut merge round and bet? - Simpler to just have one big
 		
 		# TODO: apply some weighting here
 		# right now we are just taking the best probability. Tie breaker, choose the lower bet
-		var best_bet_abs = abs_bet_probabilities[last_bet.get_abs() + 1]
+		var best_bet_abs = last_bet.get_abs() + min_distance
 		for bet_abs: int in abs_bet_probabilities:
 			if abs_bet_probabilities[bet_abs] > abs_bet_probabilities[best_bet_abs]:
 				best_bet_abs = bet_abs
@@ -249,13 +333,15 @@ class Round: # should I jsut merge round and bet? - Simpler to just have one big
 	func get_npc_call_probability(npc: Player, bet: Bet, recklessness: float) -> float:
 		
 		var known_dice := get_known_dice(npc)
-		var call_probability := 1.0 - get_bet_valid_probability(bet.amount, known_dice.get_face_count(bet.value), known_dice.undetermined_amount)
+		var call_probability := 1.0 - get_bet_valid_probability(bet.amount, known_dice.get_face_count(bet.value), known_dice.undetermined_count)
+		
+		print("Raw call probability for npc ", npc, ": ", call_probability)
 		call_probability += recklessness
 		
 		call_probability = clamp(call_probability, 0.0, 1.0)
 		
 		const MAX_CUTOFF = 0.8
-		const MIN_CUTOFF = 0.4
+		const MIN_CUTOFF = 0.7
 		
 		# see https://www.desmos.com/calculator/fusev4nrki
 		return clamp(1.0 / (MAX_CUTOFF - MIN_CUTOFF) * (call_probability - MIN_CUTOFF), 0.0, 1.0)
@@ -265,14 +351,19 @@ class Round: # should I jsut merge round and bet? - Simpler to just have one big
 	func get_caller(player_bet: Bet) -> Player:
 		assert(get_current_player() == Player.SELF)
 		
+		# never call a 1 bet
+		if player_bet.amount == 1:
+			return Player.NOONE
+		
 		# FORCE CALL IF CAPTAIN CAN'T MAKE REASONABLE BET
 		var distance_to_captain := get_player_distance(Player.SELF, Player.CAPTAIN)
-		var bet_distance := player_bet.distance_to(ideal_target)
+		var bet_distance := player_bet.distance_to(absolute_target)
 		
 		if distance_to_captain > bet_distance:
 			# Favour that the NPC makes a call so we don't to force kill the player
 			var crew_mates := turn_order.filter(is_crewmate)
 			if crew_mates.size() > 0:
+				print("Crewmate save captain!")
 				return crew_mates.pick_random()
 			return Player.CAPTAIN
 		
@@ -292,8 +383,39 @@ class Round: # should I jsut merge round and bet? - Simpler to just have one big
 		pass
 	
 	
+	
+	func npc_say_bet(last_better: Player, last_bet: Bet) -> void:
+		Dialogue.play(DialogueInstance.Id.PIRATE_BET_1, {&"actor": Dialogue.get_actor(last_better), &"bet": last_bet}).finished
+	
+	
+	func npc_say_call(caller: Player, last_bet: Bet) -> void:
+		await Dialogue.play(DialogueInstance.Id.PIRATE_CALL_1, {&"actor": Dialogue.get_actor(caller), &"bet": last_bet}).finished
+	
+	
+	func npc_react_result(caller: Player, callee: Player, loser: Player) -> void:
+		if is_npc(caller):
+			if caller == loser:
+				await Dialogue.play(DialogueInstance.Id.PIRATE_LOSE_1, {&"actor": Dialogue.get_actor(caller)}).finished
+			else:
+				await Dialogue.play(DialogueInstance.Id.PIRATE_WIN_1, {&"actor": Dialogue.get_actor(caller)}).finished
+		else:
+			if callee == loser:
+				await Dialogue.play(DialogueInstance.Id.PIRATE_LOSE_1, {&"actor": Dialogue.get_actor(callee)}).finished
+			else:
+				await Dialogue.play(DialogueInstance.Id.PIRATE_WIN_1, {&"actor": Dialogue.get_actor(callee)}).finished
+			
+	
+	
 	func kill_player(player: Player) -> void:
 		assert(player != Player.CAPTAIN)
+		LiarsDice.alive_players.erase(player)
+		if is_npc(player):
+			await Dialogue.play(DialogueInstance.Id.PIRATE_DEATH_1, {&"actor": Dialogue.get_actor(player)}).finished
+		else:
+			await Dialogue.play(DialogueInstance.Id.CAPTAIN_SHOOTS).finished
+		
+		LiarsDice.physical.update_alive_players()
+		
 		pass
 	
 	
@@ -301,7 +423,12 @@ class Round: # should I jsut merge round and bet? - Simpler to just have one big
 	# TODO: Implement
 	func prompt_player_call(last_better: Player) -> bool:
 		assert(last_better != Player.SELF)
-		return false
+		
+		dialogue_instance = Dialogue.play(DialogueInstance.Id.QUERY_LIAR, {&"actor": Dialogue.get_actor(last_better)})
+		var result : Dictionary = await dialogue_instance.finished
+		
+		
+		return result.called
 	
 	
 	# Prompts dialogue options to show up
@@ -310,12 +437,39 @@ class Round: # should I jsut merge round and bet? - Simpler to just have one big
 	
 	# get the players bet
 	func get_self_bet(last_bet: Bet) -> Bet:
-		return Bet.create_empty()
+		var minimum_bet
+		if current_bet.amount == 0:
+			minimum_bet = Bet.create_minimum()
+		else:
+			minimum_bet = current_bet.duplicate()
+			minimum_bet.add(1)
+		return await LiarsDice.physical.get_player_bet(minimum_bet, maximum_bet)
 	
 	# TODO: Implement
 	# returns the loser
-	func call_bet(caller: Player, callee: Player) -> Player:
-		return caller
+	func call_bet(caller: Player, callee: Player, bet: Bet) -> Player:
+		if is_npc(caller):
+			await npc_say_call(caller, bet)
+		
+		# RESOLVE DICE
+		var resolve_mode := ResolveMode.RANDOM
+		if callee == Player.CAPTAIN: resolve_mode = ResolveMode.GURANTEE_WIN
+		if caller == Player.CAPTAIN: resolve_mode = ResolveMode.GURANTEE_LOSS
+		
+		resolve_dice(bet, resolve_mode)
+		
+		# FIND LOSER
+		var loser := caller if global_die_table.get_face_count(bet.value) >= bet.amount else callee
+		
+		# PUSH PHYSICAL DICE
+		for player in turn_order:
+			if player == Player.SELF: continue # player dice have already been pushed
+			push_physical_dice(player)
+		
+		# REVEAL AND REACT
+		await LiarsDice.physical.reveal_dice()
+		await npc_react_result(caller, callee, loser)
+		return loser
 	
 	
 	func is_npc(player: Player) -> bool:
@@ -325,32 +479,55 @@ class Round: # should I jsut merge round and bet? - Simpler to just have one big
 		return player != Player.SELF and player != Player.CAPTAIN
 	
 	
+	enum ResolveMode {
+		GURANTEE_WIN,
+		GURANTEE_LOSS,
+		RANDOM,
+	}
 	
-	func main_loop() -> void:
+	func resolve_dice(bet: Bet, resolve_mode := ResolveMode.RANDOM) -> void:
 		
-		var loser := Player.NOONE
-		while true:
-			if is_npc(get_current_player()):
-				var bet := get_npc_bet(get_current_player(), current_bet, 4, 8) # TODO: get this range finding properly
-				make_bet(bet)
-				await npcs_react(get_current_player(), bet)
-				var call := await prompt_player_call(get_current_player())
-				if call:
-					loser = await call_bet(Player.SELF, get_current_player())
-					break
-			else:
-				assert(get_current_player() == Player.SELF)
-				prompt_dialogue_options() 
-				var bet := await get_self_bet(current_bet)
-				make_bet(bet)
-				var caller := get_caller(bet)
-				if caller != Player.NOONE:
-					loser = call_bet(caller, get_current_player())
-					break
-				await npcs_react(get_current_player(), bet)
-			await pass_turn()
+		var die_tables_with_undetermined_dice := player_rolls.values().filter(func(t: DieTable) -> bool: return t.undetermined_count > 0)
 		
-		await kill_player(loser)
+		
+		if resolve_mode == ResolveMode.GURANTEE_WIN:
+			var current_count_of_die := global_die_table.get_face_count(bet.value)
+			var extra_needed_to_win := bet.amount - current_count_of_die
+			assert(global_die_table.undetermined_count >= extra_needed_to_win)
+			
+			for i: int in extra_needed_to_win:
+				var die_table : DieTable = die_tables_with_undetermined_dice.pick_random()
+				assert(die_table.undetermined_count > 0)
+				die_table.undetermined_count -= 1
+				die_table.increment_face(bet.value, 1)
+				if die_table.undetermined_count <= 0:
+					die_tables_with_undetermined_dice.erase(die_table)
+		
+		if resolve_mode == ResolveMode.GURANTEE_LOSS:
+			var current_count_of_die := global_die_table.get_face_count(bet.value)
+			var extra_needed_to_win := bet.amount - current_count_of_die
+			var misses_need_to_lose := global_die_table.undetermined_count - extra_needed_to_win + 1
+			assert(misses_need_to_lose >= 0)
+			var miss_faces := range(1, DIE_MAX + 1)
+			miss_faces.erase(bet.value)
+			
+			for i: int in misses_need_to_lose:
+				var die_table : DieTable = die_tables_with_undetermined_dice.pick_random()
+				assert(die_table.undetermined_count > 0)
+				die_table.undetermined_count -= 1
+				die_table.increment_face(miss_faces.pick_random(), 1)
+				if die_table.undetermined_count <= 0:
+					die_tables_with_undetermined_dice.erase(die_table)
+		
+		
+		# RANDOM RESOLVE
+		for player_roll: DieTable in player_rolls.values():
+			var addition := roll(player_roll.undetermined_count, player_roll.undetermined_count)
+			player_roll.add(addition)
+			player_roll.undetermined_count = 0
+		
+		regenerate_global_die_table()
+		
 		
 	
 		#var rem_dice: int = (turn_order.size()) * 5
@@ -389,7 +566,7 @@ class Round: # should I jsut merge round and bet? - Simpler to just have one big
 		func _init(p_face_counts: Array, p_undetermined_count: int) -> void:
 			assert(face_counts.size() == DIE_MAX)
 			face_counts = p_face_counts
-			p_undetermined_count = p_undetermined_count
+			undetermined_count = p_undetermined_count
 		
 		
 		static func create_empty() -> DieTable:
@@ -414,22 +591,33 @@ class Round: # should I jsut merge round and bet? - Simpler to just have one big
 			undetermined_count -= other.undetermined_count
 		
 		
+		func increment_face(face: int, amount: int) -> void:
+			face_counts[face - 1] += amount
+		
 		# returns the faces that are used the most. result is ordered from smallest face to largest
 		func get_max_faces() -> Array[int]:
 			var result : Array[int] = []
-			var max_face := 0
-			for i: int in range(DIE_MAX):
+			var max_face := 1
+			for i: int in range(1, DIE_MAX + 1):
 				if get_face_count(max_face) < get_face_count(i):
 					result.clear()
 					max_face = i
 				if get_face_count(max_face) <= get_face_count(i):
-					result.append(i + 1)
+					result.append(i)
 			
 			return result
 		
 		func duplicate() -> DieTable:
 			return DieTable.new(face_counts.duplicate(), undetermined_count)
 		
+		
+		func get_dice_array() -> Array[int]:
+			var result : Array[int] = []
+			for face: int in face_counts.size():
+				for i: int in face_counts[face]:
+					result.append(face + 1)
+			
+			return result
 		
 		
 	
@@ -438,6 +626,8 @@ class Round: # should I jsut merge round and bet? - Simpler to just have one big
 		var value: int
 		
 		func _init(p_amount: int, p_value: int) -> void:
+			assert(p_amount >= 0)
+			assert(p_value >= 1 and p_value <= DIE_MAX)
 			amount = p_amount
 			value = p_value
 		
@@ -447,8 +637,12 @@ class Round: # should I jsut merge round and bet? - Simpler to just have one big
 		
 		
 		static func from_abs(abs_value: int) -> Bet:
-			return Bet.new(abs_value / DIE_MAX, abs_value % DIE_MAX)
-
+			return Bet.new(abs_value / DIE_MAX, abs_value % DIE_MAX + 1)
+		
+		
+		static func create_minimum() -> Bet:
+			return Bet.new(1, 1)
+		
 		func duplicate() -> Bet:
 			return Bet.new(amount, value)
 		
@@ -456,12 +650,12 @@ class Round: # should I jsut merge round and bet? - Simpler to just have one big
 			return amount < other_bet.amount or value < other_bet.value
 		
 		func get_abs() -> int:
-			return DIE_MAX * amount + value
+			return DIE_MAX * amount + (value - 1)
 		
 		
 		func set_abs(abs_value: int) -> void:
 			amount = abs_value / DIE_MAX
-			value = abs_value % DIE_MAX
+			value = abs_value % DIE_MAX + 1
 		
 		func add(abs_value: int) -> void:
 			set_abs(get_abs() + abs_value)
