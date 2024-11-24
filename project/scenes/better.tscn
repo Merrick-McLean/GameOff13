@@ -12,9 +12,9 @@
 
 [node name="Better" type="Control"]
 layout_mode = 3
-anchor_right = 0.396
+anchor_right = 0.535
 anchor_bottom = 0.704
-offset_right = -0.160034
+offset_right = 0.399963
 offset_bottom = -0.160034
 grow_horizontal = 2
 grow_vertical = 2
@@ -63,3 +63,11 @@ faces = Array[Texture2D]([ExtResource("2_thqdb"), ExtResource("5_xer1f"), ExtRes
 
 [node name="Incrementor" parent="HBoxContainer/DieFace" instance=ExtResource("1_hwthd")]
 layout_mode = 1
+
+[node name="Button" type="Button" parent="HBoxContainer"]
+self_modulate = Color(0, 0, 0, 1)
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+text = "Place"
+
+[connection signal="pressed" from="HBoxContainer/Button" to="." method="_on_button_pressed"]

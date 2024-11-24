@@ -6,6 +6,7 @@ signal finished(index: int)
 enum Id {
 	TEST_1,
 	TEST_2,
+	ROUND_START_1,
 }
 
 var display : DialogueDisplay
@@ -29,6 +30,12 @@ var dialogues : Dictionary = {
 		await display.say(Dialogue.Actor.PIRATE_LEFT, "I'm talking over here on the left.")
 		await display.say(Dialogue.Actor.PIRATE_RIGHT, "I talk over here on the right.")
 		await display.say(Dialogue.Actor.CAPTAIN, "And I talk in[set pause_time=0.2] the[set pause_time=0.2] middle.")
+		return 0,
+	
+	Id.ROUND_START_1: func() -> int:
+		display.push_options([])
+		await display.say(Dialogue.Actor.CAPTAIN, "Alright lad, now make your bet.")
+		display.clear_speach()
 		return 0,
 }
 

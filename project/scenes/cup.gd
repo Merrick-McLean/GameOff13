@@ -71,7 +71,6 @@ func _ready() -> void:
 	STATE_POINTS = STATE_POINTS.map(func(x: Node3D) -> Node3D: return x if is_instance_valid(x) else self)
 	STATE_POINTS.make_read_only()
 	
-	set_dice([_r(), _r(), _r(), _r(), _r()])
 	_update_zoom_in_region_enabled()
 	
 	# enable transparency

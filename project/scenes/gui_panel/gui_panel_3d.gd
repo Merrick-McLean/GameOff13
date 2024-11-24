@@ -14,6 +14,7 @@ var mouse_position := Vector2.ZERO
 @onready var node_viewport := $SubViewport
 @onready var node_quad := $Quad
 @onready var node_area := $Quad/Area3D
+@onready var better := $SubViewport/Better
 
 
 

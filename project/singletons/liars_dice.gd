@@ -18,7 +18,18 @@ var round : Round
 var physical : LiarsDicePhysical
 
 
+func _ready() -> void:
+	randomize()
 
+func _process(delta: float) -> void:
+	if Debug.is_just_pressed("test_7"):
+		var round := Round.new([Player.SELF, Player.PIRATE_1, Player.CAPTAIN, Player.PIRATE_2], {
+			Player.SELF: 5,
+			Player.PIRATE_1: 4,
+			Player.CAPTAIN: 4,
+			Player.PIRATE_2: 4
+		})
+		await round.start()
 
 
 
@@ -37,7 +48,8 @@ class Round: # should I jsut merge round and bet? - Simpler to just have one big
 	var ideal_target : Bet # the ideal maximum bet, that has a certain probability >= ideal_probability of being valid
 	var absolute_target : Bet # the maximum valid bet if all undetermined dice are the same number
 	
-	var rng := RandomNumberGenerator.new()
+	var dialogue_instance : DialogueInstance
+	var maximum_bet : Bet
 	
 	## SETUP
 	# determined_dice_count maps player ids to how many determined dice they should have
@@ -48,6 +60,7 @@ class Round: # should I jsut merge round and bet? - Simpler to just have one big
 		turn_order = p_turn_order
 		highest_bid_table = DieTable.create_empty()
 		global_die_table = DieTable.create_empty()
+		maximum_bet = Bet.new(get_player_count() * PLAYER_DIE_COUNT, DIE_MAX)
 		
 		# ROLL DICE
 		for player: Player in turn_order:
@@ -56,12 +69,29 @@ class Round: # should I jsut merge round and bet? - Simpler to just have one big
 			global_die_table.add(player_die_table)
 		
 		# FIND TARGETS
-		determined_target = global_die_table.get_max_faces().back()
+		var max_face : int = global_die_table.get_max_faces().back()
+		determined_target = Bet.new(global_die_table.get_face_count(max_face), max_face)
 		absolute_target = determined_target.duplicate()
 		absolute_target.amount += global_die_table.undetermined_count
 		ideal_target = get_last_bet_with_probability(global_die_table, ideal_probability)
 		
-		
+	
+	func start() -> void:
+		await LiarsDice.physical.start_game()
+		var protagonist_dice : Array[int] = player_rolls[Player.SELF].get_dice_array()
+		protagonist_dice.shuffle()
+		LiarsDice.physical.cups[Player.SELF].set_dice(protagonist_dice)
+		dialogue_instance = Dialogue.play(DialogueInstance.Id.ROUND_START_1)
+		await dialogue_instance.finished
+		var minimum_bet
+		if current_bet.amount == 0:
+			minimum_bet = Bet.create_minimum()
+		else:
+			minimum_bet = current_bet.duplicate()
+			minimum_bet.add(1)
+		var bet := await LiarsDice.physical.get_player_bet(minimum_bet, maximum_bet)
+	
+	
 	func roll(determined_dice_count : int) -> DieTable:
 		assert(determined_dice_count >= 0 and determined_dice_count <= PLAYER_DIE_COUNT)
 		var result := DieTable.create_empty()
@@ -431,6 +461,14 @@ class Round: # should I jsut merge round and bet? - Simpler to just have one big
 			return DieTable.new(face_counts.duplicate(), undetermined_count)
 		
 		
+		func get_dice_array() -> Array[int]:
+			var result : Array[int] = []
+			for face: int in face_counts.size():
+				for i: int in face_counts[face]:
+					result.append(face + 1)
+			
+			return result
+		
 		
 	
 	class Bet:
@@ -438,6 +476,8 @@ class Round: # should I jsut merge round and bet? - Simpler to just have one big
 		var value: int
 		
 		func _init(p_amount: int, p_value: int) -> void:
+			assert(p_amount >= 0)
+			assert(p_value >= 1 and p_value <= DIE_MAX)
 			amount = p_amount
 			value = p_value
 		
@@ -447,8 +487,12 @@ class Round: # should I jsut merge round and bet? - Simpler to just have one big
 		
 		
 		static func from_abs(abs_value: int) -> Bet:
-			return Bet.new(abs_value / DIE_MAX, abs_value % DIE_MAX)
-
+			return Bet.new(abs_value / DIE_MAX, abs_value % DIE_MAX + 1)
+		
+		
+		static func create_minimum() -> Bet:
+			return Bet.new(1, 1)
+		
 		func duplicate() -> Bet:
 			return Bet.new(amount, value)
 		
@@ -456,12 +500,12 @@ class Round: # should I jsut merge round and bet? - Simpler to just have one big
 			return amount < other_bet.amount or value < other_bet.value
 		
 		func get_abs() -> int:
-			return DIE_MAX * amount + value
+			return DIE_MAX * amount + (value - 1)
 		
 		
 		func set_abs(abs_value: int) -> void:
 			amount = abs_value / DIE_MAX
-			value = abs_value % DIE_MAX
+			value = abs_value % DIE_MAX + 1
 		
 		func add(abs_value: int) -> void:
 			set_abs(get_abs() + abs_value)

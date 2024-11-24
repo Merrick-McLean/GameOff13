@@ -161,8 +161,9 @@ target_state = 1
 alpha = 0.0
 
 [node name="GUIPanel3D" parent="." instance=ExtResource("5_bbb0q")]
-transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0.0611959, 0.705481, 0.716212)
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0.136297, 0.645246, 0.654077)
 
-[node name="LiarsDicePhysical" type="Node" parent="." node_paths=PackedStringArray("player_camera")]
+[node name="LiarsDicePhysical" type="Node" parent="." node_paths=PackedStringArray("player_camera", "gui_panel")]
 script = ExtResource("7_324yd")
 player_camera = NodePath("../PlayerCamera")
+gui_panel = NodePath("../GUIPanel3D")

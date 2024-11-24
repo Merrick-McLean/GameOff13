@@ -89,3 +89,7 @@ func push_options(option_sets: Array[DialogueInstance.OptionSet]) -> DialogueIns
 
 func clear_options() -> void:
 	var unused := await push_options([])
+
+
+func clear_speach() -> void:
+	subtitles.clear_line()
