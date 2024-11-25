@@ -168,11 +168,6 @@ alpha = 0.0
 [node name="GUIPanel3D" parent="." instance=ExtResource("5_bbb0q")]
 transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0.136297, 0.645246, 0.654077)
 
-[node name="LiarsDicePhysical" type="Node" parent="." node_paths=PackedStringArray("player_camera", "gui_panel")]
-script = ExtResource("7_324yd")
-player_camera = NodePath("../PlayerCamera")
-gui_panel = NodePath("../GUIPanel3D")
-
 [node name="GunTablePoint" parent="." instance=ExtResource("10_5dxfy")]
 transform = Transform3D(-3.32587e-08, -0.760871, 0.648904, 1, -4.37114e-08, 0, 2.83645e-08, 0.648904, 0.760871, 0.848068, 0.670828, -0.0105947)
 state = 0
@@ -180,3 +175,9 @@ state = 0
 [node name="Gun" parent="." instance=ExtResource("9_jguw1")]
 transform = Transform3D(-3.32587e-08, -0.760871, 0.648904, 1, -4.37114e-08, 0, 2.83645e-08, 0.648904, 0.760871, 0.848068, 0.670828, -0.0105947)
 can_pickup = true
+
+[node name="LiarsDicePhysical" type="Node" parent="." node_paths=PackedStringArray("player_camera", "gui_panel", "gun")]
+script = ExtResource("7_324yd")
+player_camera = NodePath("../PlayerCamera")
+gui_panel = NodePath("../GUIPanel3D")
+gun = NodePath("../Gun")

@@ -6,11 +6,13 @@ signal player_shot
 
 @export var player_camera : PlayerCamera
 @export var gui_panel : GuiPanel
+@export var gun : Gun
 @onready var cups := get_tree().get_nodes_in_group(&"Cups")
 @onready var player_models := get_tree().get_nodes_in_group(&"PlayerModels")
 @onready var better : Better = gui_panel.better
 
 func _ready() -> void:
+	assert(gun, "Missing gun!")
 	assert(player_camera, "Missing player camera!")
 	assert(better, "Missing better!")
 	cups.sort_custom(func(a: Cup, b: Cup) -> bool: return a.player < b.player)
@@ -34,6 +36,8 @@ func _input(event: InputEvent):
 
 
 func start_game() -> void:
+	gun.visible = false
+	gun.can_pickup = false
 	for cup: Cup in cups:
 		cup.target_state = Cup.State.AT_PLAYER
 		cup.target_raised = false
@@ -81,3 +85,11 @@ func update_alive_players() -> void:
 			else:
 				player_models[player].alive = false
 				cups[player].visible = false
+
+
+func spawn_gun() -> void:
+	gun.visible = true
+
+
+func enable_gun_pickup() -> void:
+	gun.can_pickup = true

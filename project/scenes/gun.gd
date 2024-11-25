@@ -35,8 +35,8 @@ func _ready() -> void:
 		assert(state_points[i].state == i, "Missing/Duplicate gun point" + str(state_points[i].state))
 
 func _process(delta: float) -> void:
-	var target_scale : Vector3 = Vector3.ONE  * (1.1 if is_hovered and can_pickup else 1)
-	scale = scale.lerp(target_scale, delta * 6)
+	var target_scale : Vector3 = Vector3.ONE  * (1.2 if is_hovered and can_pickup else 1)
+	scale = scale.lerp(target_scale, delta * 10)
 	
 	if state < state_points.size():
 		var gun_point : GunPoint = state_points[state]
