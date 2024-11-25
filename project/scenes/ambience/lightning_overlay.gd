@@ -16,11 +16,13 @@ func _process(delta: float) -> void:
 
 func flash() -> void:
 	animation_player.stop()
+	flash_white.visible = false
 	animation_player.play(["lightning_0", "lightning_1", "lightning_2", "lightning_3"].pick_random())
 
 func _on_flash_visibility_changed() -> void:
 	if not is_node_ready(): await ready
 	if flash_white.visible:
+		GameMaster.shake_camera_relative(0.3)
 		flashed.emit()
 
 

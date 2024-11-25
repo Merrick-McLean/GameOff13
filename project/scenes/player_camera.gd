@@ -1,5 +1,5 @@
 class_name PlayerCamera
-extends Camera3D
+extends Node3D
 
 signal state_transition_completed(old_state: State, new_state: State)
 
@@ -13,6 +13,8 @@ enum State {
 }
 
 @onready var detector : RayCast3D = $Detector
+@onready var camera : Camera3D = $Camera
+@onready var shake_manager : CameraShakeManager = $ShakeManager
 
 var tween : Tween :
 	set(new_value):
@@ -30,7 +32,7 @@ var transition_percent := 0.0 :
 var is_active := false :
 	set(new_value):
 		is_active = new_value
-		current = is_active
+		camera.current = is_active
 		
 		if is_active:
 			Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
@@ -115,8 +117,8 @@ func _process(delta: float) -> void:
 	current_ui = new_ui
 	current_gun = new_gun
 	
-	fov = lerp(fov, ZOOMED_FOV if current_cup or state == State.AT_REVEAL else NORMAL_FOV, 10.0 * delta)
-	
+	camera.fov = lerp(camera.fov, ZOOMED_FOV if current_cup or state == State.AT_REVEAL else NORMAL_FOV, 10.0 * delta)
+	camera.rotation = shake_manager.get_shake_rotation(delta)
 	
 	## UPDATE ROTATION
 	var end_rotation := Vector3(

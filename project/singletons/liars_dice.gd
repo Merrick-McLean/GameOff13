@@ -594,7 +594,7 @@ class Round: # should I jsut merge round and bet? - Simpler to just have one big
 		func increment_face(face: int, amount: int) -> void:
 			face_counts[face - 1] += amount
 		
-		# returns the faces that are used the most. result is ordered from smallest face to largest
+		# returns the faces that are used the most. result is ordered from smallest face to largest in case of tie
 		func get_max_faces() -> Array[int]:
 			var result : Array[int] = []
 			var max_face := 1

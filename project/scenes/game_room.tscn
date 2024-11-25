@@ -1,4 +1,4 @@
-[gd_scene load_steps=17 format=3 uid="uid://b16hssfbhsywa"]
+[gd_scene load_steps=18 format=3 uid="uid://b16hssfbhsywa"]
 
 [ext_resource type="PackedScene" uid="uid://co6ie20fg1lmn" path="res://scenes/player_camera.tscn" id="1_1eld7"]
 [ext_resource type="PackedScene" uid="uid://dp3dcgh3rplsu" path="res://scenes/camera_point.tscn" id="2_hvt05"]
@@ -6,6 +6,7 @@
 [ext_resource type="PackedScene" uid="uid://c85itrrhsdk6l" path="res://scenes/dialogue_point.tscn" id="3_ig5u6"]
 [ext_resource type="PackedScene" uid="uid://dwmxnlp6u7b1h" path="res://scenes/player_model.tscn" id="3_t73bs"]
 [ext_resource type="PackedScene" uid="uid://dnc48jro3asqu" path="res://scenes/cup.tscn" id="4_2c5sg"]
+[ext_resource type="Texture2D" uid="uid://p0mrd7fy87vl" path="res://sprites/textures/woodtex.png" id="4_tqahv"]
 [ext_resource type="PackedScene" uid="uid://dvl383ispakmn" path="res://scenes/gui_panel/gui_panel_3d.tscn" id="5_bbb0q"]
 [ext_resource type="Script" path="res://scenes/liars_dice_physical.gd" id="7_324yd"]
 [ext_resource type="PackedScene" uid="uid://dhjdg84dddbbl" path="res://scenes/gun.tscn" id="9_jguw1"]
@@ -28,7 +29,8 @@ glow_enabled = true
 size = Vector2(10, 10)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_1qv4o"]
-albedo_color = Color(0.513726, 1, 1, 1)
+albedo_texture = ExtResource("4_tqahv")
+uv1_scale = Vector3(5, 5, 5)
 
 [sub_resource type="CylinderMesh" id="CylinderMesh_8qvhb"]
 top_radius = 0.7
