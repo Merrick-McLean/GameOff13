@@ -1,4 +1,4 @@
-[gd_scene load_steps=18 format=3 uid="uid://b16hssfbhsywa"]
+[gd_scene load_steps=19 format=3 uid="uid://b16hssfbhsywa"]
 
 [ext_resource type="PackedScene" uid="uid://co6ie20fg1lmn" path="res://scenes/player_camera.tscn" id="1_1eld7"]
 [ext_resource type="PackedScene" uid="uid://dp3dcgh3rplsu" path="res://scenes/camera_point.tscn" id="2_hvt05"]
@@ -11,6 +11,7 @@
 [ext_resource type="Script" path="res://scenes/liars_dice_physical.gd" id="7_324yd"]
 [ext_resource type="PackedScene" uid="uid://dhjdg84dddbbl" path="res://scenes/gun.tscn" id="9_jguw1"]
 [ext_resource type="PackedScene" uid="uid://un15mx44qam6" path="res://scenes/gun_point.tscn" id="10_5dxfy"]
+[ext_resource type="PackedScene" uid="uid://3v4bvwmccww3" path="res://models/shipinside.glb" id="12_6kpa0"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_pqux5"]
 sky_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
@@ -39,16 +40,15 @@ height = 1.0
 
 [node name="GameRoom" type="Node3D"]
 
-[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
-transform = Transform3D(-0.866023, -0.433016, 0.250001, 0, 0.499998, 0.866027, -0.500003, 0.749999, -0.43301, 0, 0, 0)
-shadow_enabled = true
-
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_bj380")
 
+[node name="OmniLight3D" type="OmniLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.50649, 0)
+light_energy = 0.512
+
 [node name="PlayerCamera" parent="." instance=ExtResource("1_1eld7")]
 transform = Transform3D(1, 0, 0, 0, 0.772157, 0.635432, 0, -0.635432, 0.772157, 0, 1.20637, 0.648128)
-fov = 65.0
 
 [node name="GunTablePoint2" parent="PlayerCamera" instance=ExtResource("10_5dxfy")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.123962, -0.192566, -0.405243)
@@ -183,3 +183,6 @@ script = ExtResource("7_324yd")
 player_camera = NodePath("../PlayerCamera")
 gui_panel = NodePath("../GUIPanel3D")
 gun = NodePath("../Gun")
+
+[node name="shipinside" parent="." instance=ExtResource("12_6kpa0")]
+transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 0, -0.691706, 0)

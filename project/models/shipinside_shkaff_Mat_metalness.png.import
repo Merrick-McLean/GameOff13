@@ -1,0 +1,37 @@
+[remap]
+
+importer="texture"
+type="CompressedTexture2D"
+uid="uid://do1i6ohey4krg"
+path="res://.godot/imported/shipinside_shkaff_Mat_metalness.png-f0b5ca61619f8d41a1dc96a9238e892f.ctex"
+metadata={
+"vram_texture": false
+}
+generator_parameters={
+"md5": "18e41a8f74e152e4da340a6ee6db478f"
+}
+
+[deps]
+
+source_file="res://models/shipinside_shkaff_Mat_metalness.png"
+dest_files=["res://.godot/imported/shipinside_shkaff_Mat_metalness.png-f0b5ca61619f8d41a1dc96a9238e892f.ctex"]
+
+[params]
+
+compress/mode=0
+compress/high_quality=false
+compress/lossy_quality=0.7
+compress/hdr_compression=1
+compress/normal_map=0
+compress/channel_pack=0
+mipmaps/generate=true
+mipmaps/limit=-1
+roughness/mode=0
+roughness/src_normal=""
+process/fix_alpha_border=true
+process/premult_alpha=false
+process/normal_map_invert_y=false
+process/hdr_as_srgb=false
+process/hdr_clamp_exposure=false
+process/size_limit=0
+detect_3d/compress_to=1

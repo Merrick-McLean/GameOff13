@@ -70,7 +70,6 @@ mouse_filter = 1
 viewport = NodePath("../../../../GameViewportContainer/SubViewport")
 
 [node name="LightningOverlay" parent="UI/SubViewportContainer/SubViewport" instance=ExtResource("9_jrsup")]
-visible = false
 
 [node name="GunShotOverlay" parent="UI/SubViewportContainer/SubViewport" instance=ExtResource("10_aqcw8")]
 
