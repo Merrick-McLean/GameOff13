@@ -1,6 +1,7 @@
-[gd_scene load_steps=19 format=3 uid="uid://b16hssfbhsywa"]
+[gd_scene load_steps=25 format=3 uid="uid://b16hssfbhsywa"]
 
 [ext_resource type="PackedScene" uid="uid://co6ie20fg1lmn" path="res://scenes/player_camera.tscn" id="1_1eld7"]
+[ext_resource type="PackedScene" uid="uid://cp1mdl0122k8i" path="res://scenes/lamp.tscn" id="1_osw6r"]
 [ext_resource type="PackedScene" uid="uid://dp3dcgh3rplsu" path="res://scenes/camera_point.tscn" id="2_hvt05"]
 [ext_resource type="PackedScene" uid="uid://dgnuycsjsc12" path="res://scenes/cup_point.tscn" id="3_b0lh7"]
 [ext_resource type="PackedScene" uid="uid://c85itrrhsdk6l" path="res://scenes/dialogue_point.tscn" id="3_ig5u6"]
@@ -12,16 +13,19 @@
 [ext_resource type="PackedScene" uid="uid://dhjdg84dddbbl" path="res://scenes/gun.tscn" id="9_jguw1"]
 [ext_resource type="PackedScene" uid="uid://un15mx44qam6" path="res://scenes/gun_point.tscn" id="10_5dxfy"]
 [ext_resource type="PackedScene" uid="uid://3v4bvwmccww3" path="res://models/shipinside.glb" id="12_6kpa0"]
+[ext_resource type="PackedScene" uid="uid://c1rd8kcxjo5km" path="res://models/ship/shipinsidefinal.glb" id="12_hjdip"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_pqux5"]
-sky_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
+sky_top_color = Color(0, 0, 0, 1)
+sky_horizon_color = Color(0.150702, 0.155339, 0.162658, 1)
+sky_cover_modulate = Color(0, 0, 0, 1)
 ground_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
 
 [sub_resource type="Sky" id="Sky_r4o8d"]
 sky_material = SubResource("ProceduralSkyMaterial_pqux5")
 
 [sub_resource type="Environment" id="Environment_bj380"]
-background_mode = 2
+background_mode = 1
 sky = SubResource("Sky_r4o8d")
 tonemap_mode = 2
 glow_enabled = true
@@ -38,14 +42,49 @@ top_radius = 0.7
 bottom_radius = 0.7
 height = 1.0
 
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_a180r"]
+emission_shape = 3
+emission_box_extents = Vector3(6, 0.5, 4)
+direction = Vector3(0.5, -1, 0)
+spread = 0.0
+initial_velocity_min = 15.0
+initial_velocity_max = 15.0
+color = Color(0.303233, 0.303233, 0.303233, 1)
+
+[sub_resource type="Curve" id="Curve_5xw0o"]
+_data = [Vector2(0, 0), 0.0, 3.62687, 0, 0, Vector2(0.164983, 0.312076), -0.145522, -0.145522, 0, 0, Vector2(0.996633, 0.0210313), -0.232835, 0.0, 0, 0]
+point_count = 3
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_lrmt2"]
+transparency = 1
+cull_mode = 2
+shading_mode = 0
+vertex_color_use_as_albedo = true
+use_particle_trails = true
+
+[sub_resource type="RibbonTrailMesh" id="RibbonTrailMesh_pw2ys"]
+material = SubResource("StandardMaterial3D_lrmt2")
+shape = 0
+size = 0.2
+sections = 2
+section_length = 0.1
+curve = SubResource("Curve_5xw0o")
+
 [node name="GameRoom" type="Node3D"]
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(-0.325568, -0.436592, 0.838685, 0, 0.887011, 0.461749, -0.945519, 0.150331, -0.288782, 0, 0, 0)
+light_energy = 0.4
+shadow_enabled = true
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_bj380")
 
-[node name="OmniLight3D" type="OmniLight3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.50649, 0)
-light_energy = 0.512
+[node name="Lamp" parent="." instance=ExtResource("1_osw6r")]
+
+[node name="Lamp2" parent="." instance=ExtResource("1_osw6r")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.01061, -2.98792)
+light_energy = 0.3
 
 [node name="PlayerCamera" parent="." instance=ExtResource("1_1eld7")]
 transform = Transform3D(1, 0, 0, 0, 0.772157, 0.635432, 0, -0.635432, 0.772157, 0, 1.20637, 0.648128)
@@ -184,5 +223,16 @@ player_camera = NodePath("../PlayerCamera")
 gui_panel = NodePath("../GUIPanel3D")
 gun = NodePath("../Gun")
 
+[node name="shipinsidefinal" parent="." instance=ExtResource("12_hjdip")]
+transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 0, -0.691706, 0)
+
 [node name="shipinside" parent="." instance=ExtResource("12_6kpa0")]
 transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 0, -0.691706, 0)
+visible = false
+
+[node name="GPUParticles3D" type="GPUParticles3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.724381, 6.06009, -8.58568)
+amount = 64
+trail_enabled = true
+process_material = SubResource("ParticleProcessMaterial_a180r")
+draw_pass_1 = SubResource("RibbonTrailMesh_pw2ys")

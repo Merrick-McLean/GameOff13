@@ -19,6 +19,7 @@ extends Node3D
 
 
 func _process(delta: float) -> void:
+	if Engine.is_editor_hint(): return
 	if Debug.is_just_pressed("test_9") and player == LiarsDice.Player.PIRATE_RIGHT:
 		_kill()
 	if Debug.is_just_pressed("test_8")  and player == LiarsDice.Player.PIRATE_RIGHT:
@@ -29,5 +30,6 @@ func _revive():
 	model.show()
 
 func _kill():
+	GameMaster.shake_camera(0.15)
 	smoke_particles.restart()
 	model.hide()
