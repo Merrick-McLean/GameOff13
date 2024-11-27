@@ -14,9 +14,20 @@ extends Node3D
 
 @export var player : LiarsDice.Player
 
+@onready var model := $Model
+@onready var smoke_particles := $SmokeParticles
+
+
+func _process(delta: float) -> void:
+	if Debug.is_just_pressed("test_9") and player == LiarsDice.Player.PIRATE_RIGHT:
+		_kill()
+	if Debug.is_just_pressed("test_8")  and player == LiarsDice.Player.PIRATE_RIGHT:
+		_revive()
+
 
 func _revive():
-	show()
+	model.show()
 
 func _kill():
-	hide()
+	smoke_particles.restart()
+	model.hide()

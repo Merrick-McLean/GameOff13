@@ -1,11 +1,77 @@
-[gd_scene load_steps=3 format=3 uid="uid://dwmxnlp6u7b1h"]
+[gd_scene load_steps=11 format=3 uid="uid://dwmxnlp6u7b1h"]
 
 [ext_resource type="Script" path="res://scenes/player_model.gd" id="1_ed6li"]
+[ext_resource type="Texture2D" uid="uid://dp2bsm08yqas1" path="res://sprites/smoke.png" id="2_ar825"]
 
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_4s0jj"]
+
+[sub_resource type="Gradient" id="Gradient_kc4ao"]
+offsets = PackedFloat32Array(0, 0.170124, 0.460581, 0.680498, 1)
+colors = PackedColorArray(1, 1, 1, 1, 0.978721, 0.791762, 0, 1, 0.6, 0.4152, 0.204, 0.745098, 0.44, 0.17468, 0.1452, 0.729412, 0, 0, 0, 0)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_qkf1d"]
+gradient = SubResource("Gradient_kc4ao")
+
+[sub_resource type="Curve" id="Curve_0tgvh"]
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(0.754647, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), -11.5344, 0.0, 0, 0]
+point_count = 3
+
+[sub_resource type="CurveTexture" id="CurveTexture_6cbbn"]
+curve = SubResource("Curve_0tgvh")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_txqts"]
+lifetime_randomness = 0.04
+emission_shape = 3
+emission_box_extents = Vector3(0.4, 1, 0.4)
+angle_min = -316.3
+angle_max = 360.0
+direction = Vector3(0, 1, 0)
+spread = 100.0
+initial_velocity_min = 1.0
+initial_velocity_max = 1.5
+angular_velocity_min = -84.07
+angular_velocity_max = 70.08
+gravity = Vector3(0, 4, 0)
+damping_min = 2.637
+damping_max = 4.0
+scale_min = 0.5
+scale_curve = SubResource("CurveTexture_6cbbn")
+color_ramp = SubResource("GradientTexture1D_qkf1d")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_dclho"]
+transparency = 1
+vertex_color_use_as_albedo = true
+albedo_texture = ExtResource("2_ar825")
+billboard_mode = 3
+billboard_keep_scale = true
+particles_anim_h_frames = 1
+particles_anim_v_frames = 1
+particles_anim_loop = false
+
+[sub_resource type="QuadMesh" id="QuadMesh_f14h2"]
+material = SubResource("StandardMaterial3D_dclho")
+size = Vector2(0.7, 0.7)
 
 [node name="PlayerModel" type="Node3D" groups=["PlayerModels"]]
 script = ExtResource("1_ed6li")
 
-[node name="CSGMesh3D" type="CSGMesh3D" parent="."]
+[node name="Model" type="Node3D" parent="."]
+
+[node name="CSGMesh3D" type="CSGMesh3D" parent="Model"]
 mesh = SubResource("CapsuleMesh_4s0jj")
+
+[node name="SmokeParticles" type="GPUParticles3D" parent="."]
+emitting = false
+amount = 50
+lifetime = 1.4
+one_shot = true
+explosiveness = 0.98
+randomness = 0.46
+process_material = SubResource("ParticleProcessMaterial_txqts")
+draw_pass_1 = SubResource("QuadMesh_f14h2")
+
+[node name="CSGBox3D" type="CSGBox3D" parent="."]
+visible = false
+size = Vector3(1, 2, 1)
+
+[connection signal="finished" from="SmokeParticles" to="SmokeParticles" method="_on_finished"]
