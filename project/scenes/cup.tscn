@@ -1,9 +1,10 @@
-[gd_scene load_steps=6 format=3 uid="uid://dnc48jro3asqu"]
+[gd_scene load_steps=7 format=3 uid="uid://dnc48jro3asqu"]
 
 [ext_resource type="Script" path="res://scenes/cup.gd" id="1_2f5ew"]
 [ext_resource type="PackedScene" uid="uid://clhw53e4oh1ns" path="res://models/cup.glb" id="1_xwtfa"]
 [ext_resource type="PackedScene" uid="uid://c30xeocvlomln" path="res://scenes/die.tscn" id="3_qt4yw"]
 [ext_resource type="Script" path="res://scenes/zoom_in_region.gd" id="3_rtvq6"]
+[ext_resource type="AudioStream" uid="uid://llfm86cpw8p0" path="res://sounds/cup_woosh.wav" id="5_b5hc4"]
 
 [sub_resource type="CylinderShape3D" id="CylinderShape3D_0mtvu"]
 height = 0.14767
@@ -62,5 +63,12 @@ transform = Transform3D(1, 0, 0, 0, 0.981276, 0.192608, 0, -0.192608, 0.981276, 
 
 [node name="OriginPoint" type="Marker3D" parent="Points"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.161413)
+
+[node name="Sounds" type="Node" parent="."]
+
+[node name="Woosh" type="AudioStreamPlayer" parent="Sounds"]
+stream = ExtResource("5_b5hc4")
+volume_db = -9.0
+pitch_scale = 0.9
 
 [connection signal="area_entered" from="ZoomInRegion" to="ZoomInRegion" method="_on_area_entered"]

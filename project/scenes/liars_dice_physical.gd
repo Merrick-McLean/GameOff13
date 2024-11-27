@@ -2,14 +2,19 @@ class_name LiarsDicePhysical
 extends Node
 
 signal interact_pressed
+signal player_shot
+signal cups_raised
 
 @export var player_camera : PlayerCamera
 @export var gui_panel : GuiPanel
+@export var gun : Gun
 @onready var cups := get_tree().get_nodes_in_group(&"Cups")
 @onready var player_models := get_tree().get_nodes_in_group(&"PlayerModels")
 @onready var better : Better = gui_panel.better
+@onready var animation_player : AnimationPlayer = $AnimationPlayer
 
 func _ready() -> void:
+	assert(gun, "Missing gun!")
 	assert(player_camera, "Missing player camera!")
 	assert(better, "Missing better!")
 	cups.sort_custom(func(a: Cup, b: Cup) -> bool: return a.player < b.player)
@@ -28,11 +33,13 @@ func _process(delta: float) -> void:
 
 
 func _input(event: InputEvent):
-	if event.is_action_pressed(&"interact"):
+	if event.is_action_pressed(&"interact") and GameMaster.player_in_world:
 		interact_pressed.emit()
 
 
 func start_game() -> void:
+	gun.visible = false
+	gun.can_pickup = false
 	for cup: Cup in cups:
 		cup.target_state = Cup.State.AT_PLAYER
 		cup.target_raised = false
@@ -56,7 +63,10 @@ func reveal_dice() -> void:
 		cup.target_raised = false
 	player_camera.transition_state(PlayerCamera.State.AT_REVEAL)
 	
-	await player_camera.state_transition_completed
+	#await player_camera.state_transition_completed
+	animation_player.stop()
+	animation_player.play("drum_roll")
+	await cups_raised
 	
 	for cup: Cup in cups:
 		cup.target_raised = true
@@ -68,12 +78,27 @@ func reveal_dice() -> void:
 	await player_camera.state_transition_completed
 
 
+func _lift_cups() -> void:
+	cups_raised.emit()
+
+
 func update_alive_players() -> void:
 	for player: LiarsDice.Player in LiarsDice.Player.COUNT:
-		if player == LiarsDice.Player.SELF: continue
-		if player in LiarsDice.alive_players:
-			player_models[player].alive = true
-			cups[player].visible = true
+		if player == LiarsDice.Player.SELF:
+			if not player in LiarsDice.alive_players:
+				player_shot.emit()
 		else:
-			player_models[player].alive = false
-			cups[player].visible = false
+			if player in LiarsDice.alive_players:
+				player_models[player].alive = true
+				cups[player].visible = true
+			else:
+				player_models[player].alive = false
+				cups[player].visible = false
+
+
+func spawn_gun() -> void:
+	gun.visible = true
+
+
+func enable_gun_pickup() -> void:
+	gun.can_pickup = true

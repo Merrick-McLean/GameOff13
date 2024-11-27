@@ -1,13 +1,14 @@
-[gd_scene load_steps=14 format=3 uid="uid://ckdxm5eyc6dyu"]
+[gd_scene load_steps=12 format=3 uid="uid://ckdxm5eyc6dyu"]
 
 [ext_resource type="Shader" path="res://shaders/dither.gdshader" id="1_kkj7l"]
 [ext_resource type="Texture2D" uid="uid://bisw3a062q3rs" path="res://sprites/test_palette.png" id="2_frn0b"]
 [ext_resource type="Texture2D" uid="uid://ganpsgv4yc3b" path="res://sprites/2px_bayer_matrix.png" id="3_ykl6o"]
-[ext_resource type="Script" path="res://scenes/rotating_box.gd" id="4_d2njp"]
 [ext_resource type="Script" path="res://scenes/shader_viewport_container.gd" id="4_os500"]
 [ext_resource type="PackedScene" uid="uid://b16hssfbhsywa" path="res://scenes/game_room.tscn" id="5_tyn2c"]
 [ext_resource type="PackedScene" uid="uid://cft13twrbtor" path="res://scenes/dialogue_display.tscn" id="6_0o7ya"]
 [ext_resource type="Shader" path="res://shaders/dither_ui.gdshader" id="8_2vlii"]
+[ext_resource type="PackedScene" uid="uid://da6iv0i5s0dxd" path="res://scenes/ambience/lightning_overlay.tscn" id="9_jrsup"]
+[ext_resource type="PackedScene" uid="uid://ckkdolg35aylw" path="res://scenes/ambience/gun_shot_overlay.tscn" id="10_aqcw8"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_r6w7f"]
 shader = ExtResource("1_kkj7l")
@@ -17,19 +18,6 @@ shader_parameter/u_offset = 0.0
 shader_parameter/u_dither_size = 2
 shader_parameter/u_dither_tex = ExtResource("3_ykl6o")
 shader_parameter/u_color_tex = ExtResource("2_frn0b")
-
-[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_xtfei"]
-sky_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
-ground_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
-
-[sub_resource type="Sky" id="Sky_nxw06"]
-sky_material = SubResource("ProceduralSkyMaterial_xtfei")
-
-[sub_resource type="Environment" id="Environment_6aa6d"]
-background_mode = 2
-sky = SubResource("Sky_nxw06")
-tonemap_mode = 2
-glow_enabled = true
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_83yqs"]
 shader = ExtResource("8_2vlii")
@@ -53,24 +41,10 @@ handle_input_locally = false
 size = Vector2i(960, 540)
 render_target_update_mode = 4
 
-[node name="Node3D" type="Node3D" parent="GameViewportContainer/SubViewport"]
-visible = false
-
-[node name="CSGBox3D" type="CSGBox3D" parent="GameViewportContainer/SubViewport/Node3D"]
-transform = Transform3D(-0.939243, -0.255285, 0.229453, 0.198803, 0.140351, 0.969936, -0.279814, 0.956623, -0.0810719, 0, 0, 0)
-script = ExtResource("4_d2njp")
-
-[node name="Camera3D" type="Camera3D" parent="GameViewportContainer/SubViewport/Node3D"]
-transform = Transform3D(0.936886, 0, 0.349635, 0, 1, 0, -0.349635, 0, 0.936886, 0.851067, 0.659195, 2.48332)
-
-[node name="DirectionalLight3D" type="DirectionalLight3D" parent="GameViewportContainer/SubViewport/Node3D"]
-transform = Transform3D(-0.866023, -0.433016, 0.250001, 0, 0.499998, 0.866027, -0.500003, 0.749999, -0.43301, 0, 0, 0)
-shadow_enabled = true
-
-[node name="WorldEnvironment" type="WorldEnvironment" parent="GameViewportContainer/SubViewport/Node3D"]
-environment = SubResource("Environment_6aa6d")
-
 [node name="GameRoom" parent="GameViewportContainer/SubViewport" instance=ExtResource("5_tyn2c")]
+
+[node name="Gun" parent="GameViewportContainer/SubViewport/GameRoom" index="29"]
+transform = Transform3D(-3.32587e-08, -0.760871, 0.648904, 1, -4.37114e-08, 0, 2.83645e-08, 0.648904, 0.760871, 0.848068, 0.670828, -0.0105947)
 
 [node name="UI" type="CanvasLayer" parent="."]
 scale = Vector2(2, 2)
@@ -97,3 +71,13 @@ render_target_update_mode = 4
 [node name="DialogueDisplay" parent="UI/SubViewportContainer/SubViewport" node_paths=PackedStringArray("viewport") instance=ExtResource("6_0o7ya")]
 mouse_filter = 1
 viewport = NodePath("../../../../GameViewportContainer/SubViewport")
+
+[node name="LightningOverlay" parent="UI/SubViewportContainer/SubViewport" instance=ExtResource("9_jrsup")]
+
+[node name="GunShotOverlay" parent="UI/SubViewportContainer/SubViewport" instance=ExtResource("10_aqcw8")]
+
+[connection signal="player_shot" from="GameViewportContainer/SubViewport/GameRoom/LiarsDicePhysical" to="UI/SubViewportContainer/SubViewport/GunShotOverlay" method="_on_liars_dice_physical_player_shot"]
+[connection signal="flashed" from="UI/SubViewportContainer/SubViewport/LightningOverlay" to="UI/SubViewportContainer/SubViewport/GunShotOverlay" method="_on_lightning_overlay_flashed"]
+[connection signal="transition_requested" from="UI/SubViewportContainer/SubViewport/GunShotOverlay" to="UI/SubViewportContainer/SubViewport/LightningOverlay" method="_on_gun_shot_overlay_transition_requested"]
+
+[editable path="GameViewportContainer/SubViewport/GameRoom"]

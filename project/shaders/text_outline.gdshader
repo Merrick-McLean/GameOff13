@@ -18,7 +18,7 @@ void vertex () {
 
 void fragment() {
 	vec2 outline_size = TEXTURE_PIXEL_SIZE * line_thickness;
-	
+
 	float outline = texture(TEXTURE, UV + vec2(-outline_size.x, 0)).a;
 	outline += texture(TEXTURE, UV + vec2(0, outline_size.y)).a;
 	outline += texture(TEXTURE, UV + vec2(outline_size.x, 0)).a;
@@ -28,9 +28,9 @@ void fragment() {
 	outline += texture(TEXTURE, UV + vec2(-outline_size.x, -outline_size.y)).a;
 	outline += texture(TEXTURE, UV + vec2(outline_size.x, -outline_size.y)).a;
 	outline = min(outline, 1.0);
-	
+
 	vec4 color = texture(TEXTURE, UV);
-	
+
 	if (full_uv.x < round(charge_percent * width + offset_x))
 		color.rgb = text_color_2.rgb;
 	else

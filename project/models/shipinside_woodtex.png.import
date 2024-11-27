@@ -1,0 +1,38 @@
+[remap]
+
+importer="texture"
+type="CompressedTexture2D"
+uid="uid://c6sghb3ve5kqy"
+path.s3tc="res://.godot/imported/shipinside_woodtex.png-1856ebb8dd1cd4e8191c075f758a00ed.s3tc.ctex"
+metadata={
+"imported_formats": ["s3tc_bptc"],
+"vram_texture": true
+}
+generator_parameters={
+"md5": "c54482c9932e453d7a1cd8c2ea0989ad"
+}
+
+[deps]
+
+source_file="res://models/shipinside_woodtex.png"
+dest_files=["res://.godot/imported/shipinside_woodtex.png-1856ebb8dd1cd4e8191c075f758a00ed.s3tc.ctex"]
+
+[params]
+
+compress/mode=2
+compress/high_quality=false
+compress/lossy_quality=0.7
+compress/hdr_compression=1
+compress/normal_map=0
+compress/channel_pack=0
+mipmaps/generate=true
+mipmaps/limit=-1
+roughness/mode=0
+roughness/src_normal=""
+process/fix_alpha_border=true
+process/premult_alpha=false
+process/normal_map_invert_y=false
+process/hdr_as_srgb=false
+process/hdr_clamp_exposure=false
+process/size_limit=0
+detect_3d/compress_to=0

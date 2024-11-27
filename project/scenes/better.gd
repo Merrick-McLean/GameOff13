@@ -10,6 +10,10 @@ signal bet_made(bet: LiarsDice.Round.Bet)
 @onready var die_count_label : Label = $HBoxContainer/DieCount/Label
 @onready var die_face_texture_rect : DieTextureRect = $HBoxContainer/DieFace/DieTextureRect
 
+
+@onready var bet_place_sound : AudioStreamPlayer = $Sounds/BetPlace
+
+
 var minimum_bet : LiarsDice.Round.Bet = LiarsDice.Round.Bet.new(3, 4)
 var maximum_bet : LiarsDice.Round.Bet = LiarsDice.Round.Bet.new(20, 6)
 var current_bet : LiarsDice.Round.Bet = minimum_bet.duplicate()
@@ -50,4 +54,5 @@ func override_current_bet(new_bet: LiarsDice.Round.Bet) -> void:
 
 
 func _on_button_pressed() -> void:
+	bet_place_sound.play()
 	bet_made.emit(current_bet)

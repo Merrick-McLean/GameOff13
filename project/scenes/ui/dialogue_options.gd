@@ -65,3 +65,7 @@ func load_options(options: Array, time_to_accept := 0.0) -> void:
 		dialogue_option.hitbox_scale = hitbox_scale
 		dialogue_option.hitbox_offset = Vector2.ZERO
 		dialogue_option.time_to_accept = time_to_accept
+		
+		if dialogue_option.text == "LIAR!": # hard coding this is gonna bite me in the ass later
+			dialogue_option.time_to_accept = 0.5
+			dialogue_option.shake_when_accepting = true

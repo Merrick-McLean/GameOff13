@@ -32,6 +32,7 @@ var STATE_POINTS : Array
 @onready var raise_point : Node3D = $Points/RaisePoint
 @onready var origin_point : Node3D = $Points/OriginPoint
 @onready var dice : Node3D = $Dice
+@onready var woosh_sound : AudioStreamPlayer = $Sounds/Woosh
 
 @export var amount_raised := 0.0 :
 	set(new_value):
@@ -45,7 +46,13 @@ var STATE_POINTS : Array
 		body.global_position = origin_point.global_position + from_origin
 		body.global_rotation = quaternion_rest.slerp(quaternion_raise, amount_raised).get_euler()
 
-@export var target_raised := false
+@export var target_raised := false :
+	set(new_value):
+		if target_raised == new_value: return
+		target_raised = new_value
+		if is_node_ready() and target_state == State.AT_PLAYER and player == LiarsDice.Player.SELF:
+			woosh_sound.pitch_scale = 1.0 if target_raised else 0.8
+			woosh_sound.play()
 @export var target_state := State.AT_PLAYER :
 	set(new_value):
 		target_state = new_value

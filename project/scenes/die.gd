@@ -22,5 +22,9 @@ const FACE_ANGLES: Array[Vector3] = [
 		model.rotation.x = angle.x
 		model.rotation.z = angle.z
 
+@export var is_alive := true :
+	set(new_value):
+		if is_alive == new_value: return
+		is_alive = new_value
 
 @onready var model := $Model

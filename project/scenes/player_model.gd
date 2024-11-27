@@ -14,9 +14,24 @@ extends Node3D
 
 @export var player : LiarsDice.Player
 
+@onready var model := $Model
+@onready var smoke_particles := $SmokeParticles
+@onready var poof_sound := $Sounds/PoofSound
+
+
+func _process(delta: float) -> void:
+	if Engine.is_editor_hint(): return
+	if Debug.is_just_pressed("test_9") and player == LiarsDice.Player.PIRATE_RIGHT:
+		_kill()
+	if Debug.is_just_pressed("test_8")  and player == LiarsDice.Player.PIRATE_RIGHT:
+		_revive()
+
 
 func _revive():
-	show()
+	model.show()
 
 func _kill():
-	hide()
+	GameMaster.shake_camera(0.15)
+	smoke_particles.restart()
+	poof_sound.play()
+	model.hide()

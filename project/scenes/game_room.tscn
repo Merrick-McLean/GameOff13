@@ -1,23 +1,30 @@
-[gd_scene load_steps=15 format=3 uid="uid://b16hssfbhsywa"]
+[gd_scene load_steps=24 format=3 uid="uid://b16hssfbhsywa"]
 
 [ext_resource type="PackedScene" uid="uid://co6ie20fg1lmn" path="res://scenes/player_camera.tscn" id="1_1eld7"]
+[ext_resource type="PackedScene" uid="uid://cp1mdl0122k8i" path="res://scenes/lamp.tscn" id="1_osw6r"]
 [ext_resource type="PackedScene" uid="uid://dp3dcgh3rplsu" path="res://scenes/camera_point.tscn" id="2_hvt05"]
 [ext_resource type="PackedScene" uid="uid://dgnuycsjsc12" path="res://scenes/cup_point.tscn" id="3_b0lh7"]
 [ext_resource type="PackedScene" uid="uid://c85itrrhsdk6l" path="res://scenes/dialogue_point.tscn" id="3_ig5u6"]
 [ext_resource type="PackedScene" uid="uid://dwmxnlp6u7b1h" path="res://scenes/player_model.tscn" id="3_t73bs"]
 [ext_resource type="PackedScene" uid="uid://dnc48jro3asqu" path="res://scenes/cup.tscn" id="4_2c5sg"]
+[ext_resource type="Texture2D" uid="uid://p0mrd7fy87vl" path="res://sprites/textures/woodtex.png" id="4_tqahv"]
 [ext_resource type="PackedScene" uid="uid://dvl383ispakmn" path="res://scenes/gui_panel/gui_panel_3d.tscn" id="5_bbb0q"]
-[ext_resource type="Script" path="res://scenes/liars_dice_physical.gd" id="7_324yd"]
+[ext_resource type="PackedScene" uid="uid://dhjdg84dddbbl" path="res://scenes/gun.tscn" id="9_jguw1"]
+[ext_resource type="PackedScene" uid="uid://un15mx44qam6" path="res://scenes/gun_point.tscn" id="10_5dxfy"]
+[ext_resource type="PackedScene" uid="uid://n4u7apj3cv6g" path="res://scenes/liars_dice_physical.tscn" id="12_70s8q"]
+[ext_resource type="PackedScene" uid="uid://c1rd8kcxjo5km" path="res://models/ship/shipinsidefinal.glb" id="12_hjdip"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_pqux5"]
-sky_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
+sky_top_color = Color(0, 0, 0, 1)
+sky_horizon_color = Color(0.150702, 0.155339, 0.162658, 1)
+sky_cover_modulate = Color(0, 0, 0, 1)
 ground_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
 
 [sub_resource type="Sky" id="Sky_r4o8d"]
 sky_material = SubResource("ProceduralSkyMaterial_pqux5")
 
 [sub_resource type="Environment" id="Environment_bj380"]
-background_mode = 2
+background_mode = 1
 sky = SubResource("Sky_r4o8d")
 tonemap_mode = 2
 glow_enabled = true
@@ -26,25 +33,65 @@ glow_enabled = true
 size = Vector2(10, 10)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_1qv4o"]
-albedo_color = Color(0.513726, 1, 1, 1)
+albedo_texture = ExtResource("4_tqahv")
+uv1_scale = Vector3(5, 5, 5)
 
 [sub_resource type="CylinderMesh" id="CylinderMesh_8qvhb"]
 top_radius = 0.7
 bottom_radius = 0.7
 height = 1.0
 
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_a180r"]
+emission_shape = 3
+emission_box_extents = Vector3(6, 0.5, 4)
+direction = Vector3(0.5, -1, 0)
+spread = 0.0
+initial_velocity_min = 15.0
+initial_velocity_max = 15.0
+color = Color(0.303233, 0.303233, 0.303233, 1)
+
+[sub_resource type="Curve" id="Curve_5xw0o"]
+_data = [Vector2(0, 0), 0.0, 3.62687, 0, 0, Vector2(0.164983, 0.312076), -0.145522, -0.145522, 0, 0, Vector2(0.996633, 0.0210313), -0.232835, 0.0, 0, 0]
+point_count = 3
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_lrmt2"]
+transparency = 1
+cull_mode = 2
+shading_mode = 0
+vertex_color_use_as_albedo = true
+use_particle_trails = true
+
+[sub_resource type="RibbonTrailMesh" id="RibbonTrailMesh_pw2ys"]
+material = SubResource("StandardMaterial3D_lrmt2")
+shape = 0
+size = 0.2
+sections = 2
+section_length = 0.1
+curve = SubResource("Curve_5xw0o")
+
 [node name="GameRoom" type="Node3D"]
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
-transform = Transform3D(-0.866023, -0.433016, 0.250001, 0, 0.499998, 0.866027, -0.500003, 0.749999, -0.43301, 0, 0, 0)
+transform = Transform3D(-0.325568, -0.436592, 0.838685, 0, 0.887011, 0.461749, -0.945519, 0.150331, -0.288782, 0, 0, 0)
+light_energy = 0.4
 shadow_enabled = true
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_bj380")
 
+[node name="Lamp" parent="." instance=ExtResource("1_osw6r")]
+light_energy = 0.5
+
+[node name="Lamp2" parent="." instance=ExtResource("1_osw6r")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.01061, -2.98792)
+light_energy = 0.3
+
 [node name="PlayerCamera" parent="." instance=ExtResource("1_1eld7")]
 transform = Transform3D(1, 0, 0, 0, 0.772157, 0.635432, 0, -0.635432, 0.772157, 0, 1.20637, 0.648128)
-fov = 65.0
+
+[node name="GunTablePoint2" parent="PlayerCamera" instance=ExtResource("10_5dxfy")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.123962, -0.192566, -0.405243)
+state = 1
 
 [node name="MainCameraPoint" parent="." instance=ExtResource("2_hvt05")]
 transform = Transform3D(1, 0, 0, 0, 0.97183, 0.235685, 0, -0.235685, 0.97183, 0, 1.1, 1.11775)
@@ -162,7 +209,25 @@ alpha = 0.0
 [node name="GUIPanel3D" parent="." instance=ExtResource("5_bbb0q")]
 transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0.136297, 0.645246, 0.654077)
 
-[node name="LiarsDicePhysical" type="Node" parent="." node_paths=PackedStringArray("player_camera", "gui_panel")]
-script = ExtResource("7_324yd")
+[node name="GunTablePoint" parent="." instance=ExtResource("10_5dxfy")]
+transform = Transform3D(-3.32587e-08, -0.760871, 0.648904, 1, -4.37114e-08, 0, 2.83645e-08, 0.648904, 0.760871, 0.848068, 0.670828, -0.0105947)
+state = 0
+
+[node name="Gun" parent="." instance=ExtResource("9_jguw1")]
+transform = Transform3D(-3.32587e-08, -0.760871, 0.648904, 1, -4.37114e-08, 0, 2.83645e-08, 0.648904, 0.760871, 0.848068, 0.670828, -0.0105947)
+can_pickup = true
+
+[node name="LiarsDicePhysical" parent="." node_paths=PackedStringArray("player_camera", "gui_panel", "gun") instance=ExtResource("12_70s8q")]
 player_camera = NodePath("../PlayerCamera")
 gui_panel = NodePath("../GUIPanel3D")
+gun = NodePath("../Gun")
+
+[node name="shipinsidefinal" parent="." instance=ExtResource("12_hjdip")]
+transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 0, -0.691706, 0)
+
+[node name="GPUParticles3D" type="GPUParticles3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.724381, 6.06009, -8.58568)
+amount = 64
+trail_enabled = true
+process_material = SubResource("ParticleProcessMaterial_a180r")
+draw_pass_1 = SubResource("RibbonTrailMesh_pw2ys")

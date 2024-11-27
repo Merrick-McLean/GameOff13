@@ -1,5 +1,5 @@
 class_name PlayerCamera
-extends Camera3D
+extends Node3D
 
 signal state_transition_completed(old_state: State, new_state: State)
 
@@ -13,6 +13,8 @@ enum State {
 }
 
 @onready var detector : RayCast3D = $Detector
+@onready var camera : Camera3D = $Camera
+@onready var shake_manager : CameraShakeManager = $ShakeManager
 
 var tween : Tween :
 	set(new_value):
@@ -30,12 +32,14 @@ var transition_percent := 0.0 :
 var is_active := false :
 	set(new_value):
 		is_active = new_value
-		current = is_active
+		camera.current = is_active
 		
 		if is_active:
 			Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
 		else:
 			Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
+
+
 
 var current_cup : Cup :
 	set(new_value):
@@ -50,6 +54,14 @@ var current_ui : GuiPanel :
 		if current_ui:
 			current_ui.update_mouse_position(Vector3.ZERO, false)
 		current_ui = new_value
+
+
+var current_gun : Gun :
+	set(new_value):
+		if current_gun == new_value: return
+		if current_gun: current_gun.is_hovered = false
+		current_gun = new_value
+		if current_gun: current_gun.is_hovered = true
 
 var mouse_position := Vector2.ONE / 2 :
 	set(new_value):
@@ -71,16 +83,19 @@ func _ready() -> void:
 	
 	for required_state: State in State.size():
 		if not state_points.has(required_state): push_warning("Missing camera state point for state " + str(required_state))
+	
+	GameMaster.straight_camera = $StraightCamera
 
 
 func _unhandled_input(event: InputEvent) -> void:
-	if event is InputEventMouseMotion:
+	if event is InputEventMouseMotion and GameMaster.player_in_world:
 		mouse_position += event.relative * SENSITIVITY
 
 func _process(delta: float) -> void:
 	var is_colliding := detector.is_colliding()
 	var new_cup : Cup = null
 	var new_ui : GuiPanel = null
+	var new_gun : Gun = null
 	if is_colliding:
 		var mask : int = detector.get_collider().collision_layer
 		if mask & CollisionLayer.ZOOM:
@@ -90,6 +105,9 @@ func _process(delta: float) -> void:
 			var collider := detector.get_collider()
 			new_ui = collider.gui_panel
 			new_ui.update_mouse_position(detector.get_collision_point())
+		if mask & CollisionLayer.GUN:
+			var collider := detector.get_collider()
+			new_gun = collider.get_parent()
 	
 	#if Debug.is_just_pressed(&"test_1"):
 		#transition_state(State.IN_GAME)
@@ -99,9 +117,10 @@ func _process(delta: float) -> void:
 	# update zoom
 	current_cup = new_cup
 	current_ui = new_ui
+	current_gun = new_gun
 	
-	fov = lerp(fov, ZOOMED_FOV if current_cup or state == State.AT_REVEAL else NORMAL_FOV, 10.0 * delta)
-	
+	camera.fov = lerp(camera.fov, ZOOMED_FOV if current_cup or state == State.AT_REVEAL else NORMAL_FOV, 10.0 * delta)
+	camera.rotation = shake_manager.get_shake_rotation(delta)
 	
 	## UPDATE ROTATION
 	var end_rotation := Vector3(
@@ -122,6 +141,10 @@ func _process(delta: float) -> void:
 	var end_position : Vector3 = state_points.get(state).global_position if state_points.has(state) else global_position
 	var start_position : Vector3 = state_points.get(old_state).global_position if state_points.has(old_state) else global_position
 	global_position = start_position.lerp(end_position, transition_percent)
+	
+	
+	if current_gun and current_gun.can_pickup and Input.is_action_just_pressed("interact"):
+		current_gun.state = Gun.State.WITH_PLAYER
 
 func get_max_rotation_up(for_state := state) -> float:
 	match(for_state):

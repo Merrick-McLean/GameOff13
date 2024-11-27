@@ -414,7 +414,7 @@ class Round: # should I jsut merge round and bet? - Simpler to just have one big
 		else:
 			await Dialogue.play(DialogueInstance.Id.CAPTAIN_SHOOTS).finished
 		
-		LiarsDice.physical.update_alive_players()
+		await LiarsDice.physical.update_alive_players()
 		
 		pass
 	
@@ -467,6 +467,7 @@ class Round: # should I jsut merge round and bet? - Simpler to just have one big
 			push_physical_dice(player)
 		
 		# REVEAL AND REACT
+		await LiarsDice.get_tree().create_timer(0.3).timeout
 		await LiarsDice.physical.reveal_dice()
 		await npc_react_result(caller, callee, loser)
 		return loser
@@ -594,7 +595,7 @@ class Round: # should I jsut merge round and bet? - Simpler to just have one big
 		func increment_face(face: int, amount: int) -> void:
 			face_counts[face - 1] += amount
 		
-		# returns the faces that are used the most. result is ordered from smallest face to largest
+		# returns the faces that are used the most. result is ordered from smallest face to largest in case of tie
 		func get_max_faces() -> Array[int]:
 			var result : Array[int] = []
 			var max_face := 1

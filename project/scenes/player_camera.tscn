@@ -1,15 +1,23 @@
-[gd_scene load_steps=2 format=3 uid="uid://co6ie20fg1lmn"]
+[gd_scene load_steps=3 format=3 uid="uid://co6ie20fg1lmn"]
 
 [ext_resource type="Script" path="res://scenes/player_camera.gd" id="1_fi3mq"]
+[ext_resource type="Script" path="res://scenes/camera_shake_manager.gd" id="2_qdcgq"]
 
-[node name="PlayerCamera" type="Camera3D"]
-transform = Transform3D(1, 0, 0, 0, 0.97183, 0.235685, 0, -0.235685, 0.97183, 0, 1.1, 1.59177)
-current = true
-fov = 55.0
+[node name="PlayerCamera" type="Node3D"]
 script = ExtResource("1_fi3mq")
 
 [node name="Detector" type="RayCast3D" parent="."]
 target_position = Vector3(0, 0, -10)
-collision_mask = 6
+collision_mask = 14
 collide_with_areas = true
 collide_with_bodies = false
+
+[node name="Camera" type="Camera3D" parent="."]
+current = true
+fov = 55.0
+
+[node name="StraightCamera" type="Camera3D" parent="."]
+fov = 55.0
+
+[node name="ShakeManager" type="Node" parent="."]
+script = ExtResource("2_qdcgq")
