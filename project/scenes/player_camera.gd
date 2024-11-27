@@ -83,6 +83,8 @@ func _ready() -> void:
 	
 	for required_state: State in State.size():
 		if not state_points.has(required_state): push_warning("Missing camera state point for state " + str(required_state))
+	
+	GameMaster.straight_camera = $StraightCamera
 
 
 func _unhandled_input(event: InputEvent) -> void:

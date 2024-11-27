@@ -3,7 +3,7 @@ extends Node
 
 var camera_shaker : CameraShakeManager
 var player_in_world := true
-
+var straight_camera : Camera3D
 
 
 func shake_camera(shake_amount: float) -> void:

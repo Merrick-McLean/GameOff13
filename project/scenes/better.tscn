@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=3 uid="uid://ckf78w5o2weeq"]
+[gd_scene load_steps=11 format=3 uid="uid://ckf78w5o2weeq"]
 
 [ext_resource type="Script" path="res://scenes/better.gd" id="1_66jhb"]
 [ext_resource type="PackedScene" uid="uid://d2yutb46w43jl" path="res://scenes/ui/incrementor.tscn" id="1_hwthd"]
@@ -9,6 +9,7 @@
 [ext_resource type="Texture2D" uid="uid://bwxtgnyr8682f" path="res://sprites/die_faces/4.png" id="7_ah1mw"]
 [ext_resource type="Texture2D" uid="uid://cshvtkd0t8cmk" path="res://sprites/die_faces/5.png" id="8_wpuk5"]
 [ext_resource type="Texture2D" uid="uid://b0imyn6sd2nyc" path="res://sprites/die_faces/6.png" id="9_nwyhl"]
+[ext_resource type="AudioStream" uid="uid://ekli2xcj4b6q" path="res://sounds/bet_place.wav" id="11_16ctr"]
 
 [node name="Better" type="Control"]
 layout_mode = 3
@@ -69,5 +70,10 @@ self_modulate = Color(0, 0, 0, 1)
 custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
 text = "Place"
+
+[node name="Sounds" type="Node" parent="."]
+
+[node name="BetPlace" type="AudioStreamPlayer" parent="Sounds"]
+stream = ExtResource("11_16ctr")
 
 [connection signal="pressed" from="HBoxContainer/Button" to="." method="_on_button_pressed"]

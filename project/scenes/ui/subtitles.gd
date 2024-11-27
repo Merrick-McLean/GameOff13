@@ -15,6 +15,8 @@ const SIDE_BUFFER := 10
 			await ready
 		label.add_theme_font_override(&"normal_font", font)
 
+@onready var talk_1_sound := $Sounds/Talk1
+
 var regex : RegEx
 var speed := DEFAULT_SPEED
 var line : ParsedLine :
@@ -30,11 +32,16 @@ var can_skip := true
 var pause_time := 0.0
 var char_index := 0.0 :
 	set(new_value):
+		var old_value := char_index
 		char_index = new_value
 		label.visible_characters = floor(max(char_index, 0.0))
 		
 		if line:
 			label.size.x = font.get_string_size(line.bbcodeless_text.left(get_visible_character_count())).x + 4 # + 4 for outline
+		
+		if int(old_value) < int(char_index) and char_index < line.text.length() - 5:
+			talk_1_sound.pitch_scale = randf_range(0.9, 1.1)
+			talk_1_sound.play()
 		
 		_update_position()
 

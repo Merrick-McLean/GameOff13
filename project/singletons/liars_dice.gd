@@ -467,6 +467,7 @@ class Round: # should I jsut merge round and bet? - Simpler to just have one big
 			push_physical_dice(player)
 		
 		# REVEAL AND REACT
+		await LiarsDice.get_tree().create_timer(0.3).timeout
 		await LiarsDice.physical.reveal_dice()
 		await npc_react_result(caller, callee, loser)
 		return loser

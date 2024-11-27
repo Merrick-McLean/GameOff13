@@ -1,4 +1,4 @@
-[gd_scene load_steps=25 format=3 uid="uid://b16hssfbhsywa"]
+[gd_scene load_steps=24 format=3 uid="uid://b16hssfbhsywa"]
 
 [ext_resource type="PackedScene" uid="uid://co6ie20fg1lmn" path="res://scenes/player_camera.tscn" id="1_1eld7"]
 [ext_resource type="PackedScene" uid="uid://cp1mdl0122k8i" path="res://scenes/lamp.tscn" id="1_osw6r"]
@@ -12,7 +12,6 @@
 [ext_resource type="Script" path="res://scenes/liars_dice_physical.gd" id="7_324yd"]
 [ext_resource type="PackedScene" uid="uid://dhjdg84dddbbl" path="res://scenes/gun.tscn" id="9_jguw1"]
 [ext_resource type="PackedScene" uid="uid://un15mx44qam6" path="res://scenes/gun_point.tscn" id="10_5dxfy"]
-[ext_resource type="PackedScene" uid="uid://3v4bvwmccww3" path="res://models/shipinside.glb" id="12_6kpa0"]
 [ext_resource type="PackedScene" uid="uid://c1rd8kcxjo5km" path="res://models/ship/shipinsidefinal.glb" id="12_hjdip"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_pqux5"]
@@ -81,6 +80,7 @@ shadow_enabled = true
 environment = SubResource("Environment_bj380")
 
 [node name="Lamp" parent="." instance=ExtResource("1_osw6r")]
+light_energy = 0.5
 
 [node name="Lamp2" parent="." instance=ExtResource("1_osw6r")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.01061, -2.98792)
@@ -225,10 +225,6 @@ gun = NodePath("../Gun")
 
 [node name="shipinsidefinal" parent="." instance=ExtResource("12_hjdip")]
 transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 0, -0.691706, 0)
-
-[node name="shipinside" parent="." instance=ExtResource("12_6kpa0")]
-transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 0, -0.691706, 0)
-visible = false
 
 [node name="GPUParticles3D" type="GPUParticles3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.724381, 6.06009, -8.58568)

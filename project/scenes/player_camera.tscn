@@ -16,5 +16,8 @@ collide_with_bodies = false
 current = true
 fov = 55.0
 
+[node name="StraightCamera" type="Camera3D" parent="."]
+fov = 55.0
+
 [node name="ShakeManager" type="Node" parent="."]
 script = ExtResource("2_qdcgq")

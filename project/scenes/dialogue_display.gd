@@ -27,9 +27,6 @@ func _ready() -> void:
 		)
 		assert(not error)
 	
-	dialogue_options_uis[Dialogue.Actor.CAPTAIN].load_options(["TEST"])
-	dialogue_options_uis[Dialogue.Actor.PIRATE_RIGHT].load_options(["TEST", "other one"])
-	
 	Dialogue.display = self
 
 

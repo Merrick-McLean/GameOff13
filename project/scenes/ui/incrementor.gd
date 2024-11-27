@@ -24,14 +24,18 @@ signal value_changed(old_value: int, new_value: int)
 
 @onready var increase_button : Button = $IncreaseButton
 @onready var decrease_button : Button = $DecreaseButton
+@onready var bet_increase_sound : AudioStreamPlayer = $Sounds/BetIncrease
+@onready var bet_decrease_sound : AudioStreamPlayer = $Sounds/BetDecrease
 
 
 func _on_increase_button_pressed() -> void:
 	value += 1
+	bet_increase_sound.play()
 
 
 func _on_decrease_button_pressed() -> void:
 	value -= 1
+	bet_decrease_sound.play()
 
 
 func _clamp_value() -> void:
