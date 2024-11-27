@@ -1,7 +1,8 @@
-[gd_scene load_steps=11 format=3 uid="uid://dwmxnlp6u7b1h"]
+[gd_scene load_steps=12 format=3 uid="uid://dwmxnlp6u7b1h"]
 
 [ext_resource type="Script" path="res://scenes/player_model.gd" id="1_ed6li"]
 [ext_resource type="Texture2D" uid="uid://dp2bsm08yqas1" path="res://sprites/smoke.png" id="2_ar825"]
+[ext_resource type="AudioStream" uid="uid://d2yl88pet03hd" path="res://sounds/smoke_poof.wav" id="3_yfrvm"]
 
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_4s0jj"]
 
@@ -73,5 +74,10 @@ draw_pass_1 = SubResource("QuadMesh_f14h2")
 [node name="CSGBox3D" type="CSGBox3D" parent="."]
 visible = false
 size = Vector3(1, 2, 1)
+
+[node name="Sounds" type="Node" parent="."]
+
+[node name="PoofSound" type="AudioStreamPlayer" parent="Sounds"]
+stream = ExtResource("3_yfrvm")
 
 [connection signal="finished" from="SmokeParticles" to="SmokeParticles" method="_on_finished"]

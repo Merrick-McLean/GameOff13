@@ -33,13 +33,21 @@ var hold_time := 0.0 :
 		
 var is_hovered := false :
 	set(new_value):
+		var old_value = is_hovered
 		is_hovered = new_value
 		label.material.set_shader_parameter(&"text_color", Color.WHITE if is_hovered else Color.GRAY)
+		if old_value == new_value: return
+		if visible and is_hovered:
+			hover_sound.pitch_scale = randf_range(0.9, 1.1) * 0.33
+			hover_sound.play()
+		
 
 @onready var label : Label = $Offset/Label
 @onready var offset : Control = $Offset
 @onready var suspense_sound : AudioStreamPlayer = $Sounds/Suspense
 @onready var accuse_sound : AudioStreamPlayer = $Sounds/Accuse
+@onready var hover_sound : AudioStreamPlayer = $Sounds/Hover
+@onready var select_sound : AudioStreamPlayer = $Sounds/Select
 
 func _process(delta: float) -> void:
 	var rect := get_global_rect()
@@ -51,6 +59,7 @@ func _process(delta: float) -> void:
 	var is_accepting := false
 	if visible and is_hovered:
 		if time_to_accept == 0.0 and Input.is_action_just_pressed("interact") and GameMaster.player_in_world:
+			select_sound.play()
 			selected.emit()
 		elif get_hold_percentage() < 1.0 and Input.is_action_pressed("interact") and GameMaster.player_in_world:
 			hold_time += delta

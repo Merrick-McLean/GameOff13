@@ -16,6 +16,7 @@ extends Node3D
 
 @onready var model := $Model
 @onready var smoke_particles := $SmokeParticles
+@onready var poof_sound := $Sounds/PoofSound
 
 
 func _process(delta: float) -> void:
@@ -32,4 +33,5 @@ func _revive():
 func _kill():
 	GameMaster.shake_camera(0.15)
 	smoke_particles.restart()
+	poof_sound.play()
 	model.hide()

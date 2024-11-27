@@ -67,5 +67,5 @@ func load_options(options: Array, time_to_accept := 0.0) -> void:
 		dialogue_option.time_to_accept = time_to_accept
 		
 		if dialogue_option.text == "LIAR!": # hard coding this is gonna bite me in the ass later
-			dialogue_option.time_to_accept = 1.0
+			dialogue_option.time_to_accept = 0.5
 			dialogue_option.shake_when_accepting = true
