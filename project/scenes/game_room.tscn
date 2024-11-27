@@ -9,9 +9,9 @@
 [ext_resource type="PackedScene" uid="uid://dnc48jro3asqu" path="res://scenes/cup.tscn" id="4_2c5sg"]
 [ext_resource type="Texture2D" uid="uid://p0mrd7fy87vl" path="res://sprites/textures/woodtex.png" id="4_tqahv"]
 [ext_resource type="PackedScene" uid="uid://dvl383ispakmn" path="res://scenes/gui_panel/gui_panel_3d.tscn" id="5_bbb0q"]
-[ext_resource type="Script" path="res://scenes/liars_dice_physical.gd" id="7_324yd"]
 [ext_resource type="PackedScene" uid="uid://dhjdg84dddbbl" path="res://scenes/gun.tscn" id="9_jguw1"]
 [ext_resource type="PackedScene" uid="uid://un15mx44qam6" path="res://scenes/gun_point.tscn" id="10_5dxfy"]
+[ext_resource type="PackedScene" uid="uid://n4u7apj3cv6g" path="res://scenes/liars_dice_physical.tscn" id="12_70s8q"]
 [ext_resource type="PackedScene" uid="uid://c1rd8kcxjo5km" path="res://models/ship/shipinsidefinal.glb" id="12_hjdip"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_pqux5"]
@@ -217,8 +217,7 @@ state = 0
 transform = Transform3D(-3.32587e-08, -0.760871, 0.648904, 1, -4.37114e-08, 0, 2.83645e-08, 0.648904, 0.760871, 0.848068, 0.670828, -0.0105947)
 can_pickup = true
 
-[node name="LiarsDicePhysical" type="Node" parent="." node_paths=PackedStringArray("player_camera", "gui_panel", "gun")]
-script = ExtResource("7_324yd")
+[node name="LiarsDicePhysical" parent="." node_paths=PackedStringArray("player_camera", "gui_panel", "gun") instance=ExtResource("12_70s8q")]
 player_camera = NodePath("../PlayerCamera")
 gui_panel = NodePath("../GUIPanel3D")
 gun = NodePath("../Gun")

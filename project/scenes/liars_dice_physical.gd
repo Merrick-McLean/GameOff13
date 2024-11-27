@@ -3,6 +3,7 @@ extends Node
 
 signal interact_pressed
 signal player_shot
+signal cups_raised
 
 @export var player_camera : PlayerCamera
 @export var gui_panel : GuiPanel
@@ -10,6 +11,7 @@ signal player_shot
 @onready var cups := get_tree().get_nodes_in_group(&"Cups")
 @onready var player_models := get_tree().get_nodes_in_group(&"PlayerModels")
 @onready var better : Better = gui_panel.better
+@onready var animation_player : AnimationPlayer = $AnimationPlayer
 
 func _ready() -> void:
 	assert(gun, "Missing gun!")
@@ -61,7 +63,10 @@ func reveal_dice() -> void:
 		cup.target_raised = false
 	player_camera.transition_state(PlayerCamera.State.AT_REVEAL)
 	
-	await player_camera.state_transition_completed
+	#await player_camera.state_transition_completed
+	animation_player.stop()
+	animation_player.play("drum_roll")
+	await cups_raised
 	
 	for cup: Cup in cups:
 		cup.target_raised = true
@@ -71,6 +76,10 @@ func reveal_dice() -> void:
 	player_camera.transition_state(PlayerCamera.State.IN_GAME)
 	
 	await player_camera.state_transition_completed
+
+
+func _lift_cups() -> void:
+	cups_raised.emit()
 
 
 func update_alive_players() -> void:
