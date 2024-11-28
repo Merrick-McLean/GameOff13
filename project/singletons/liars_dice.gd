@@ -32,7 +32,7 @@ func reset() -> void:
 func _process(delta: float) -> void:
 	if Debug.is_just_pressed("test_7") and round == null:
 		while Player.SELF in alive_players:
-			var round := Round.new(alive_players, {
+			round = Round.new(alive_players, {
 				Player.SELF: 5,
 				Player.PIRATE_RIGHT: 4,
 				Player.CAPTAIN: 4,

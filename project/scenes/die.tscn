@@ -1,7 +1,8 @@
-[gd_scene load_steps=11 format=3 uid="uid://c30xeocvlomln"]
+[gd_scene load_steps=12 format=3 uid="uid://c30xeocvlomln"]
 
 [ext_resource type="PackedScene" uid="uid://xdcxk1fy1a4c" path="res://models/dice.glb" id="1_83iww"]
 [ext_resource type="Script" path="res://scenes/die.gd" id="1_bsxf0"]
+[ext_resource type="AudioStream" uid="uid://d2yl88pet03hd" path="res://sounds/smoke_poof.wav" id="3_j01fv"]
 
 [sub_resource type="Gradient" id="Gradient_h41t6"]
 offsets = PackedFloat32Array(0, 0.170124, 0.460581, 0.680498, 1)
@@ -20,18 +21,18 @@ curve = SubResource("Curve_hotaf")
 [sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_3x1di"]
 lifetime_randomness = 0.04
 emission_shape = 3
-emission_box_extents = Vector3(0.4, 1, 0.4)
+emission_box_extents = Vector3(0.01, 0.01, 0.01)
 angle_min = -316.3
 angle_max = 360.0
 direction = Vector3(0, 1, 0)
-spread = 100.0
-initial_velocity_min = 1.0
-initial_velocity_max = 1.5
+spread = 80.0
+initial_velocity_min = 0.1
+initial_velocity_max = 0.15
 angular_velocity_min = -84.07
 angular_velocity_max = 70.08
-gravity = Vector3(0, 4, 0)
-damping_min = 2.637
-damping_max = 4.0
+gravity = Vector3(0, 0.8, 0)
+damping_min = 0.879
+damping_max = 1.0
 scale_min = 0.5
 scale_curve = SubResource("CurveTexture_bp0ft")
 color_ramp = SubResource("GradientTexture1D_1nhcg")
@@ -51,7 +52,7 @@ particles_anim_loop = false
 
 [sub_resource type="QuadMesh" id="QuadMesh_lemvq"]
 material = SubResource("StandardMaterial3D_5dfrt")
-size = Vector2(0.7, 0.7)
+size = Vector2(0.04, 0.04)
 
 [node name="Die" type="Node3D"]
 transform = Transform3D(1, 0, 0, 0, 1, -1.74846e-07, 0, 1.74846e-07, 1, 0, 0, 0)
@@ -62,12 +63,16 @@ transform = Transform3D(0.15, 0, 0, 0, 1.78873e-09, 0.15, 0, -0.15, 1.78873e-09,
 
 [node name="SmokeParticles" type="GPUParticles3D" parent="."]
 emitting = false
-amount = 50
-lifetime = 1.4
+amount = 10
+lifetime = 0.6
 one_shot = true
 explosiveness = 0.98
 randomness = 0.46
 process_material = SubResource("ParticleProcessMaterial_3x1di")
 draw_pass_1 = SubResource("QuadMesh_lemvq")
+
+[node name="SmokePoofSound" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("3_j01fv")
+volume_db = -9.0
 
 [connection signal="finished" from="SmokeParticles" to="SmokeParticles" method="_on_finished"]

@@ -26,5 +26,11 @@ const FACE_ANGLES: Array[Vector3] = [
 	set(new_value):
 		if is_alive == new_value: return
 		is_alive = new_value
+		model.visible = is_alive
+		if not is_alive:
+			smoke_particles.restart()
+			smoke_poof_sound.play()
 
+@onready var smoke_particles := $SmokeParticles
 @onready var model := $Model
+@onready var smoke_poof_sound := $SmokePoofSound
