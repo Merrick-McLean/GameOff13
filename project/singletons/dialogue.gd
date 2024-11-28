@@ -16,9 +16,9 @@ enum Actor {
 func _process(delta: float) -> void:
 	if Debug.is_just_pressed(&"test_0"):
 		var instance : DialogueInstance
-		instance = play(DialogueInstance.Id.TEST_1)
+		instance = play(DialogueInstance.Id.INTRO_DIALOGUE)
 		await instance.finished
-		instance = play(DialogueInstance.Id.TEST_2)
+		instance = play(DialogueInstance.Id.GAME_INSTRUCTIONS)
 		await instance.finished
 
 
@@ -30,11 +30,10 @@ func play(dialogue_id: DialogueInstance.Id, args := {}) -> DialogueInstance:
 
 func get_actor_name(actor : Actor) -> String:
 	assert(actor < Actor.COUNT)
-	return [
-		"Captain",
-		"Pirate 1",
-		"Pirate 2"
-	][actor]
+	var known = ["Reaver","Roberts","Shaw"]
+	# reference progress to add names
+	# var known = ["???","???","???"]
+	return known[actor]
 
 
 func get_die_face_string(face: int, plural := false) -> String:
