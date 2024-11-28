@@ -43,6 +43,8 @@ func start_game() -> void:
 	for cup: Cup in cups:
 		cup.target_state = Cup.State.AT_PLAYER
 		cup.target_raised = false
+		for die: Die in cup.dice.get_children():
+			die.is_alive = true
 	player_camera.transition_state(PlayerCamera.State.IN_GAME)
 
 
@@ -68,8 +70,10 @@ func reveal_dice() -> void:
 	animation_player.play("drum_roll")
 	await cups_raised
 	
-	for cup: Cup in cups:
-		cup.target_raised = true
+	
+	await get_tree().create_timer(1.0).timeout
+	
+	await kill_unwanted_dice()
 	
 	await interact_pressed
 	
@@ -78,7 +82,17 @@ func reveal_dice() -> void:
 	await player_camera.state_transition_completed
 
 
+func kill_unwanted_dice() -> void:
+	for cup: Cup in cups:
+		for die: Die in cup.dice.get_children():
+			if die.face != LiarsDice.round.current_bet.value:
+				die.is_alive = false
+				await get_tree().create_timer(0.05).timeout
+
+
 func _lift_cups() -> void:
+	for cup: Cup in cups:
+		cup.target_raised = true
 	cups_raised.emit()
 
 
