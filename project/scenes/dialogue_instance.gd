@@ -7,18 +7,52 @@ enum Id {
 	TEST_1,
 	TEST_2,
 	ROUND_START_1,
-	PIRATE_BET_1,
-	PIRATE_CALL_1,
-	PIRATE_LOSE_1,
-	PIRATE_WIN_1,
-	PIRATE_DEATH_1,
+	NPC_BET_1,
+	NPC_CALL_1,
+	NPC_LOSE_1,
+	NPC_WIN_1,
+	NPC_DEATH_1,
 	QUERY_LIAR,
 	CAPTAIN_SHOOTS,
+	
+	## PIRATE DIALOGUE
+	PIRATE_NAME,
+	PIRATE_NAME_2,
+	PIRATE_DEATH_1,
+	PIRATE_DEATH_2,
+	PIRATE_DEATH_3,
+	PIRATE_NOW,
+	PIRATE_SECRET_FAIL,
+	PIRATE_SECRET,
+	
+	## NAVY DIALOGUE
+	NAVY_NAME,
+	NAVY_NOW_1,
+	NAVY_NOW_2,
+	NAVY_SHIP,
+	NAVY_SHIP_2,
+	NAVY_EVENT_1,
+	NAVY_IS_NAVY,
+	NAVY_SECRET_FAIL,
+	NAVY_SECRET,
+	NAVY_SECRET_2,
+	
+	## CAPTAIN DIALGOUE
+	CAPTAIN_NAME,
+	CAPTAIN_KNOW_SECRET,
+	CAPTAIN_SHIP,
+	CAPTAIN_SHIP_2,
+	CAPTAIN_CREW,
+	CAPTAIN_NOW,
+	
+	## NOT REAL DIALOGUES
+	LIAR,
+	PASS
 }
 
 var display : DialogueDisplay
-var id : Id
-var args : Dictionary
+var my_id : Id
+var arguments : Dictionary
 var is_playing := false
 
 var dialogues : Dictionary = {
@@ -46,38 +80,50 @@ var dialogues : Dictionary = {
 		display.clear_speach()
 		return {},
 	
-	Id.PIRATE_BET_1: func(args: Dictionary) -> Dictionary:
+	Id.NPC_BET_1: func(args: Dictionary) -> Dictionary:
 		var actor : Dialogue.Actor = args.actor
 		var bet : LiarsDice.Round.Bet = args.bet
 		
 		display.clear_options()
-		await display.say(actor, "I bet " + str(bet.amount) + " " + Dialogue.get_die_face_string(bet.value, bet.amount != 1))
+		await display.say(actor, "I bet " + str(bet.amount) + " " + Dialogue.get_die_face_string(bet.value, bet.amount != 1), false)
 		return {},
 	
-	Id.PIRATE_CALL_1: func(args: Dictionary) -> Dictionary:
+	Id.NPC_CALL_1: func(args: Dictionary) -> Dictionary:
 		display.clear_options()
 		await display.say(args.actor, str(args.bet.amount) + " " + Dialogue.get_die_face_string(args.bet.value, args.bet.amount != 1) + "? You're a liar!")
 		display.clear_speach()
 		return {},
 	
-	Id.PIRATE_LOSE_1: func(args: Dictionary) -> Dictionary:
+	Id.NPC_LOSE_1: func(args: Dictionary) -> Dictionary:
 		display.clear_options()
 		await display.say(args.actor, "Well played lad.")
 		display.clear_speach()
 		return {},
 	
-	Id.PIRATE_WIN_1: func(args: Dictionary) -> Dictionary:
+	Id.NPC_WIN_1: func(args: Dictionary) -> Dictionary:
 		display.clear_options()
 		await display.say(args.actor, "I knew it. Goodbye lad.")
 		display.clear_speach()
 		return {},
 	
 	Id.QUERY_LIAR: func(args: Dictionary) -> Dictionary:
-		var result := await display.push_options([OptionSet.new(args.actor, ["LIAR!", "Pass"])])
-		display.clear_speach()
-		return {"called": result.index == 0},
+		
+		var options : Array[OptionSet]
+		var possible_ids := {}
+		for actor: Dialogue.Actor in args.actors:
+			possible_ids[actor] = get_npc_dialogue_options(actor, args.better == actor)
+			if possible_ids.is_empty(): continue
+			options.append(OptionSet.new(actor, possible_ids[actor].map(get_dialogue_option_lead)))
+		
+		var option_result := await display.push_options(options)
+		var chosen_id : DialogueInstance.Id = possible_ids[option_result.actor][option_result.index]
+		
+		display.clear_options()
+		var result : Dictionary = await Dialogue.play(chosen_id).finished
+		
+		return {"called": result.get("called", false)},
 	
-	Id.PIRATE_DEATH_1: func(args: Dictionary) -> Dictionary:
+	Id.NPC_DEATH_1: func(args: Dictionary) -> Dictionary:
 		display.clear_options()
 		await display.say(args.actor, "It's time for me to go.")
 		display.clear_speach()
@@ -88,26 +134,356 @@ var dialogues : Dictionary = {
 		await display.say(Dialogue.Actor.CAPTAIN, "I shoot you now.")
 		display.clear_speach()
 		return {},
+	
+	######################################
+	## PIRATE DIALOGUE
+	######################################
+	Id.PIRATE_NAME: func(args: Dictionary) -> Dictionary:
+		display.clear_options()
+		await display.say(Dialogue.Actor.PIRATE_LEFT, "Anton Roberts...");
+		Progress.know_pirate_name = true
+		await display.say(Dialogue.Actor.PIRATE_LEFT, "though most just called me Snarling Roberts. ");
+		await display.say(Dialogue.Actor.PIRATE_LEFT, "Proud bo's'n aboard the Scourge of Port Royal...");
+		await display.say(Dialogue.Actor.PIRATE_LEFT, "till its very end.");
+		display.clear_speach()
+		return {},
+	
+	Id.PIRATE_NAME_2: func(args: Dictionary) -> Dictionary:
+		display.clear_options()
+		await display.say(Dialogue.Actor.PIRATE_LEFT, "I earned the name 'cause I kept me crew in line ");
+		await display.say(Dialogue.Actor.PIRATE_LEFT, "with a tongue sharp as me blade.");
+		Progress.know_pirate_name_backstory = true
+		display.clear_speach()
+		return {},
+	
+	Id.PIRATE_DEATH_1: func(args: Dictionary) -> Dictionary:
+		display.clear_options()
+		await display.say(Dialogue.Actor.PIRATE_LEFT, "When I went to the depths, ");
+		await display.say(Dialogue.Actor.PIRATE_LEFT, "Captain Skinner offered me to join his crew. ");
+		await display.say(Dialogue.Actor.PIRATE_LEFT, "Gave me a second chance, he did.");
+		Progress.know_pirate_recruitment = true
+		display.clear_speach()
+		return {},
+	
+	Id.PIRATE_DEATH_2: func(args: Dictionary) -> Dictionary:
+		display.clear_options()
+		await display.say(Dialogue.Actor.PIRATE_LEFT, "I wish I could say nobly. But our crew fell for greed.");
+		await display.say(Dialogue.Actor.PIRATE_LEFT, "We was around Bellaforma, after some booty.");
+		await display.say(Dialogue.Actor.PIRATE_LEFT, "Anchored down, and I, among a few, was left to the ship.");
+		await display.say(Dialogue.Actor.PIRATE_LEFT, "I hear call from above deck...");
+		await display.say(Dialogue.Actor.PIRATE_LEFT, "a little boat from the lee side o' the island, guns a blazing.");
+		display.clear_speach()
+		return {},
+	
+	Id.PIRATE_DEATH_3: func(args: Dictionary) -> Dictionary:
+		display.clear_options()
+		await display.say(Dialogue.Actor.PIRATE_LEFT, "Nay. In the Quarters I was.");
+		await display.say(Dialogue.Actor.PIRATE_LEFT, "Suddenly came footsteps, then the smell of gunpowder...");
+		await display.say(Dialogue.Actor.PIRATE_LEFT, "the flash o' a golden gun...");
+		await display.say(Dialogue.Actor.PIRATE_LEFT, "and a searing pain in my back.");
+		await display.say(Dialogue.Actor.PIRATE_LEFT, "Wasn't much of a battle,");
+		await display.say(Dialogue.Actor.PIRATE_LEFT, "more an unfortuante turn o'events.");
+		Progress.know_pirate_death = true
+		display.clear_speach()
+		return {},
+	
+	Id.PIRATE_NOW: func(args: Dictionary) -> Dictionary:
+		display.clear_options()
+		await display.say(Dialogue.Actor.PIRATE_LEFT, "Feels not much like a pirate life, if ye ask me.");
+		await display.say(Dialogue.Actor.PIRATE_LEFT, "We be stuck on this cursed shore... ");
+		await display.say(Dialogue.Actor.PIRATE_LEFT, "no treasure or glory to claim.");
+		display.clear_speach()
+		return {},
+	
+	Id.PIRATE_SECRET_FAIL: func(args: Dictionary) -> Dictionary:
+		display.clear_options()
+		if LiarsDice.Player.PIRATE_RIGHT in LiarsDice.alive_players:
+			await display.say(Dialogue.Actor.PIRATE_LEFT, "Nay...");
+			await display.say(Dialogue.Actor.PIRATE_LEFT, "and I wont reveal any tricks around certain company neither...");
+		else:
+			await Dialogue.play(Id.PIRATE_SECRET).finished
+		display.clear_speach()
+		return {},
+	
+	Id.PIRATE_SECRET: func(args: Dictionary) -> Dictionary:
+		display.clear_options()
+		await display.say(Dialogue.Actor.PIRATE_LEFT, "Just between us, my dice aren't as random as yours.");
+		await display.say(Dialogue.Actor.PIRATE_LEFT, "With weighted dice, I don't be takin' chances no more.");
+		display.clear_speach()
+		return {},
+	
+
+	######################################
+	## NAVY DIALOGUE
+	######################################
+	Id.NAVY_NAME: func(args: Dictionary) -> Dictionary:
+		display.clear_options()
+		await display.say(Dialogue.Actor.PIRATE_RIGHT, "Me name be Elias Shaw.");
+		await display.say(Dialogue.Actor.PIRATE_RIGHT, "A hand aboard The Skipping Hen.");
+		Progress.know_navy_name = true
+		display.clear_speach()
+		return {},
+	
+	Id.NAVY_NOW_1: func(args: Dictionary) -> Dictionary:
+		display.clear_options()
+		await display.say(Dialogue.Actor.PIRATE_RIGHT, "I'm as sharp as a cutlass");
+		await display.say(Dialogue.Actor.PIRATE_RIGHT, "It just be the roguish complexion that curses me now.");
+		display.clear_speach()
+		return {},
+	
+	Id.NAVY_NOW_2: func(args: Dictionary) -> Dictionary:
+		display.clear_options()
+		await display.say(Dialogue.Actor.PIRATE_RIGHT, "Aye, we are... but not what we once were. ");
+		await display.say(Dialogue.Actor.PIRATE_RIGHT, "We be bound by this cursed shore. ");
+		await display.say(Dialogue.Actor.PIRATE_RIGHT, "Thanks to Captin Reaver, we live... but not truly.");
+		display.clear_speach()
+		return {},
+	
+	Id.NAVY_SHIP: func(args: Dictionary) -> Dictionary:
+		display.clear_options()
+		await display.say(Dialogue.Actor.PIRATE_RIGHT, "The Skipping Hen was a small ship, only 30 of us,");
+		await display.say(Dialogue.Actor.PIRATE_RIGHT, "she was s'pose to be quick and unpredictable...");
+		await display.say(Dialogue.Actor.PIRATE_RIGHT, "wasn’t much of a ship, barely held together. ");
+		display.clear_speach()
+		return {},
+	
+	Id.NAVY_SHIP_2: func(args: Dictionary) -> Dictionary:
+		display.clear_options()
+		await display.say(Dialogue.Actor.PIRATE_RIGHT, "Yar. The Skipping Hen... sunk in her second battle she was.");
+		await display.say(Dialogue.Actor.PIRATE_RIGHT, "Not even a week after I joined the crew. ");
+		await display.say(Dialogue.Actor.PIRATE_RIGHT, "But we didn't go down without a fight.");
+		Progress.know_navy_ship = true
+		display.clear_speach()
+		return {},
+	
+	Id.NAVY_EVENT_1: func(args: Dictionary) -> Dictionary:
+		display.clear_options()
+		await display.say(Dialogue.Actor.PIRATE_RIGHT, "Me ship was sunk by the navy... ironic for me.");
+		await display.say(Dialogue.Actor.PIRATE_RIGHT, "We didn't stand a chance.");
+		await display.say(Dialogue.Actor.PIRATE_RIGHT, "We already pushed our luck in her first scuffle.");
+		Progress.know_navy_sink = true
+		display.clear_speach()
+		return {},
+	
+	Id.NAVY_IS_NAVY: func(args: Dictionary) -> Dictionary:
+		display.clear_options()
+		await display.say(Dialogue.Actor.PIRATE_RIGHT, "Arr, I sailed under the Royal Navy's flag.");
+		await display.say(Dialogue.Actor.PIRATE_RIGHT, "But I found it too constricting,");
+		await display.say(Dialogue.Actor.PIRATE_RIGHT, "for a man of ambition like me.");
+		await display.say(Dialogue.Actor.PIRATE_RIGHT, "They caught wind o' the rum I’d nicked from 'em.");
+		Progress.know_navy_is_navy = true
+		display.clear_speach()
+		return {},
+	
+	Id.NAVY_SECRET_FAIL: func(args: Dictionary) -> Dictionary:
+		display.clear_options()
+		await display.say(Dialogue.Actor.PIRATE_RIGHT, "I will say it was an infamous crew we plundered. ");
+		await display.say(Dialogue.Actor.PIRATE_RIGHT, "Caught them offguard.");
+		await display.say(Dialogue.Actor.PIRATE_RIGHT, "But I ain't gonna speak to who we sunk... ");
+		await display.say(Dialogue.Actor.PIRATE_RIGHT, "Some things are better left unsaid around certain company.");
+		display.clear_speach()
+		return {},
+	
+	Id.NAVY_SECRET: func(args: Dictionary) -> Dictionary:
+		display.clear_options()
+		await display.say(Dialogue.Actor.PIRATE_RIGHT, "Aye, fortunate buccaneers we were.");
+		await display.say(Dialogue.Actor.PIRATE_RIGHT, "Ah our maiden voyage... ");
+		await display.say(Dialogue.Actor.PIRATE_RIGHT, "We spotted an anchored boat abouts Bellaforma...");
+		await display.say(Dialogue.Actor.PIRATE_RIGHT, "The Scourge o' Port Royal");
+		await display.say(Dialogue.Actor.PIRATE_RIGHT, "Thrice the size o' our ship...");
+		await display.say(Dialogue.Actor.PIRATE_RIGHT, "but with half their crew marooned on some wretched isle");
+		display.clear_speach()
+		return {},
+	
+	Id.NAVY_SECRET_2: func(args: Dictionary) -> Dictionary:
+		display.clear_options()
+		await display.say(Dialogue.Actor.PIRATE_RIGHT, "I boarded an' took 3 men myself,");
+		await display.say(Dialogue.Actor.PIRATE_RIGHT, "One of' em be Snarling Roberts.");
+		await display.say(Dialogue.Actor.PIRATE_RIGHT, "Got em right in the back with my golden gun.");
+		await display.say(Dialogue.Actor.PIRATE_RIGHT, "Funny that I now be playin dice with him in the Afterlife");
+		Progress.know_navy_secret = true
+		display.clear_speach()
+		return {},
+	
+
+	######################################
+	## CAPTAIN DIALOGUE
+	######################################
+	Id.CAPTAIN_NAME: func(args: Dictionary) -> Dictionary:
+		display.clear_options()
+		await display.say(Dialogue.Actor.CAPTAIN, "The name’s Captain James Reaver.");
+		await display.say(Dialogue.Actor.CAPTAIN, "Glad to have a new sea dog at the table.");
+		Progress.know_captain_name = true
+		display.clear_speach()
+		return {},
+	
+	Id.CAPTAIN_KNOW_SECRET: func(args: Dictionary) -> Dictionary:
+		display.clear_options()
+		await display.say(Dialogue.Actor.CAPTAIN, "The question be whether I’m willin’ to share it, matey.");
+		await display.say(Dialogue.Actor.CAPTAIN, "Let's let such such matters rest 'til after our game");
+		await display.say(Dialogue.Actor.CAPTAIN, "Okay?");
+		display.clear_speach()
+		return {},
+	
+	Id.CAPTAIN_SHIP: func(args: Dictionary) -> Dictionary:
+		display.clear_options()
+		await display.say(Dialogue.Actor.CAPTAIN, "The Wraith's Wake... arr, she were a legend.");
+		await display.say(Dialogue.Actor.CAPTAIN, "A ship feared 'cross all the seas. ");
+		await display.say(Dialogue.Actor.CAPTAIN, "Nearly 200 men strong...");
+		await display.say(Dialogue.Actor.CAPTAIN, "cut through the water like a blade through flesh.");
+		display.clear_speach()
+		return {},
+	
+	Id.CAPTAIN_SHIP_2: func(args: Dictionary) -> Dictionary:
+		display.clear_options()
+		await display.say(Dialogue.Actor.CAPTAIN, "I captained The Wraith's Wake from the very start.");
+		await display.say(Dialogue.Actor.CAPTAIN, "In her swan song, I took a deal,");
+		await display.say(Dialogue.Actor.CAPTAIN, "I gave me life for this fine wreck and a crew.");
+		Progress.know_captain_ship = true
+		display.clear_speach()
+		return {},
+	
+	Id.CAPTAIN_CREW: func(args: Dictionary) -> Dictionary:
+		display.clear_options()
+		await display.say(Dialogue.Actor.CAPTAIN, "The rest o' my crew be here,");
+		await display.say(Dialogue.Actor.CAPTAIN, "same as us, roaming these decks.");
+		await display.say(Dialogue.Actor.CAPTAIN, "These two scallywags joined me to pass the time.");
+		display.clear_speach()
+		return {},
+	
+	Id.CAPTAIN_NOW: func(args: Dictionary) -> Dictionary:
+		display.clear_options()
+		await display.say(Dialogue.Actor.CAPTAIN, "I wouldn't call it a curse.");
+		await display.say(Dialogue.Actor.CAPTAIN, "I get to stay with me ship once again.");
+		await display.say(Dialogue.Actor.CAPTAIN, "An' like me, any pirate who meets");
+		await display.say(Dialogue.Actor.CAPTAIN, "a watery grave may join me crew.");
+		display.clear_speach()
+		return {},
+	
+	
+	Id.LIAR: func(args: Dictionary) -> Dictionary:
+		await Dialogue.get_tree().create_timer(0.1).timeout
+		return { "called": true },
+	
+	Id.PASS: func(args: Dictionary) -> Dictionary:
+		await Dialogue.get_tree().create_timer(0.1).timeout
+		return { "called": false },
 }
 
 
 func _init(p_id: Id, p_display: DialogueDisplay, p_args := {}) -> void:
 	display = p_display
-	id = p_id
-	args = p_args
+	my_id = p_id
+	arguments = p_args
 
 
 func play() -> void:
 	assert(not is_playing)
 	is_playing = true
-	var result : Dictionary = await dialogues[id].call(args)
+	var result : Dictionary = await dialogues[my_id].call(arguments)
+	Dialogue.mark_completed(my_id)
 	finished.emit(result)
-	free()
+	call_deferred("free")
 
 
 func end() -> void:
 	finished.emit({})
-	free()
+	call_deferred("free")
+
+
+
+func get_npc_dialogue_options(actor: Dialogue.Actor, is_better: bool) -> Array[Id]:
+	var result : Array[Id] = []
+	if is_better:
+		result.append(Id.LIAR)
+	
+	var possible_options : Array = {
+		Dialogue.Actor.PIRATE_LEFT: 	[Id.PIRATE_NAME, Id.PIRATE_NAME_2, Id.PIRATE_DEATH_1, Id.PIRATE_DEATH_2, Id.PIRATE_DEATH_3, Id.PIRATE_NOW, Id.PIRATE_SECRET_FAIL, Id.PIRATE_SECRET,],
+		Dialogue.Actor.PIRATE_RIGHT: 	[Id.NAVY_NAME, Id.NAVY_NOW_1, Id.NAVY_NOW_2, Id.NAVY_SHIP, Id.NAVY_SHIP_2, Id.NAVY_EVENT_1, Id.NAVY_IS_NAVY, Id.NAVY_SECRET_FAIL, Id.NAVY_SECRET, Id.NAVY_SECRET_2,],
+		Dialogue.Actor.CAPTAIN: 		[Id.CAPTAIN_NAME, Id.CAPTAIN_KNOW_SECRET, Id.CAPTAIN_SHIP, Id.CAPTAIN_SHIP_2, Id.CAPTAIN_CREW, Id.CAPTAIN_NOW,],
+	}[actor]
+	
+	for id: Id in possible_options:
+		if can_give_option(id):
+			result.append(id)
+
+	if result.size() <= 1 and is_better:
+		result.append(Id.PASS)
+	
+	result.resize(min(result.size(), Dialogue.MAX_OPTIONS))
+
+	return result
+
+
+func can_give_option(id: Id) -> bool:
+	if Dialogue.is_completed(id):
+		return false
+	
+	match id:
+		Id.PIRATE_NAME: 		return not Progress.know_pirate_name
+		Id.PIRATE_NAME_2: 		return not Progress.know_pirate_name_backstory and Dialogue.is_completed(Id.PIRATE_NAME)
+		Id.PIRATE_DEATH_1: 		return not Progress.know_pirate_recruitment and Progress.know_pirate_name
+		Id.PIRATE_DEATH_2: 		return Progress.know_pirate_recruitment
+		Id.PIRATE_DEATH_3: 		return Dialogue.is_completed(Id.PIRATE_DEATH_2)
+		Id.PIRATE_NOW: 			return	not Progress.know_pirate_now and Progress.know_pirate_recruitment
+		Id.PIRATE_SECRET_FAIL: 	return	Progress.know_pirate_name and Progress.know_pirate_recruitment
+		Id.PIRATE_SECRET: 		return	Progress.know_pirate_name and Progress.know_pirate_recruitment and LiarsDice.is_out(LiarsDice.Player.PIRATE_RIGHT)
+		
+		Id.NAVY_NAME: 			return	not Progress.know_navy_name
+		Id.NAVY_NOW_1: 			return	not Progress.know_navy_now and Progress.know_navy_name
+		Id.NAVY_NOW_2: 			return	not Progress.know_navy_now and Dialogue.is_completed(Id.NAVY_NOW_1)
+		Id.NAVY_SHIP: 			return	not Progress.know_navy_ship and Progress.know_navy_name
+		Id.NAVY_SHIP_2: 		return	not Progress.know_navy_ship and Dialogue.is_completed(Id.NAVY_SHIP)
+		Id.NAVY_EVENT_1: 		return	not Progress.know_navy_sink and Progress.know_navy_ship
+		Id.NAVY_IS_NAVY: 		return	not Progress.know_navy_is_navy and Progress.know_navy_sink
+		Id.NAVY_SECRET_FAIL: 	return	Progress.know_navy_ship
+		Id.NAVY_SECRET: 		return	Progress.know_navy_ship and LiarsDice.is_out(LiarsDice.Player.PIRATE_LEFT)
+		Id.NAVY_SECRET_2: 		return	Dialogue.is_completed(Id.NAVY_SECRET)
+		
+		Id.CAPTAIN_NAME: 		return	not Progress.know_captain_name
+		Id.CAPTAIN_KNOW_SECRET: return	not Progress.asked_captain_about_secret and Progress.know_captain_name
+		Id.CAPTAIN_SHIP: 		return	not Progress.know_captain_ship and Progress.know_captain_name
+		Id.CAPTAIN_SHIP_2: 		return	not Progress.know_captain_ship and Dialogue.is_completed(Id.CAPTAIN_SHIP)
+		Id.CAPTAIN_CREW: 		return	not Progress.know_captain_crew and Progress.know_captain_name
+		Id.CAPTAIN_NOW: 		return	not Progress.know_captain_now and Progress.know_captain_name
+	return true
+
+
+func get_dialogue_option_lead(id: Id) -> String:
+	match id:
+		Id.PIRATE_NAME: 		return "What be yer name?"
+		Id.PIRATE_NAME_2: 		return "Why Snarling Roberts?"
+		Id.PIRATE_DEATH_1: 		return "Do ye call this home?"
+		Id.PIRATE_DEATH_2: 		return "How'd ye die?"
+		Id.PIRATE_DEATH_3: 		return "So ye died in battle?"
+		Id.PIRATE_NOW: 			return "Is this a fine crew?"
+		Id.PIRATE_SECRET_FAIL: 	return "Do ye have a tell?"
+		Id.PIRATE_SECRET: 		return "So.. your trick?"
+		
+		Id.NAVY_NAME: 			return "What shall I call ye?"
+		Id.NAVY_NOW_1: 			return "Ye look sick"
+		Id.NAVY_NOW_2: 			return "Ye still flesh n' bone?"
+		Id.NAVY_SHIP: 			return "So, yer seafaring..."
+		Id.NAVY_SHIP_2: 		return "Did ya sink?"
+		Id.NAVY_EVENT_1: 		return "So how'd ye sink?"
+		Id.NAVY_IS_NAVY: 		return "Ye be a Navy boy?"
+		Id.NAVY_SECRET_FAIL: 	return "So yer first battle?"
+		Id.NAVY_SECRET: 		return "So... your first clash."
+		Id.NAVY_SECRET_2: 		return "Ye sunk Port Royal?"
+		
+		Id.CAPTAIN_NAME: 		return "Ye be the Captain?"
+		Id.CAPTAIN_KNOW_SECRET: return "Do ye know the secret?"
+		Id.CAPTAIN_SHIP: 		return "Tell me bout yer ship."
+		Id.CAPTAIN_SHIP_2: 		return "How'd ye become captain?"
+		Id.CAPTAIN_CREW: 		return "Is this yer whole crew?"
+		Id.CAPTAIN_NOW: 		return "Are ye cursed?"
+		
+		Id.PASS: 				return "Pass"
+		Id.LIAR:				return "LIAR!"
+	
+	assert(false, "Missing dialogue lead")
+	return ""
+
 
 
 class OptionSet:

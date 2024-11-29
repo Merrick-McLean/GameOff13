@@ -25,8 +25,12 @@ func _ready() -> void:
 
 func reset() -> void:
 	round = null
-	alive_players = [Player.SELF, Player.PIRATE_RIGHT, Player.CAPTAIN, Player.PIRATE_LEFT]
+	alive_players = [Player.SELF, Player.PIRATE_LEFT, Player.CAPTAIN, Player.PIRATE_RIGHT]
 	if physical: physical.update_alive_players()
+
+
+func is_out(player: Player) -> bool:
+	return not player in alive_players
 
 
 func _process(delta: float) -> void:
@@ -385,24 +389,24 @@ class Round: # should I jsut merge round and bet? - Simpler to just have one big
 	
 	
 	func npc_say_bet(last_better: Player, last_bet: Bet) -> void:
-		Dialogue.play(DialogueInstance.Id.PIRATE_BET_1, {&"actor": Dialogue.get_actor(last_better), &"bet": last_bet}).finished
+		await Dialogue.play(DialogueInstance.Id.NPC_BET_1, {&"actor": Dialogue.get_actor(last_better), &"bet": last_bet}).finished
 	
 	
 	func npc_say_call(caller: Player, last_bet: Bet) -> void:
-		await Dialogue.play(DialogueInstance.Id.PIRATE_CALL_1, {&"actor": Dialogue.get_actor(caller), &"bet": last_bet}).finished
+		await Dialogue.play(DialogueInstance.Id.NPC_CALL_1, {&"actor": Dialogue.get_actor(caller), &"bet": last_bet}).finished
 	
 	
 	func npc_react_result(caller: Player, callee: Player, loser: Player) -> void:
 		if is_npc(caller):
 			if caller == loser:
-				await Dialogue.play(DialogueInstance.Id.PIRATE_LOSE_1, {&"actor": Dialogue.get_actor(caller)}).finished
+				await Dialogue.play(DialogueInstance.Id.NPC_LOSE_1, {&"actor": Dialogue.get_actor(caller)}).finished
 			else:
-				await Dialogue.play(DialogueInstance.Id.PIRATE_WIN_1, {&"actor": Dialogue.get_actor(caller)}).finished
+				await Dialogue.play(DialogueInstance.Id.NPC_WIN_1, {&"actor": Dialogue.get_actor(caller)}).finished
 		else:
 			if callee == loser:
-				await Dialogue.play(DialogueInstance.Id.PIRATE_LOSE_1, {&"actor": Dialogue.get_actor(callee)}).finished
+				await Dialogue.play(DialogueInstance.Id.NPC_LOSE_1, {&"actor": Dialogue.get_actor(callee)}).finished
 			else:
-				await Dialogue.play(DialogueInstance.Id.PIRATE_WIN_1, {&"actor": Dialogue.get_actor(callee)}).finished
+				await Dialogue.play(DialogueInstance.Id.NPC_WIN_1, {&"actor": Dialogue.get_actor(callee)}).finished
 			
 	
 	
@@ -410,7 +414,7 @@ class Round: # should I jsut merge round and bet? - Simpler to just have one big
 		assert(player != Player.CAPTAIN)
 		LiarsDice.alive_players.erase(player)
 		if is_npc(player):
-			await Dialogue.play(DialogueInstance.Id.PIRATE_DEATH_1, {&"actor": Dialogue.get_actor(player)}).finished
+			await Dialogue.play(DialogueInstance.Id.NPC_DEATH_1, {&"actor": Dialogue.get_actor(player)}).finished
 		else:
 			await Dialogue.play(DialogueInstance.Id.CAPTAIN_SHOOTS).finished
 		
@@ -424,7 +428,10 @@ class Round: # should I jsut merge round and bet? - Simpler to just have one big
 	func prompt_player_call(last_better: Player) -> bool:
 		assert(last_better != Player.SELF)
 		
-		dialogue_instance = Dialogue.play(DialogueInstance.Id.QUERY_LIAR, {&"actor": Dialogue.get_actor(last_better)})
+		dialogue_instance = Dialogue.play(DialogueInstance.Id.QUERY_LIAR, {
+			&"actors": turn_order.filter(is_npc).map(Dialogue.get_actor),
+			&"better": Dialogue.get_actor(last_better)}
+		)
 		var result : Dictionary = await dialogue_instance.finished
 		
 		

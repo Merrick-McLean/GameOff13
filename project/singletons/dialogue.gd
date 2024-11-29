@@ -13,6 +13,19 @@ enum Actor {
 }
 
 
+
+var timeline_dialogue_tracker : Array = ArrayUtils.filled(DialogueInstance.Id.size(), false) # only in this timeline
+
+func is_completed(id: DialogueInstance.Id) -> bool:
+	return timeline_dialogue_tracker[id]
+
+func mark_completed(id: DialogueInstance.Id) -> void:
+	timeline_dialogue_tracker[id] = true
+
+func reset() -> void:
+	timeline_dialogue_tracker.fill(false)
+
+
 func _process(delta: float) -> void:
 	if Debug.is_just_pressed(&"test_0"):
 		var instance : DialogueInstance
@@ -30,11 +43,12 @@ func play(dialogue_id: DialogueInstance.Id, args := {}) -> DialogueInstance:
 
 func get_actor_name(actor : Actor) -> String:
 	assert(actor < Actor.COUNT)
-	return [
-		"Captain",
-		"Pirate 1",
-		"Pirate 2"
-	][actor]
+	match actor:
+		Actor.CAPTAIN: 			return "Captain"
+		Actor.PIRATE_LEFT: 		return "Roberts" if Progress.know_pirate_name else "Pirate 1"
+		Actor.PIRATE_RIGHT: 	return "Elias" if Progress.know_navy_name else "Pirate 2"
+	
+	return "Unknown"
 
 
 func get_die_face_string(face: int, plural := false) -> String:
