@@ -53,30 +53,37 @@ scale = Vector2(2, 2)
 script = ExtResource("1_8flft")
 
 [node name="slide4" type="Sprite2D" parent="SubViewportContainer/SubViewport/Node2D"]
+modulate = Color(1, 1, 1, 0.996078)
+self_modulate = Color(1, 1, 1, 0.996078)
 material = SubResource("ShaderMaterial_kttux")
 position = Vector2(240, 135)
 scale = Vector2(0.25, 0.25)
 texture = ExtResource("5_1dkbv")
 
 [node name="slide3" type="Sprite2D" parent="SubViewportContainer/SubViewport/Node2D"]
+modulate = Color(1, 1, 1, 0.996078)
+visibility_layer = 2
 material = SubResource("ShaderMaterial_qxg5r")
 position = Vector2(240, 135)
 scale = Vector2(0.25, 0.25)
 texture = ExtResource("4_ox7jp")
 
 [node name="slide2" type="Sprite2D" parent="SubViewportContainer/SubViewport/Node2D"]
+modulate = Color(1, 1, 1, 0.996078)
+visibility_layer = 4
 material = SubResource("ShaderMaterial_1dldv")
 position = Vector2(240, 135)
 scale = Vector2(0.25, 0.25)
 texture = ExtResource("3_bm66u")
 
 [node name="slide1" type="Sprite2D" parent="SubViewportContainer/SubViewport/Node2D"]
+modulate = Color(1, 1, 1, 0.996078)
 material = SubResource("ShaderMaterial_tmh5u")
 position = Vector2(240, 135)
 scale = Vector2(0.25, 0.25)
 texture = ExtResource("2_ut4ej")
 
 [node name="Timer" type="Timer" parent="SubViewportContainer/SubViewport/Node2D"]
-wait_time = 10.0
+wait_time = 4.195
 
 [connection signal="timeout" from="SubViewportContainer/SubViewport/Node2D/Timer" to="SubViewportContainer/SubViewport/Node2D" method="_on_timer_timeout"]
