@@ -1,4 +1,4 @@
-[gd_scene load_steps=16 format=3 uid="uid://cb7hm7d3hpasd"]
+[gd_scene load_steps=23 format=3 uid="uid://cb7hm7d3hpasd"]
 
 [ext_resource type="Script" path="res://scenes/intro.gd" id="1_8flft"]
 [ext_resource type="Shader" path="res://shaders/dither_ui.gdshader" id="1_xcn3o"]
@@ -9,31 +9,50 @@
 [ext_resource type="Texture2D" uid="uid://bqofcahcgbp1a" path="res://sprites/intros/step_test.png" id="4_ox7jp"]
 [ext_resource type="Texture2D" uid="uid://dpy5wv217kjlu" path="res://sprites/intros/room_test.png" id="5_1dkbv"]
 [ext_resource type="Shader" path="res://shaders/dissolve.gdshader" id="5_4kycd"]
-[ext_resource type="Texture2D" uid="uid://cqjaj0kxwq8xi" path="res://shaders/dissolve_texture.png" id="5_udjix"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_8d7tl"]
 shader = ExtResource("1_xcn3o")
 shader_parameter/u_color_tex = ExtResource("3_c4wwj")
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_kttux"]
-shader = ExtResource("5_4kycd")
-shader_parameter/dissolve_value = 1.0
-shader_parameter/dissolve_texture = ExtResource("5_udjix")
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_uaf6w"]
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_qxg5r"]
-shader = ExtResource("5_4kycd")
-shader_parameter/dissolve_value = 1.0
-shader_parameter/dissolve_texture = ExtResource("5_udjix")
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_6j0ww"]
+noise = SubResource("FastNoiseLite_uaf6w")
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_1dldv"]
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_vsgna"]
 shader = ExtResource("5_4kycd")
 shader_parameter/dissolve_value = 1.0
-shader_parameter/dissolve_texture = ExtResource("5_udjix")
+shader_parameter/dissolve_texture = SubResource("NoiseTexture2D_6j0ww")
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_tmh5u"]
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_1jvf6"]
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_hfmss"]
+noise = SubResource("FastNoiseLite_1jvf6")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_sl73a"]
 shader = ExtResource("5_4kycd")
-shader_parameter/dissolve_value = 1.0
-shader_parameter/dissolve_texture = ExtResource("5_udjix")
+shader_parameter/dissolve_value = 0.0
+shader_parameter/dissolve_texture = SubResource("NoiseTexture2D_hfmss")
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_vj4n7"]
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_l4k18"]
+noise = SubResource("FastNoiseLite_vj4n7")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_s2b6u"]
+shader = ExtResource("5_4kycd")
+shader_parameter/dissolve_value = null
+shader_parameter/dissolve_texture = SubResource("NoiseTexture2D_l4k18")
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_a02ia"]
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_tv2qm"]
+noise = SubResource("FastNoiseLite_a02ia")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_72dba"]
+shader = ExtResource("5_4kycd")
+shader_parameter/dissolve_value = null
+shader_parameter/dissolve_texture = SubResource("NoiseTexture2D_tv2qm")
 
 [node name="Node" type="Node"]
 
@@ -52,29 +71,29 @@ render_target_update_mode = 4
 scale = Vector2(2, 2)
 script = ExtResource("1_8flft")
 
-[node name="slide4" type="Sprite2D" parent="SubViewportContainer/SubViewport/Node2D"]
-material = SubResource("ShaderMaterial_kttux")
+[node name="slide1" type="Sprite2D" parent="SubViewportContainer/SubViewport/Node2D"]
+material = SubResource("ShaderMaterial_vsgna")
 position = Vector2(240, 135)
 scale = Vector2(0.25, 0.25)
-texture = ExtResource("5_1dkbv")
-
-[node name="slide3" type="Sprite2D" parent="SubViewportContainer/SubViewport/Node2D"]
-material = SubResource("ShaderMaterial_qxg5r")
-position = Vector2(240, 135)
-scale = Vector2(0.25, 0.25)
-texture = ExtResource("4_ox7jp")
+texture = ExtResource("2_ut4ej")
 
 [node name="slide2" type="Sprite2D" parent="SubViewportContainer/SubViewport/Node2D"]
-material = SubResource("ShaderMaterial_1dldv")
+material = SubResource("ShaderMaterial_sl73a")
 position = Vector2(240, 135)
 scale = Vector2(0.25, 0.25)
 texture = ExtResource("3_bm66u")
 
-[node name="slide1" type="Sprite2D" parent="SubViewportContainer/SubViewport/Node2D"]
-material = SubResource("ShaderMaterial_tmh5u")
+[node name="slide3" type="Sprite2D" parent="SubViewportContainer/SubViewport/Node2D"]
+material = SubResource("ShaderMaterial_s2b6u")
 position = Vector2(240, 135)
 scale = Vector2(0.25, 0.25)
-texture = ExtResource("2_ut4ej")
+texture = ExtResource("4_ox7jp")
+
+[node name="slide4" type="Sprite2D" parent="SubViewportContainer/SubViewport/Node2D"]
+material = SubResource("ShaderMaterial_72dba")
+position = Vector2(240, 135)
+scale = Vector2(0.25, 0.25)
+texture = ExtResource("5_1dkbv")
 
 [node name="Timer" type="Timer" parent="SubViewportContainer/SubViewport/Node2D"]
 wait_time = 10.0
