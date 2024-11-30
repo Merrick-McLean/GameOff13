@@ -19,7 +19,7 @@ func _process(delta: float) -> void:
 func flash() -> void:
 	animation_player.stop()
 	flash_white.visible = false
-	animation_player.play(["lightning_1", "lightning_2", "lightning_3".pick_random()) # i dont like  "lightning_4"
+	animation_player.play(["lightning_1", "lightning_2", "lightning_3"].pick_random()) # i dont like  "lightning_4"
 
 
 func stop() -> void:

@@ -45,13 +45,13 @@ render_target_update_mode = 4
 [node name="GameRoom" parent="GameViewportContainer/SubViewport" instance=ExtResource("5_tyn2c")]
 
 [node name="PlayerModel" parent="GameViewportContainer/SubViewport/GameRoom" index="9"]
-is_talking = null
+is_talking = false
 
 [node name="PlayerModel2" parent="GameViewportContainer/SubViewport/GameRoom" index="10"]
-is_talking = null
+is_talking = false
 
 [node name="PlayerModel3" parent="GameViewportContainer/SubViewport/GameRoom" index="11"]
-is_talking = null
+is_talking = false
 
 [node name="UI" type="CanvasLayer" parent="."]
 scale = Vector2(2, 2)
@@ -88,7 +88,6 @@ viewport = NodePath("../../../../GameViewportContainer/SubViewport")
 [connection signal="navy_shot" from="GameViewportContainer/SubViewport/GameRoom/LiarsDicePhysical" to="UI/SubViewportContainer/SubViewport/GunShotOverlay" method="_on_liars_dice_physical_navy_shot"]
 [connection signal="player_shot" from="GameViewportContainer/SubViewport/GameRoom/LiarsDicePhysical" to="UI/SubViewportContainer/SubViewport/GunShotOverlay" method="_on_liars_dice_physical_player_shot"]
 [connection signal="ready_for_credits" from="GameViewportContainer/SubViewport/GameRoom/LiarsDicePhysical" to="UI/SubViewportContainer/SubViewport/Credits" method="_on_liars_dice_physical_ready_for_credits"]
-[connection signal="flashed" from="UI/SubViewportContainer/SubViewport/LightningOverlay" to="UI/SubViewportContainer/SubViewport/GunShotOverlay" method="_on_lightning_overlay_flashed"]
 [connection signal="transition_requested" from="UI/SubViewportContainer/SubViewport/GunShotOverlay" to="UI/SubViewportContainer/SubViewport/LightningOverlay" method="_on_gun_shot_overlay_transition_requested"]
 
 [editable path="GameViewportContainer/SubViewport/GameRoom"]

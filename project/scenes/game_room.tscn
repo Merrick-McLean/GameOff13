@@ -122,17 +122,14 @@ skeleton = NodePath("../..")
 [node name="PlayerModel" parent="." instance=ExtResource("3_t73bs")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.538026, -1.2693)
 player = 2
-is_talking = null
 
 [node name="PlayerModel2" parent="." instance=ExtResource("3_t73bs")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.57225, 0.420823, -0.701345)
 player = 3
-is_talking = null
 
 [node name="PlayerModel3" parent="." instance=ExtResource("3_t73bs")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.65933, 0.420823, -0.656537)
 player = 1
-is_talking = null
 
 [node name="DialoguePoint" parent="." instance=ExtResource("3_ig5u6")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.05046, 0.627823, -0.213782)
@@ -244,7 +241,6 @@ state = 2
 [node name="CaptainGun" parent="." instance=ExtResource("9_jguw1")]
 transform = Transform3D(-0.998964, 0.01603, 0.0425877, 0.043501, 0.061754, 0.997143, 0.0133543, 0.997963, -0.0623874, -0.532882, 0.417418, -1.1687)
 state = 2
-pirate = 0
 simulate_in_editor = true
 
 [node name="FinalCaptainPoint" type="Marker3D" parent="."]
