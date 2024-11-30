@@ -6,6 +6,7 @@ signal state_transition_completed(old_state: State, new_state: State)
 const NORMAL_FOV = 55.0
 const ZOOMED_FOV = 25.0
 const SENSITIVITY = Vector2(0.0015, 0.0015)
+const PAN_SPEED = 3.0
 
 enum State {
 	IN_GAME,
@@ -39,7 +40,13 @@ var is_active := false :
 		else:
 			Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
 
+var is_panning := false
 
+var pan_target := Vector2.ZERO :
+	set(new_value):
+		if new_value == pan_target: return
+		pan_target = new_value.clamp(Vector2.ZERO, Vector2.ONE)
+		is_panning = true
 
 var current_cup : Cup :
 	set(new_value):
@@ -87,11 +94,31 @@ func _ready() -> void:
 	GameMaster.straight_camera = $StraightCamera
 
 
+
+func pan_to_point(world_position: Vector3) -> void:
+	var displacement := (world_position - global_position)
+	
+	var horizontal_angle := Vector2(displacement.z, displacement.x).angle()
+	var vertical_angle := Vector2(Vector2(displacement.x, displacement.z).length(), displacement.y).angle()
+	
+	pan_target = Vector2(
+		inverse_lerp(-get_max_rotation_sideways(), get_max_rotation_sideways(), horizontal_angle),
+		inverse_lerp(-get_max_rotation_down(), get_max_rotation_up(), vertical_angle)
+	)
+	
+
+
 func _unhandled_input(event: InputEvent) -> void:
-	if event is InputEventMouseMotion and GameMaster.player_in_world:
+	if event is InputEventMouseMotion and GameMaster.player_in_world and not is_panning:
 		mouse_position += event.relative * SENSITIVITY
 
 func _process(delta: float) -> void:
+	
+	if is_panning:
+		mouse_position = mouse_position.lerp(pan_target, delta * PAN_SPEED)
+		if mouse_position.distance_to(pan_target) < 0.01:
+			is_panning = false
+	
 	var is_colliding := detector.is_colliding()
 	var new_cup : Cup = null
 	var new_ui : GuiPanel = null
@@ -109,8 +136,8 @@ func _process(delta: float) -> void:
 			var collider := detector.get_collider()
 			new_gun = collider.get_parent()
 	
-	#if Debug.is_just_pressed(&"test_2"):
-		#transition_state(State.AT_REVEAL)
+	if Debug.is_just_pressed(&"test_2"):
+		pan_to_point(Vector3(-0.904, 0.671, 0.018))
 	
 	# update zoom
 	current_cup = new_cup

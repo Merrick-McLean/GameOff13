@@ -1,6 +1,7 @@
 class_name DialogueInstance
 extends Object
 
+signal killed #never actually called lol
 signal finished(index: Dictionary)
 
 enum Id {
@@ -30,6 +31,7 @@ enum Id {
 	PIRATE_NOW,
 	PIRATE_SECRET_FAIL,
 	PIRATE_SECRET,
+	PIRATE_REVEAL,
 	
 	## NAVY DIALOGUE
 	NAVY_NAME,
@@ -85,7 +87,7 @@ var dialogues : Dictionary = {
 		match args.round_number:
 			1: await display.say(Dialogue.Actor.CAPTAIN, "Alright, let's get this game started.")
 			2: await display.say(Dialogue.Actor.CAPTAIN, "Time for the next round.")
-			3: await display.say(Dialogue.Actor.CAPTAIN, "Looks like its just you and me meighty.")
+			3: await display.say(Dialogue.Actor.CAPTAIN, "Looks like its just you and me matey.")
 		display.clear_speach()
 		return {},
 	
@@ -111,7 +113,27 @@ var dialogues : Dictionary = {
 	
 	Id.NPC_WIN_1: func(args: Dictionary) -> Dictionary:
 		display.clear_options()
-		await display.say(args.actor, "I knew it. Goodbye lad.")
+		
+		if args.actor == Dialogue.Actor.CAPTAIN and LiarsDice.physical.pirate_gun.state == Gun.State.ON_TABLE:
+			await display.say(args.actor, "Alas, matey, ye just never learn.")
+			await display.say(args.actor, "Ye can try all ye want.")
+			
+			await display.say(args.actor, "Rile up me crew. Cause a rucuss.")
+			LiarsDice.physical.pan_camera_to_pirate_gun()
+			display.say(args.actor, "But the Captain [set pause_time=0.7]always [set pause_time=0.7]wins.", false, false)
+			await LiarsDice.physical.pirate_gun.picked_up
+			#LiarsDice.physical.pan_camera_to_captain()
+			await display.get_tree().create_timer(0.5).timeout
+			await display.say(args.actor, "AYE, now hold on their matey.")
+			await display.say(args.actor, "We don't gotta end things like this.")
+			var result := await display.push_options([OptionSet.new(Dialogue.Actor.CAPTAIN, ["Goodbye Captain"])])
+			await display.get_tree().create_timer(0.5).timeout
+			LiarsDice.physical.play_credits()
+			await killed
+		else:
+			await display.say(args.actor, "I knew it.")
+		
+		
 		display.clear_speach()
 		return {},
 	
@@ -128,13 +150,16 @@ var dialogues : Dictionary = {
 	
 	Id.CAPTAIN_SHOOTS: func(args: Dictionary) -> Dictionary:
 		display.clear_options()
-		await display.say(Dialogue.Actor.CAPTAIN, "I shoot you now.")
+		await display.say(Dialogue.Actor.CAPTAIN, "Well you know the rules...")
+		LiarsDice.physical.is_captain_gun_drawn = true
+		await display.say(Dialogue.Actor.CAPTAIN, "Goodbye lad.")
 		display.clear_speach()
 		return {},
 	
 	
 	Id.DIALOGUE_PROMPT: func(args: Dictionary) -> Dictionary:
 		var last_speaking_actor : Dialogue.Actor
+		var result : Dictionary
 		for i in args.max_dialogue_count:
 			await Dialogue.get_tree().create_timer(0.1).timeout
 			var options : Array[OptionSet]
@@ -147,7 +172,8 @@ var dialogues : Dictionary = {
 			var chosen_id : DialogueInstance.Id = possible_ids[option_result.actor][option_result.index]
 			last_speaking_actor = option_result.actor
 			display.clear_options()
-			var result : Dictionary = await Dialogue.play(chosen_id).finished
+			result = await Dialogue.play(chosen_id).finished
+			if result.start_new_round: return result
 		
 		
 		await display.say(last_speaking_actor, "But that's enough about me. Time to make your bet.")
@@ -227,10 +253,10 @@ var dialogues : Dictionary = {
 	Id.PIRATE_NAME: func(args: Dictionary) -> Dictionary:
 		display.clear_options()
 		await display.say(Dialogue.Actor.PIRATE_LEFT, "Anton Roberts...");
-		Progress.know_pirate_name = true
 		await display.say(Dialogue.Actor.PIRATE_LEFT, "though most just called me Snarling Roberts. ");
 		await display.say(Dialogue.Actor.PIRATE_LEFT, "Proud bo's'n aboard the Scourge of Port Royal...");
 		await display.say(Dialogue.Actor.PIRATE_LEFT, "till its very end.");
+		Progress.know_pirate_name = true
 		display.clear_speach()
 		return {},
 	
@@ -296,6 +322,7 @@ var dialogues : Dictionary = {
 		await display.say(Dialogue.Actor.PIRATE_LEFT, "Just between us, my dice aren't as random as yours.");
 		await display.say(Dialogue.Actor.PIRATE_LEFT, "I don't be takin' chances no more.");
 		display.clear_speach()
+		Progress.know_pirate_secret = true
 		return {},
 	
 
@@ -445,6 +472,44 @@ var dialogues : Dictionary = {
 		display.clear_speach()
 		return {},
 	
+	#####################################################
+	Id.PIRATE_REVEAL: func(args: Dictionary) -> Dictionary:
+		display.clear_options()
+		var dialogue_result := {}
+		Dialogue.is_betting_locked = true
+		await display.say(Dialogue.Actor.PIRATE_LEFT, "And what makes you say that matey?");
+		if Progress.know_pirate_death:
+			var result := await display.push_options([OptionSet.new(Dialogue.Actor.PIRATE_LEFT, ["He has a golden gun."])])
+			await display.say(Dialogue.Actor.PIRATE_LEFT, "Golden gun[set speed=3]... ?");
+			await display.say(Dialogue.Actor.PIRATE_LEFT, "That true Shaw? Are ye the one?");
+			await display.say(Dialogue.Actor.PIRATE_LEFT, "The coward who stormed an anchored boat...");
+			await display.say(Dialogue.Actor.PIRATE_LEFT, "And shot me in the back?");
+			#await display.say(Dialogue.Actor.PIRATE_LEFT, "That puney crew... nay... they couldn't.");
+			await display.say(Dialogue.Actor.PIRATE_LEFT, "Show me your musket right now you filfthy ****"); # TODO: merrick fill something in here please
+			await display.say(Dialogue.Actor.PIRATE_RIGHT, "I don't know what this lad is talkin about");
+			LiarsDice.physical.pirate_gun.state = Gun.State.DRAWN
+			await display.say(Dialogue.Actor.PIRATE_LEFT, "SHOW ME YOUR MUSKET NOW!");
+			await display.say(Dialogue.Actor.PIRATE_RIGHT, "Let's just calm down 'ere for a second.");
+			LiarsDice.physical.pirate_shoot()
+			LiarsDice.kill_npc(LiarsDice.Player.PIRATE_RIGHT)
+			await display.get_tree().create_timer(1.0).timeout
+			await display.say(Dialogue.Actor.CAPTAIN, "AVAST");
+			LiarsDice.physical.pirate_gun.state = Gun.State.ON_TABLE
+			await display.say(Dialogue.Actor.PIRATE_LEFT, "Sorry cap'n...");
+			await display.say(Dialogue.Actor.CAPTAIN, "If I cant trust ye to not cause a fuss...");
+			await display.say(Dialogue.Actor.CAPTAIN, "I'll have to finish this myself.");
+			await display.say(Dialogue.Actor.CAPTAIN, "OFF WITH YE!");
+			LiarsDice.kill_npc(LiarsDice.Player.PIRATE_LEFT)
+			dialogue_result.start_new_round = true
+		else:
+			Dialogue.is_betting_locked = false
+			await display.push_options([OptionSet.new(Dialogue.Actor.PIRATE_LEFT, ["... trust me."])])
+			await display.say(Dialogue.Actor.PIRATE_LEFT, "Yer gonna need more proof than that lad.")
+			await display.say(Dialogue.Actor.PIRATE_LEFT, "Yer just tryna district me from the game.")
+		
+		display.clear_speach()
+		return dialogue_result,
+	
 	
 	Id.LIAR: func(args: Dictionary) -> Dictionary:
 		await Dialogue.get_tree().create_timer(0.1).timeout
@@ -483,7 +548,7 @@ func get_npc_dialogue_options(actor: Dialogue.Actor, is_better: bool) -> Array[I
 		result.append(Id.LIAR)
 	
 	var possible_options : Array = {
-		Dialogue.Actor.PIRATE_LEFT: 	[Id.PIRATE_NAME, Id.PIRATE_NAME_2, Id.PIRATE_DEATH_1, Id.PIRATE_DEATH_2, Id.PIRATE_DEATH_3, Id.PIRATE_NOW, Id.PIRATE_SECRET_FAIL, Id.PIRATE_SECRET,],
+		Dialogue.Actor.PIRATE_LEFT: 	[Id.PIRATE_NAME, Id.PIRATE_NAME_2, Id.PIRATE_DEATH_1, Id.PIRATE_DEATH_2, Id.PIRATE_DEATH_3, Id.PIRATE_NOW, Id.PIRATE_SECRET_FAIL, Id.PIRATE_SECRET, Id.PIRATE_REVEAL],
 		Dialogue.Actor.PIRATE_RIGHT: 	[Id.NAVY_NAME, Id.NAVY_NOW_1, Id.NAVY_NOW_2, Id.NAVY_SHIP, Id.NAVY_SHIP_2, Id.NAVY_EVENT_1, Id.NAVY_IS_NAVY, Id.NAVY_SECRET_FAIL, Id.NAVY_SECRET, Id.NAVY_SECRET_2,],
 		Dialogue.Actor.CAPTAIN: 		[Id.CAPTAIN_NAME, Id.CAPTAIN_KNOW_SECRET, Id.CAPTAIN_SHIP, Id.CAPTAIN_SHIP_2, Id.CAPTAIN_CREW, Id.CAPTAIN_NOW,],
 	}[actor]
@@ -511,8 +576,9 @@ func can_give_option(id: Id) -> bool:
 		Id.PIRATE_DEATH_2: 		return Progress.know_pirate_recruitment
 		Id.PIRATE_DEATH_3: 		return Dialogue.is_completed(Id.PIRATE_DEATH_2)
 		Id.PIRATE_NOW: 			return	not Progress.know_pirate_now and Progress.know_pirate_recruitment
-		Id.PIRATE_SECRET_FAIL: 	return	Progress.know_pirate_name and Progress.know_pirate_recruitment
-		Id.PIRATE_SECRET: 		return	Progress.know_pirate_name and Progress.know_pirate_recruitment and LiarsDice.is_out(LiarsDice.Player.PIRATE_RIGHT)
+		Id.PIRATE_SECRET_FAIL: 	return	not Progress.know_pirate_secret and Progress.know_pirate_name and Progress.know_pirate_recruitment
+		Id.PIRATE_SECRET: 		return	not Progress.know_pirate_secret and Progress.know_pirate_name and Progress.know_pirate_recruitment and LiarsDice.is_out(LiarsDice.Player.PIRATE_RIGHT)
+		Id.PIRATE_REVEAL:		return  Progress.know_navy_secret and not LiarsDice.is_out(LiarsDice.Player.PIRATE_RIGHT)
 		
 		Id.NAVY_NAME: 			return	not Progress.know_navy_name
 		Id.NAVY_NOW_1: 			return	not Progress.know_navy_now and Progress.know_navy_name
@@ -536,6 +602,7 @@ func can_give_option(id: Id) -> bool:
 
 func get_dialogue_option_lead(id: Id) -> String:
 	match id:
+		Id.PIRATE_REVEAL:		return "Elias killed ye."
 		Id.PIRATE_NAME: 		return "What be yer name?"
 		Id.PIRATE_NAME_2: 		return "Why Snarling Roberts?"
 		Id.PIRATE_DEATH_1: 		return "Do ye call this home?"

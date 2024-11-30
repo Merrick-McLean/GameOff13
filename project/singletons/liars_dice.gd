@@ -26,7 +26,7 @@ func _ready() -> void:
 
 func reset() -> void:
 	round = null
-	if physical: physical.cups_and_dice_visible = false
+	if physical: physical.reset()
 	alive_players = [Player.CAPTAIN, Player.PIRATE_RIGHT, Player.SELF, Player.PIRATE_LEFT]
 	if physical: physical.update_alive_players()
 
@@ -50,7 +50,8 @@ func start_new_game(wait_for_signal_on_first_round := false) -> void:
 			Player.PIRATE_LEFT: 4
 		})
 		
-		await round.start(wait_for_signal)
+		round.start(wait_for_signal)
+		await round.finished
 		wait_for_signal = false
 	round = null
 
@@ -62,7 +63,15 @@ func start_new_life() -> void:
 	Dialogue.play(DialogueInstance.Id.INTRO_DIALOGUE_2)
 
 
-class Round: # should I jsut merge round and bet? - Simpler to just have one big fat class I guess
+func kill_npc(npc: Player) -> void:
+	LiarsDice.alive_players.erase(npc)
+	await LiarsDice.physical.update_alive_players()
+
+
+class Round extends Object: # should I jsut merge round and bet? - Simpler to just have one big fat class I guess
+	
+	signal finished
+	
 	# based on bets and player dice, used for npc bets and liar calls
 	var current_bet : Bet
 	var highest_bid_table: DieTable
@@ -164,6 +173,9 @@ class Round: # should I jsut merge round and bet? - Simpler to just have one big
 			await pass_turn()
 		
 		await kill_player(loser)
+		
+		finished.emit()
+		free()
 	
 	
 	func roll(total_die_count: int, determined_dice_count := total_die_count) -> DieTable:
@@ -468,7 +480,10 @@ class Round: # should I jsut merge round and bet? - Simpler to just have one big
 			&"bet": current_bet
 			#&"actor": Dialogue.get_actor(last_better)}
 		})
-		pass
+		var result : Dictionary = await dialogue_instance.finished
+		if result.start_new_round:
+			finished.emit()
+			free()
 	
 	# get the players bet
 	func get_self_bet(last_bet: Bet) -> Bet:

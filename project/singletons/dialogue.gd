@@ -9,7 +9,7 @@ var display : DialogueDisplay :
 		if new_value == display: return
 		var old_value = display
 		display = new_value
-		display_changed.emit(old_value, new_value)
+		if LiarsDice.physical: LiarsDice.physical.update_betting_lock()
 
 enum Actor {
 	CAPTAIN,
@@ -17,10 +17,19 @@ enum Actor {
 	PIRATE_RIGHT,
 	COUNT,
 }
-
+var is_betting_locked := false : 
+	set(new_value):
+		if is_betting_locked == new_value: return
+		is_betting_locked = new_value
+		if LiarsDice.physical: LiarsDice.physical.update_betting_lock()
 
 
 var timeline_dialogue_tracker : Array = ArrayUtils.filled(DialogueInstance.Id.size(), false) # only in this timeline
+
+
+func can_bet() -> bool:
+	return not is_betting_locked and (not display or not display.is_someone_speaking)
+
 
 func is_completed(id: DialogueInstance.Id) -> bool:
 	return timeline_dialogue_tracker[id]

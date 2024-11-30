@@ -4,4 +4,3 @@
 
 [node name="GunPoint" type="Marker3D" groups=["GunPoints"]]
 script = ExtResource("1_nqpak")
-state = null

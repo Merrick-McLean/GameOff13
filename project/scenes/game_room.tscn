@@ -92,6 +92,7 @@ transform = Transform3D(1, 0, 0, 0, 0.772157, 0.635432, 0, -0.635432, 0.772157, 
 [node name="GunTablePoint2" parent="PlayerCamera" instance=ExtResource("10_5dxfy")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.123962, -0.192566, -0.405243)
 state = 1
+pirate = 1
 
 [node name="MainCameraPoint" parent="." instance=ExtResource("2_hvt05")]
 transform = Transform3D(1, 0, 0, 0, 0.97183, 0.235685, 0, -0.235685, 0.97183, 0, 1.1, 1.11775)
@@ -209,18 +210,49 @@ alpha = 0.0
 [node name="GUIPanel3D" parent="." instance=ExtResource("5_bbb0q")]
 transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0.136297, 0.645246, 0.654077)
 
-[node name="GunTablePoint" parent="." instance=ExtResource("10_5dxfy")]
-transform = Transform3D(-3.32587e-08, -0.760871, 0.648904, 1, -4.37114e-08, 0, 2.83645e-08, 0.648904, 0.760871, 0.848068, 0.670828, -0.0105947)
-state = 0
+[node name="PirateGunTablePoint" parent="." instance=ExtResource("10_5dxfy")]
+transform = Transform3D(-1.87085e-08, 0.79229, -0.610145, -1, 4.37114e-08, 8.74228e-08, 9.59345e-08, 0.610145, 0.79229, -0.903795, 0.670828, 0.018029)
+pirate = 1
 
-[node name="Gun" parent="." instance=ExtResource("9_jguw1")]
-transform = Transform3D(-3.32587e-08, -0.760871, 0.648904, 1, -4.37114e-08, 0, 2.83645e-08, 0.648904, 0.760871, 0.848068, 0.670828, -0.0105947)
-can_pickup = true
+[node name="PirateGunDrawnPoint" parent="." instance=ExtResource("10_5dxfy")]
+transform = Transform3D(0.190897, -0.0112015, -0.981546, 0.00618956, 0.999929, -0.0102076, 0.981591, -0.00412677, 0.190953, -1.08074, 0.817928, -0.0111247)
+state = 3
+pirate = 1
 
-[node name="LiarsDicePhysical" parent="." node_paths=PackedStringArray("player_camera", "gui_panel", "gun") instance=ExtResource("12_70s8q")]
+[node name="PirateGunUndrawnPoint" parent="." instance=ExtResource("10_5dxfy")]
+transform = Transform3D(0.00618953, 0.999929, -0.0102076, 0.00598025, 0.0101704, 0.99993, 0.999963, -0.00625017, -0.00591667, -1.48723, 0.498987, -0.0520414)
+state = 2
+pirate = 1
+
+[node name="PirateGun" parent="." instance=ExtResource("9_jguw1")]
+transform = Transform3D(0.00620982, 0.999929, -0.0102043, 0.00597835, 0.0101672, 0.99993, 0.999962, -0.00627041, -0.00591479, -1.48723, 0.498987, -0.0520414)
+state = 2
+pirate = 1
+simulate_in_editor = true
+
+[node name="CaptainGunDrawnPoint" parent="." instance=ExtResource("10_5dxfy")]
+transform = Transform3D(-0.989768, -0.00287118, -0.142656, 0.011663, 0.994824, -0.100943, 0.142207, -0.101573, -0.984612, -0.334294, 0.810026, -0.459857)
+state = 3
+
+[node name="CaptainGunUndrawnPoint" parent="." instance=ExtResource("10_5dxfy")]
+transform = Transform3D(-0.998964, 0.0160323, 0.0425828, 0.0434962, 0.0617472, 0.997143, 0.0133572, 0.997964, -0.0623802, -0.532882, 0.417418, -1.1687)
+state = 2
+
+[node name="CaptainGun" parent="." instance=ExtResource("9_jguw1")]
+transform = Transform3D(-0.998964, 0.01603, 0.0425877, 0.043501, 0.061754, 0.997143, 0.0133543, 0.997963, -0.0623874, -0.532882, 0.417418, -1.1687)
+state = 2
+pirate = 0
+simulate_in_editor = true
+
+[node name="FinalCaptainPoint" type="Marker3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0331671, 1.03131, -0.359077)
+
+[node name="LiarsDicePhysical" parent="." node_paths=PackedStringArray("player_camera", "gui_panel", "pirate_gun", "captain_gun", "final_captain_point") instance=ExtResource("12_70s8q")]
 player_camera = NodePath("../PlayerCamera")
 gui_panel = NodePath("../GUIPanel3D")
-gun = NodePath("../Gun")
+pirate_gun = NodePath("../PirateGun")
+captain_gun = NodePath("../CaptainGun")
+final_captain_point = NodePath("../FinalCaptainPoint")
 
 [node name="shipinsidefinal" parent="." instance=ExtResource("12_hjdip")]
 transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 0, -0.691706, 0)
