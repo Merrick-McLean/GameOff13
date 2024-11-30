@@ -64,6 +64,8 @@ func _on_liars_dice_physical_player_shot() -> void:
 	if Progress.player_death_count > 0:
 		label.text = "There must be a way to beat them."
 	if Progress.player_death_count > 1:
+		label.text = "Third times the charm."
+	if Progress.player_death_count > 2:
 		label.text = "One more try."
 	if Progress.know_captain_secret:
 		label.text = "I need to find a way out."

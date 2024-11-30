@@ -46,8 +46,10 @@ func start_new_game(wait_for_signal_on_first_round := false) -> void:
 		round = Round.new(alive_players, {
 			Player.SELF: 5,
 			Player.PIRATE_RIGHT: 4,
-			Player.CAPTAIN: 4,
-			Player.PIRATE_LEFT: 4
+			Player.CAPTAIN: 3,
+			Player.PIRATE_LEFT: 5
+		}, { # WEIGHTED DICE
+			Player.PIRATE_LEFT: [2, 4, 4, 5, 5]
 		})
 		
 		round.start(wait_for_signal)
@@ -96,7 +98,7 @@ class Round extends Object: # should I jsut merge round and bet? - Simpler to ju
 	## SETUP
 	# determined_dice_count maps player ids to how many determined dice they should have
 	# TODO: add parameter for weighted dice for each player
-	func _init(p_turn_order: Array[Player], determined_dice_count: Dictionary) -> void:
+	func _init(p_turn_order: Array[Player], determined_dice_count: Dictionary, weighted_dice: Dictionary) -> void:
 		# INIT VARIABLES
 		current_bet = Bet.create_empty()
 		turn_order = p_turn_order
@@ -105,7 +107,13 @@ class Round extends Object: # should I jsut merge round and bet? - Simpler to ju
 		
 		# ROLL DICE
 		for player: Player in turn_order:
-			var player_die_table := roll(PLAYER_DIE_COUNT, determined_dice_count[player])
+			var player_die_table : DieTable
+			if player in weighted_dice:
+				var dice : Array = weighted_dice[player]
+				assert(dice.size() == PLAYER_DIE_COUNT)
+				player_die_table = DieTable.from_die_array(dice)
+			else:
+				player_die_table = roll(PLAYER_DIE_COUNT, determined_dice_count[player])
 			player_rolls[player] = player_die_table
 		
 		regenerate_global_die_table()
@@ -634,6 +642,14 @@ class Round extends Object: # should I jsut merge round and bet? - Simpler to ju
 		
 		static func create_empty() -> DieTable:
 			return DieTable.new(ArrayUtils.filled(DIE_MAX, 0), 0)
+		
+		
+		static func from_die_array(dice_faces: Array) -> DieTable:
+			var result = DieTable.create_empty()
+			for face: int in dice_faces:
+				result.increment_face(face, 1)
+			return result
+		
 		
 		func get_face_count(i: int) -> int:
 			return face_counts[i - 1]
