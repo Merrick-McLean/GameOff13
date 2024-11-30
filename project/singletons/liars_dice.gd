@@ -89,7 +89,7 @@ class Round extends Object: # should I jsut merge round and bet? - Simpler to ju
 	var dialogue_instance : DialogueInstance :
 		set(new_value):
 			if is_instance_valid(dialogue_instance):
-				dialogue_instance.free()
+				dialogue_instance.call_deferred("free")
 			dialogue_instance = new_value
 	var maximum_bet : Bet
 	
@@ -154,6 +154,7 @@ class Round extends Object: # should I jsut merge round and bet? - Simpler to ju
 				make_bet(bet)
 				await npc_say_bet(get_current_player(), bet)
 				var call := await prompt_player_call(get_current_player())
+				
 				if call:
 					loser = await call_bet(Player.SELF, get_current_player(), bet)
 					break
@@ -162,6 +163,7 @@ class Round extends Object: # should I jsut merge round and bet? - Simpler to ju
 				await LiarsDice.get_tree().create_timer(0.1).timeout
 				prompt_dialogue_options() 
 				var bet := await get_self_bet(current_bet)
+				if is_instance_valid(dialogue_instance): dialogue_instance.free()
 				make_bet(bet)
 				var caller := get_caller(bet)
 				if caller != Player.NOONE:
@@ -423,35 +425,44 @@ class Round extends Object: # should I jsut merge round and bet? - Simpler to ju
 	
 	
 	func npc_say_bet(last_better: Player, last_bet: Bet) -> void:
-		await Dialogue.play(DialogueInstance.Id.NPC_BET_1, {&"actor": Dialogue.get_actor(last_better), &"bet": last_bet}).finished
+		dialogue_instance =  Dialogue.play(DialogueInstance.Id.NPC_BET_1, {&"actor": Dialogue.get_actor(last_better), &"bet": last_bet})
+		await dialogue_instance.finished
 	
 	
 	func npc_say_call(caller: Player, last_bet: Bet) -> void:
-		await Dialogue.play(DialogueInstance.Id.NPC_CALL_1, {&"actor": Dialogue.get_actor(caller), &"bet": last_bet}).finished
+		dialogue_instance = Dialogue.play(DialogueInstance.Id.NPC_CALL_1, {&"actor": Dialogue.get_actor(caller), &"bet": last_bet})
+		await dialogue_instance.finished
 	
 	
 	func npc_react_result(caller: Player, callee: Player, loser: Player) -> void:
 		if is_npc(caller):
 			if caller == loser:
-				await Dialogue.play(DialogueInstance.Id.NPC_LOSE_1, {&"actor": Dialogue.get_actor(caller)}).finished
+				dialogue_instance = Dialogue.play(DialogueInstance.Id.NPC_LOSE_1, {&"actor": Dialogue.get_actor(caller)})
+				await dialogue_instance.finished
 			else:
-				await Dialogue.play(DialogueInstance.Id.NPC_WIN_1, {&"actor": Dialogue.get_actor(caller)}).finished
+				dialogue_instance =  Dialogue.play(DialogueInstance.Id.NPC_WIN_1, {&"actor": Dialogue.get_actor(caller)})
+				await dialogue_instance.finished
 		else:
 			if callee == loser:
-				await Dialogue.play(DialogueInstance.Id.NPC_LOSE_1, {&"actor": Dialogue.get_actor(callee)}).finished
+				dialogue_instance =  Dialogue.play(DialogueInstance.Id.NPC_LOSE_1, {&"actor": Dialogue.get_actor(callee)})
+				await dialogue_instance.finished
 			else:
-				await Dialogue.play(DialogueInstance.Id.NPC_WIN_1, {&"actor": Dialogue.get_actor(callee)}).finished
+				dialogue_instance =  Dialogue.play(DialogueInstance.Id.NPC_WIN_1, {&"actor": Dialogue.get_actor(callee)})
+				await dialogue_instance.finished
 			
 	
 	
 	func kill_player(player: Player) -> void:
 		assert(player != Player.CAPTAIN)
-		LiarsDice.alive_players.erase(player)
-		if is_npc(player):
-			await Dialogue.play(DialogueInstance.Id.NPC_DEATH_1, {&"actor": Dialogue.get_actor(player)}).finished
-		else:
-			await Dialogue.play(DialogueInstance.Id.CAPTAIN_SHOOTS).finished
 		
+		if is_npc(player):
+			dialogue_instance = Dialogue.play(DialogueInstance.Id.NPC_DEATH_1, {&"actor": Dialogue.get_actor(player)})
+			await dialogue_instance.finished
+		else:
+			dialogue_instance = Dialogue.play(DialogueInstance.Id.CAPTAIN_SHOOTS)
+			await dialogue_instance.finished
+		
+		LiarsDice.alive_players.erase(player)
 		await LiarsDice.physical.update_alive_players()
 		
 		pass
@@ -481,9 +492,9 @@ class Round extends Object: # should I jsut merge round and bet? - Simpler to ju
 			#&"actor": Dialogue.get_actor(last_better)}
 		})
 		var result : Dictionary = await dialogue_instance.finished
-		if result.start_new_round:
+		if "start_new_round" in result:
 			finished.emit()
-			free()
+			call_deferred("free")
 	
 	# get the players bet
 	func get_self_bet(last_bet: Bet) -> Bet:

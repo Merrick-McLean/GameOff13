@@ -130,7 +130,7 @@ func update_alive_players() -> void:
 		if player == LiarsDice.Player.SELF:
 			if not player in LiarsDice.alive_players:
 				player_shot.emit()
-				Progress.player_death_count += 1
+				
 		else:
 			if player in LiarsDice.alive_players:
 				player_models[player].alive = true

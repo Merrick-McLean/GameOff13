@@ -21,3 +21,8 @@ func shake_camera_relative(shake_amount: float) -> void:
 func flash_lightning() -> void:
 	if lightning_overlay:
 		lightning_overlay.flash()
+
+
+func kill_lightning() -> void:
+	if lightning_overlay:
+		lightning_overlay.stop()

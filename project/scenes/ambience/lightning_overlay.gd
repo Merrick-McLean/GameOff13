@@ -21,6 +21,12 @@ func flash() -> void:
 	flash_white.visible = false
 	animation_player.play(["lightning_1", "lightning_2", "lightning_3", "lightning_4"].pick_random())
 
+
+func stop() -> void:
+	animation_player.stop()
+	animation_player.play("RESET")
+
+
 func _on_flash_visibility_changed() -> void:
 	if not is_node_ready(): await ready
 	if flash_white.visible:

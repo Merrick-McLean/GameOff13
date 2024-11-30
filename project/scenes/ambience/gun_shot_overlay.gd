@@ -57,7 +57,25 @@ func _on_lightning_overlay_flashed() -> void:
 func _on_liars_dice_physical_player_shot() -> void:
 	is_active = true
 	GameMaster.player_in_world = false
+	GameMaster.kill_lightning()
 	in_transition = false
+	
+	label.text = "Let's try this again."
+	if Progress.player_death_count > 0:
+		label.text = "There must be a way to beat them."
+	if Progress.player_death_count > 1:
+		label.text = "One more try."
+	if Progress.know_captain_secret:
+		label.text = "I need to find a way out."
+	if Progress.player_death_count_since_know_captain_secret > 0:
+		label.text = "The other pirates may be the key."
+	if Progress.player_death_count_since_know_captain_secret > 1:
+		label.text = "I'm so close to getting out."
+	
+	Progress.player_death_count += 1
+	if Progress.know_captain_secret:
+		Progress.player_death_count_since_know_captain_secret += 1
+	
 	if animation_player:
 		animation_player.stop()
 		animation_player.play("shoot")
