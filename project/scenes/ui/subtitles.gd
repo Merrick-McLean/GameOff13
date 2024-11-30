@@ -91,6 +91,7 @@ func init_new_line(new_speaker: Dialogue.Actor, unparsed_line: String) -> void:
 	speed = DEFAULT_SPEED
 	char_index = -1.0
 	line = parse_line("[center]" + Dialogue.get_actor_name(new_speaker) + ": " +  unparsed_line)
+	LiarsDice.physical.player_models[Dialogue.get_liars_dice_player(current_speaker)].is_talking = true
 	line_started.emit()
 
 func parse_line(new_line: String) -> ParsedLine:
@@ -164,6 +165,7 @@ func parse_line(new_line: String) -> ParsedLine:
 
 func skip_to_end() -> void:
 	char_index = INF
+	LiarsDice.physical.player_models[Dialogue.get_liars_dice_player(current_speaker)].is_talking = false
 	line_finished.emit()
 
 
@@ -201,6 +203,7 @@ func talk(delta: float) -> void:
 			command.call()
 	
 	if at_end_of_line():
+		LiarsDice.physical.player_models[Dialogue.get_liars_dice_player(current_speaker)].is_talking = false
 		line_finished.emit()
 
 func at_end_of_line() -> bool:

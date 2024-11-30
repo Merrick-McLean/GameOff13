@@ -122,14 +122,17 @@ skeleton = NodePath("../..")
 [node name="PlayerModel" parent="." instance=ExtResource("3_t73bs")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.538026, -1.2693)
 player = 2
+is_talking = null
 
 [node name="PlayerModel2" parent="." instance=ExtResource("3_t73bs")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.57225, 0.420823, -0.701345)
 player = 3
+is_talking = null
 
 [node name="PlayerModel3" parent="." instance=ExtResource("3_t73bs")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.65933, 0.420823, -0.656537)
 player = 1
+is_talking = null
 
 [node name="DialoguePoint" parent="." instance=ExtResource("3_ig5u6")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.05046, 0.627823, -0.213782)

@@ -12,14 +12,38 @@ extends Node3D
 		else:
 			_kill()
 
+var target_bob_speed := 0.05
+var target_bob_amplitude := 0.05
+var bob_speed : float = 1.0
+var bob_amplitude := 0.05
+
 @export var player : LiarsDice.Player
+@export var is_talking := false :
+	set(new_value):
+		is_talking = new_value
+		target_bob_speed = 10.0 if is_talking else resting_animation_speed
+		target_bob_amplitude = 0.04 if is_talking else 0.02
 
 @onready var model := $Model
 @onready var smoke_particles := $SmokeParticles
 @onready var poof_sound := $Sounds/PoofSound
 
+@onready var resting_animation_speed := randf_range(2.4, 2.6)
+@onready var animation_time := randf() * TAU
+
+func _ready() -> void:
+	is_talking = false
 
 func _process(delta: float) -> void:
+	bob_speed = lerp(bob_speed, target_bob_speed, 5 * delta)
+	bob_amplitude = lerp(bob_amplitude, target_bob_amplitude, 5 * delta)
+	animation_time += delta * bob_speed
+	
+	var scale_offset = sin(animation_time)
+	model.scale.y = lerp(1.0, 1.0 + bob_amplitude, scale_offset)
+	model.scale.x = 1.0 / sqrt(model.scale.y)
+	model.scale.z = 1.0 /  sqrt(model.scale.y)
+	
 	if Engine.is_editor_hint(): return
 	if Debug.is_just_pressed("test_9") and player == LiarsDice.Player.PIRATE_RIGHT:
 		_kill()
