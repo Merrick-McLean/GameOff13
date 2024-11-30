@@ -44,9 +44,6 @@ render_target_update_mode = 4
 
 [node name="GameRoom" parent="GameViewportContainer/SubViewport" instance=ExtResource("5_tyn2c")]
 
-[node name="PirateGun" parent="GameViewportContainer/SubViewport/GameRoom" index="31"]
-transform = Transform3D(0.00620982, 0.999928, -0.0102043, 0.00597835, 0.0101672, 0.99993, 0.999962, -0.00627041, -0.00591479, -1.48723, 0.498987, -0.0520414)
-
 [node name="UI" type="CanvasLayer" parent="."]
 scale = Vector2(2, 2)
 transform = Transform2D(2, 0, 0, 2, 0, 0)
