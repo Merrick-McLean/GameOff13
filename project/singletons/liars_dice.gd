@@ -50,7 +50,9 @@ func start_new_game(wait_for_signal_on_first_round := false) -> void:
 			Player.PIRATE_LEFT: 5
 		}, { # WEIGHTED DICE
 			Player.PIRATE_LEFT: [2, 4, 4, 5, 5]
-		})
+		}, # favour player if they have died at least twice
+			Round.FavourMode.RANDOM if Progress.player_death_count < 2 else Round.FavourMode.PLAYER
+		)
 		
 		round.start(wait_for_signal)
 		await round.finished
@@ -74,6 +76,11 @@ class Round extends Object: # should I jsut merge round and bet? - Simpler to ju
 	
 	signal finished
 	
+	enum FavourMode {
+		RANDOM,
+		PLAYER
+	}
+	
 	# based on bets and player dice, used for npc bets and liar calls
 	var current_bet : Bet
 	var highest_bid_table: DieTable
@@ -88,6 +95,8 @@ class Round extends Object: # should I jsut merge round and bet? - Simpler to ju
 	var ideal_target : Bet # the ideal maximum bet, that has a certain probability >= ideal_probability of being valid
 	var absolute_target : Bet # the maximum valid bet if all undetermined dice are the same number
 	
+	var favour_mode : FavourMode
+	
 	var dialogue_instance : DialogueInstance :
 		set(new_value):
 			if is_instance_valid(dialogue_instance):
@@ -98,12 +107,13 @@ class Round extends Object: # should I jsut merge round and bet? - Simpler to ju
 	## SETUP
 	# determined_dice_count maps player ids to how many determined dice they should have
 	# TODO: add parameter for weighted dice for each player
-	func _init(p_turn_order: Array[Player], determined_dice_count: Dictionary, weighted_dice: Dictionary) -> void:
+	func _init(p_turn_order: Array[Player], determined_dice_count: Dictionary, weighted_dice: Dictionary, p_favour_mode := FavourMode.RANDOM) -> void:
 		# INIT VARIABLES
 		current_bet = Bet.create_empty()
 		turn_order = p_turn_order
 		highest_bid_table = DieTable.create_empty()
 		maximum_bet = Bet.new(get_player_count() * PLAYER_DIE_COUNT, DIE_MAX)
+		favour_mode = p_favour_mode
 		
 		# ROLL DICE
 		for player: Player in turn_order:
@@ -522,8 +532,10 @@ class Round extends Object: # should I jsut merge round and bet? - Simpler to ju
 		
 		# RESOLVE DICE
 		var resolve_mode := ResolveMode.RANDOM
-		if callee == Player.CAPTAIN: resolve_mode = ResolveMode.GURANTEE_WIN
-		if caller == Player.CAPTAIN: resolve_mode = ResolveMode.GURANTEE_LOSS
+		if callee == Player.CAPTAIN: 										resolve_mode = ResolveMode.GURANTEE_WIN
+		elif caller == Player.CAPTAIN: 										resolve_mode = ResolveMode.GURANTEE_LOSS
+		elif callee == Player.SELF and favour_mode == FavourMode.PLAYER: 	resolve_mode = ResolveMode.GURANTEE_WIN
+		elif caller == Player.SELF and favour_mode == FavourMode.PLAYER: 	resolve_mode = ResolveMode.GURANTEE_LOSS
 		
 		resolve_dice(bet, resolve_mode)
 		
