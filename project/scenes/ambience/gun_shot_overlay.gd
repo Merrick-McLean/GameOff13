@@ -21,13 +21,7 @@ var is_active := false :
 		if is_active == new_value: return
 		is_active = new_value
 		
-		if is_active:
-			GameMaster.player_in_world = false
-			in_transition = false
-			if animation_player:
-				animation_player.stop()
-				animation_player.play("shoot")
-		else:
+		if not is_active:
 			GameMaster.player_in_world = true
 			in_transition = false
 			flash_white.visible = false
@@ -62,8 +56,38 @@ func _on_lightning_overlay_flashed() -> void:
 
 func _on_liars_dice_physical_player_shot() -> void:
 	is_active = true
+	GameMaster.player_in_world = false
+	GameMaster.kill_lightning()
+	in_transition = false
+	
+	label.text = "Let's try this again."
+	if Progress.player_death_count > 0:
+		label.text = "There must be a way to beat them."
+	if Progress.player_death_count > 1:
+		label.text = "One more try."
+	if Progress.know_captain_secret:
+		label.text = "I need to find a way out."
+	if Progress.player_death_count_since_know_captain_secret > 0:
+		label.text = "The other pirates may be the key."
+	if Progress.player_death_count_since_know_captain_secret > 1:
+		label.text = "I'm so close to getting out."
+	
+	Progress.player_death_count += 1
+	if Progress.know_captain_secret:
+		Progress.player_death_count_since_know_captain_secret += 1
+	
+	if animation_player:
+		animation_player.stop()
+		animation_player.play("shoot")
+
+
+func _on_liars_dice_physical_navy_shot() -> void:
+	if animation_player:
+		animation_player.stop()
+		animation_player.play("shoot_quick")
 
 
 func _on_animation_player_animation_finished(anim_name: StringName) -> void:
 	if anim_name == "fade":
+		LiarsDice.start_new_life()
 		transition_requested.emit()

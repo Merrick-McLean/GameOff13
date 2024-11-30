@@ -1,5 +1,6 @@
 extends Node
 
+signal ready_for_game_start
 
 const DIE_MAX = 6 # 6 sided dice
 const PLAYER_DIE_COUNT = 5 # how many dice each player rolls each time
@@ -25,25 +26,52 @@ func _ready() -> void:
 
 func reset() -> void:
 	round = null
-	alive_players = [Player.SELF, Player.PIRATE_RIGHT, Player.CAPTAIN, Player.PIRATE_LEFT]
+	if physical: physical.reset()
+	alive_players = [Player.CAPTAIN, Player.PIRATE_RIGHT, Player.SELF, Player.PIRATE_LEFT]
 	if physical: physical.update_alive_players()
+
+
+func is_out(player: Player) -> bool:
+	return not player in alive_players
 
 
 func _process(delta: float) -> void:
 	if Debug.is_just_pressed("test_7") and round == null:
-		while Player.SELF in alive_players:
-			round = Round.new(alive_players, {
-				Player.SELF: 5,
-				Player.PIRATE_RIGHT: 4,
-				Player.CAPTAIN: 4,
-				Player.PIRATE_LEFT: 4
-			})
-			await round.start()
-		reset()
+		await start_new_game()
 
 
+func start_new_game(wait_for_signal_on_first_round := false) -> void:
+	var wait_for_signal := wait_for_signal_on_first_round
+	while Player.SELF in alive_players:
+		round = Round.new(alive_players, {
+			Player.SELF: 5,
+			Player.PIRATE_RIGHT: 4,
+			Player.CAPTAIN: 4,
+			Player.PIRATE_LEFT: 4
+		})
+		
+		round.start(wait_for_signal)
+		await round.finished
+		wait_for_signal = false
+	round = null
 
-class Round: # should I jsut merge round and bet? - Simpler to just have one big fat class I guess
+
+func start_new_life() -> void:
+	assert(not round)
+	reset()
+	Dialogue.reset()
+	Dialogue.play(DialogueInstance.Id.INTRO_DIALOGUE_2)
+
+
+func kill_npc(npc: Player) -> void:
+	LiarsDice.alive_players.erase(npc)
+	await LiarsDice.physical.update_alive_players()
+
+
+class Round extends Object: # should I jsut merge round and bet? - Simpler to just have one big fat class I guess
+	
+	signal finished
+	
 	# based on bets and player dice, used for npc bets and liar calls
 	var current_bet : Bet
 	var highest_bid_table: DieTable
@@ -58,7 +86,11 @@ class Round: # should I jsut merge round and bet? - Simpler to just have one big
 	var ideal_target : Bet # the ideal maximum bet, that has a certain probability >= ideal_probability of being valid
 	var absolute_target : Bet # the maximum valid bet if all undetermined dice are the same number
 	
-	var dialogue_instance : DialogueInstance
+	var dialogue_instance : DialogueInstance :
+		set(new_value):
+			if is_instance_valid(dialogue_instance):
+				dialogue_instance.call_deferred("free")
+			dialogue_instance = new_value
 	var maximum_bet : Bet
 	
 	## SETUP
@@ -105,11 +137,13 @@ class Round: # should I jsut merge round and bet? - Simpler to just have one big
 		LiarsDice.physical.cups[player].set_dice(dice)
 	
 	
-	func start() -> void:
+	func start(wait_for_signal: bool) -> void:
 		# START ROUND
 		await LiarsDice.physical.start_game()
 		push_physical_dice(Player.SELF)
-		dialogue_instance = Dialogue.play(DialogueInstance.Id.ROUND_START_1)
+		if wait_for_signal:
+			await LiarsDice.ready_for_game_start
+		dialogue_instance = Dialogue.play(DialogueInstance.Id.ROUND_START_1, {"round_number": 5 - turn_order.size()})
 		await dialogue_instance.finished
 		
 		# MAIN LOOP
@@ -120,13 +154,16 @@ class Round: # should I jsut merge round and bet? - Simpler to just have one big
 				make_bet(bet)
 				await npc_say_bet(get_current_player(), bet)
 				var call := await prompt_player_call(get_current_player())
+				
 				if call:
 					loser = await call_bet(Player.SELF, get_current_player(), bet)
 					break
 			else:
 				assert(get_current_player() == Player.SELF)
+				await LiarsDice.get_tree().create_timer(0.1).timeout
 				prompt_dialogue_options() 
 				var bet := await get_self_bet(current_bet)
+				if is_instance_valid(dialogue_instance): dialogue_instance.free()
 				make_bet(bet)
 				var caller := get_caller(bet)
 				if caller != Player.NOONE:
@@ -138,6 +175,9 @@ class Round: # should I jsut merge round and bet? - Simpler to just have one big
 			await pass_turn()
 		
 		await kill_player(loser)
+		
+		finished.emit()
+		free()
 	
 	
 	func roll(total_die_count: int, determined_dice_count := total_die_count) -> DieTable:
@@ -385,35 +425,44 @@ class Round: # should I jsut merge round and bet? - Simpler to just have one big
 	
 	
 	func npc_say_bet(last_better: Player, last_bet: Bet) -> void:
-		Dialogue.play(DialogueInstance.Id.PIRATE_BET_1, {&"actor": Dialogue.get_actor(last_better), &"bet": last_bet}).finished
+		dialogue_instance =  Dialogue.play(DialogueInstance.Id.NPC_BET_1, {&"actor": Dialogue.get_actor(last_better), &"bet": last_bet})
+		await dialogue_instance.finished
 	
 	
 	func npc_say_call(caller: Player, last_bet: Bet) -> void:
-		await Dialogue.play(DialogueInstance.Id.PIRATE_CALL_1, {&"actor": Dialogue.get_actor(caller), &"bet": last_bet}).finished
+		dialogue_instance = Dialogue.play(DialogueInstance.Id.NPC_CALL_1, {&"actor": Dialogue.get_actor(caller), &"bet": last_bet})
+		await dialogue_instance.finished
 	
 	
 	func npc_react_result(caller: Player, callee: Player, loser: Player) -> void:
 		if is_npc(caller):
 			if caller == loser:
-				await Dialogue.play(DialogueInstance.Id.PIRATE_LOSE_1, {&"actor": Dialogue.get_actor(caller)}).finished
+				dialogue_instance = Dialogue.play(DialogueInstance.Id.NPC_LOSE_1, {&"actor": Dialogue.get_actor(caller)})
+				await dialogue_instance.finished
 			else:
-				await Dialogue.play(DialogueInstance.Id.PIRATE_WIN_1, {&"actor": Dialogue.get_actor(caller)}).finished
+				dialogue_instance =  Dialogue.play(DialogueInstance.Id.NPC_WIN_1, {&"actor": Dialogue.get_actor(caller)})
+				await dialogue_instance.finished
 		else:
 			if callee == loser:
-				await Dialogue.play(DialogueInstance.Id.PIRATE_LOSE_1, {&"actor": Dialogue.get_actor(callee)}).finished
+				dialogue_instance =  Dialogue.play(DialogueInstance.Id.NPC_LOSE_1, {&"actor": Dialogue.get_actor(callee)})
+				await dialogue_instance.finished
 			else:
-				await Dialogue.play(DialogueInstance.Id.PIRATE_WIN_1, {&"actor": Dialogue.get_actor(callee)}).finished
+				dialogue_instance =  Dialogue.play(DialogueInstance.Id.NPC_WIN_1, {&"actor": Dialogue.get_actor(callee)})
+				await dialogue_instance.finished
 			
 	
 	
 	func kill_player(player: Player) -> void:
 		assert(player != Player.CAPTAIN)
-		LiarsDice.alive_players.erase(player)
-		if is_npc(player):
-			await Dialogue.play(DialogueInstance.Id.PIRATE_DEATH_1, {&"actor": Dialogue.get_actor(player)}).finished
-		else:
-			await Dialogue.play(DialogueInstance.Id.CAPTAIN_SHOOTS).finished
 		
+		if is_npc(player):
+			dialogue_instance = Dialogue.play(DialogueInstance.Id.NPC_DEATH_1, {&"actor": Dialogue.get_actor(player)})
+			await dialogue_instance.finished
+		else:
+			dialogue_instance = Dialogue.play(DialogueInstance.Id.CAPTAIN_SHOOTS)
+			await dialogue_instance.finished
+		
+		LiarsDice.alive_players.erase(player)
 		await LiarsDice.physical.update_alive_players()
 		
 		pass
@@ -424,7 +473,10 @@ class Round: # should I jsut merge round and bet? - Simpler to just have one big
 	func prompt_player_call(last_better: Player) -> bool:
 		assert(last_better != Player.SELF)
 		
-		dialogue_instance = Dialogue.play(DialogueInstance.Id.QUERY_LIAR, {&"actor": Dialogue.get_actor(last_better)})
+		dialogue_instance = Dialogue.play(DialogueInstance.Id.QUERY_LIAR, {
+			#&"actors": turn_order.filter(is_npc).map(Dialogue.get_actor),
+			&"actor": Dialogue.get_actor(last_better)}
+		)
 		var result : Dictionary = await dialogue_instance.finished
 		
 		
@@ -433,7 +485,16 @@ class Round: # should I jsut merge round and bet? - Simpler to just have one big
 	
 	# Prompts dialogue options to show up
 	func prompt_dialogue_options() -> void:
-		pass
+		dialogue_instance = Dialogue.play(DialogueInstance.Id.DIALOGUE_PROMPT, {
+			&"actors": turn_order.filter(is_npc).map(Dialogue.get_actor),
+			&"max_dialogue_count": 3,
+			&"bet": current_bet
+			#&"actor": Dialogue.get_actor(last_better)}
+		})
+		var result : Dictionary = await dialogue_instance.finished
+		if "start_new_round" in result:
+			finished.emit()
+			call_deferred("free")
 	
 	# get the players bet
 	func get_self_bet(last_bet: Bet) -> Bet:
@@ -507,7 +568,8 @@ class Round: # should I jsut merge round and bet? - Simpler to just have one big
 		if resolve_mode == ResolveMode.GURANTEE_LOSS:
 			var current_count_of_die := global_die_table.get_face_count(bet.value)
 			var extra_needed_to_win := bet.amount - current_count_of_die
-			var misses_need_to_lose := global_die_table.undetermined_count - extra_needed_to_win + 1
+			var misses_need_to_lose : int = max(0, global_die_table.undetermined_count - extra_needed_to_win + 1)
+			assert(extra_needed_to_win > 0)
 			assert(misses_need_to_lose >= 0)
 			var miss_faces := range(1, DIE_MAX + 1)
 			miss_faces.erase(bet.value)
@@ -634,7 +696,7 @@ class Round: # should I jsut merge round and bet? - Simpler to just have one big
 		
 		
 		static func create_empty() -> Bet:
-			return Bet.new(0, 1)
+			return Bet.new(0, DIE_MAX)
 		
 		
 		static func from_abs(abs_value: int) -> Bet:
@@ -665,3 +727,4 @@ class Round: # should I jsut merge round and bet? - Simpler to just have one big
 		# excluding the starting bet (this bet), and including the ending bet
 		func distance_to(ending_bet: Bet) -> int:
 			return ending_bet.get_abs() - get_abs()
+		

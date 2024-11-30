@@ -26,6 +26,7 @@ Palette="*res://singletons/palette.gd"
 LiarsDice="*res://singletons/liars_dice.gd"
 CollisionLayer="*res://singletons/collision_layer.gd"
 GameMaster="*res://singletons/game_master.gd"
+Progress="*res://singletons/progress.gd"
 
 [debug]
 

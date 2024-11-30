@@ -3,33 +3,61 @@ extends Node
 
 signal interact_pressed
 signal player_shot
+signal navy_shot
 signal cups_raised
+signal ready_for_credits
 
 @export var player_camera : PlayerCamera
 @export var gui_panel : GuiPanel
-@export var gun : Gun
+@export var pirate_gun : Gun
+@export var captain_gun : Gun
+@export var final_captain_point : Node3D
 @onready var cups := get_tree().get_nodes_in_group(&"Cups")
 @onready var player_models := get_tree().get_nodes_in_group(&"PlayerModels")
 @onready var better : Better = gui_panel.better
 @onready var animation_player : AnimationPlayer = $AnimationPlayer
 
+
+
+var cups_and_dice_visible : bool = false :
+	set(new_value):
+		cups_and_dice_visible = new_value
+		for cup: Cup in cups:
+			cup.visible = cups_and_dice_visible and cup.player in LiarsDice.alive_players
+
+var is_captain_gun_drawn : bool = false :
+	set(new_value):
+		is_captain_gun_drawn = new_value
+		captain_gun.state = Gun.State.DRAWN if is_captain_gun_drawn else Gun.State.UNDRAWN
+
 func _ready() -> void:
-	assert(gun, "Missing gun!")
+	assert(pirate_gun, "Missing gun!")
 	assert(player_camera, "Missing player camera!")
 	assert(better, "Missing better!")
+	assert(captain_gun, "Missing captain's gun!")
+	assert(final_captain_point, "Missing final captain point")
 	cups.sort_custom(func(a: Cup, b: Cup) -> bool: return a.player < b.player)
 	player_models.sort_custom(func(a: PlayerModel, b: PlayerModel) -> bool: return a.player < b.player)
 	player_models.insert(0, null)
 	LiarsDice.physical = self
 	update_alive_players()
 	better.hide()
-
-
+	update_betting_lock()
+	reset()
 
 
 func _process(delta: float) -> void:
-	if Debug.is_just_pressed(&"test_1"):
-		await reveal_dice()
+	if Debug.is_just_pressed("test_2"):
+		is_captain_gun_drawn = !is_captain_gun_drawn
+
+
+func update_betting_lock() -> void:
+	better.is_locked = (Dialogue.display and Dialogue.display.is_someone_speaking) or Dialogue.is_betting_locked
+
+
+func reset() -> void:
+	cups_and_dice_visible = false
+	is_captain_gun_drawn = false
 
 
 func _input(event: InputEvent):
@@ -38,8 +66,10 @@ func _input(event: InputEvent):
 
 
 func start_game() -> void:
-	gun.visible = false
-	gun.can_pickup = false
+	Dialogue.is_betting_locked = false
+	pirate_gun.can_pickup = false
+	cups_and_dice_visible = true
+	better.visible = false
 	for cup: Cup in cups:
 		cup.target_state = Cup.State.AT_PLAYER
 		cup.target_raised = false
@@ -66,12 +96,11 @@ func reveal_dice() -> void:
 	player_camera.transition_state(PlayerCamera.State.AT_REVEAL)
 	
 	#await player_camera.state_transition_completed
+	await get_tree().create_timer(0.2)
 	animation_player.stop()
 	animation_player.play("drum_roll")
 	await cups_raised
-	
-	
-	await get_tree().create_timer(1.0).timeout
+	await interact_pressed
 	
 	await kill_unwanted_dice()
 	
@@ -101,18 +130,27 @@ func update_alive_players() -> void:
 		if player == LiarsDice.Player.SELF:
 			if not player in LiarsDice.alive_players:
 				player_shot.emit()
+				
 		else:
 			if player in LiarsDice.alive_players:
 				player_models[player].alive = true
-				cups[player].visible = true
+				cups[player].visible = true and cups_and_dice_visible
 			else:
 				player_models[player].alive = false
 				cups[player].visible = false
 
 
-func spawn_gun() -> void:
-	gun.visible = true
+func pirate_shoot() -> void:
+	navy_shot.emit()
 
 
-func enable_gun_pickup() -> void:
-	gun.can_pickup = true
+func pan_camera_to_pirate_gun() -> void:
+	pirate_gun.can_pickup = true
+	player_camera.pan_to_point(pirate_gun.global_position)
+
+func pan_camera_to_captain() -> void:
+	player_camera.pan_to_point(final_captain_point.global_position)
+
+
+func play_credits() -> void:
+	ready_for_credits.emit()

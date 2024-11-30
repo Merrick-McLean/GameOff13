@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=3 uid="uid://ckdxm5eyc6dyu"]
+[gd_scene load_steps=13 format=3 uid="uid://ckdxm5eyc6dyu"]
 
 [ext_resource type="Shader" path="res://shaders/dither.gdshader" id="1_kkj7l"]
 [ext_resource type="Texture2D" uid="uid://bisw3a062q3rs" path="res://sprites/test_palette.png" id="2_frn0b"]
@@ -9,6 +9,7 @@
 [ext_resource type="Shader" path="res://shaders/dither_ui.gdshader" id="8_2vlii"]
 [ext_resource type="PackedScene" uid="uid://da6iv0i5s0dxd" path="res://scenes/ambience/lightning_overlay.tscn" id="9_jrsup"]
 [ext_resource type="PackedScene" uid="uid://ckkdolg35aylw" path="res://scenes/ambience/gun_shot_overlay.tscn" id="10_aqcw8"]
+[ext_resource type="PackedScene" uid="uid://ccl6s4a88a7ya" path="res://scenes/ui/credits.tscn" id="10_gbpir"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_r6w7f"]
 shader = ExtResource("1_kkj7l")
@@ -73,7 +74,11 @@ viewport = NodePath("../../../../GameViewportContainer/SubViewport")
 
 [node name="GunShotOverlay" parent="UI/SubViewportContainer/SubViewport" instance=ExtResource("10_aqcw8")]
 
+[node name="Credits" parent="UI/SubViewportContainer/SubViewport" instance=ExtResource("10_gbpir")]
+
+[connection signal="navy_shot" from="GameViewportContainer/SubViewport/GameRoom/LiarsDicePhysical" to="UI/SubViewportContainer/SubViewport/GunShotOverlay" method="_on_liars_dice_physical_navy_shot"]
 [connection signal="player_shot" from="GameViewportContainer/SubViewport/GameRoom/LiarsDicePhysical" to="UI/SubViewportContainer/SubViewport/GunShotOverlay" method="_on_liars_dice_physical_player_shot"]
+[connection signal="ready_for_credits" from="GameViewportContainer/SubViewport/GameRoom/LiarsDicePhysical" to="UI/SubViewportContainer/SubViewport/Credits" method="_on_liars_dice_physical_ready_for_credits"]
 [connection signal="flashed" from="UI/SubViewportContainer/SubViewport/LightningOverlay" to="UI/SubViewportContainer/SubViewport/GunShotOverlay" method="_on_lightning_overlay_flashed"]
 [connection signal="transition_requested" from="UI/SubViewportContainer/SubViewport/GunShotOverlay" to="UI/SubViewportContainer/SubViewport/LightningOverlay" method="_on_gun_shot_overlay_transition_requested"]
 

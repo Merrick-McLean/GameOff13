@@ -7,6 +7,8 @@ radius = 0.180896
 
 [node name="Gun" type="Node3D"]
 script = ExtResource("1_a6anj")
+pirate = null
+simulate_in_editor = null
 
 [node name="Model" type="Node3D" parent="."]
 

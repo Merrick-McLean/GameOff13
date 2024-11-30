@@ -2,6 +2,7 @@ class_name DialogueDisplay
 extends Control
 
 signal option_chosen(result: DialogueInstance.OptionResult)
+signal is_someone_speaking_changed(old_value: bool, new_value: bool)
 
 const DialogueOptionsUIScene = preload("res://scenes/ui/dialogue_options.tscn")
 
@@ -9,6 +10,14 @@ const DialogueOptionsUIScene = preload("res://scenes/ui/dialogue_options.tscn")
 
 var dialogue_options_uis := []
 var last_result : DialogueInstance.OptionResult
+var is_someone_speaking := false :
+	set(new_value):
+		if is_someone_speaking == new_value: return
+		var old_value := is_someone_speaking
+		is_someone_speaking = new_value
+		if LiarsDice.physical: LiarsDice.physical.update_betting_lock()
+		is_someone_speaking_changed.emit(old_value, is_someone_speaking)
+
 
 @onready var subtitles : Subtitles = $Subtitles
 
@@ -56,13 +65,16 @@ func _process(delta: float) -> void:
 			dialogue_options_ui.visible_percentage = clamp(remap(weighted_displacement, 170, 200, 1.0, 0.0), 0.0, 1.0)
 
 
-func say(new_speaker: Dialogue.Actor, unparsed_line: String, wait_for_continue := true) -> void:
+func say(new_speaker: Dialogue.Actor, unparsed_line: String, wait_for_continue := true, is_skippable := true) -> void:
 	subtitles.init_new_line(new_speaker, unparsed_line)
 	
+	is_someone_speaking = true
+	subtitles.can_skip = is_skippable
 	if wait_for_continue:
 		await subtitles.line_continued
 	else:
 		await subtitles.line_finished
+	is_someone_speaking = false
 
 func push_options(option_sets: Array[DialogueInstance.OptionSet]) -> DialogueInstance.OptionResult:
 	var seen_actors := ArrayUtils.filled(Dialogue.Actor.COUNT, false)
