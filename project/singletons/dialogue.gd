@@ -44,7 +44,7 @@ func reset() -> void:
 func _process(delta: float) -> void:
 	if Debug.is_just_pressed(&"test_0"):
 		var instance : DialogueInstance
-		instance = play(DialogueInstance.Id.TEST_1)
+		instance = play(DialogueInstance.Id.CAPTAIN_NOW)
 		await instance.finished
 		instance = play(DialogueInstance.Id.TEST_2)
 		await instance.finished
