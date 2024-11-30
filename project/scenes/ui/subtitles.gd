@@ -9,6 +9,10 @@ const DEFAULT_SPEED := 30.0
 const FONT_SIZE := 12
 const SIDE_BUFFER := 10
 
+const PIRATE_LEFT_FONT = preload("res://fonts/rosalicious.ttf")
+const PIRATE_RIGHT_FONT = preload("res://fonts/Alundraskinny.ttf")
+const CAPTAIN_FONT = preload("res://fonts/OldWizard.ttf")
+
 @export var font: Font :
 	set(new_value):
 		font = new_value
@@ -77,6 +81,11 @@ func get_talk_sound(speaker := current_speaker) -> AudioStreamPlayer:
 
 func init_new_line(new_speaker: Dialogue.Actor, unparsed_line: String) -> void:
 	show()
+	
+	match new_speaker:
+		Dialogue.Actor.PIRATE_LEFT: 	font = PIRATE_LEFT_FONT
+		Dialogue.Actor.PIRATE_RIGHT: 	font = PIRATE_RIGHT_FONT
+		Dialogue.Actor.CAPTAIN: 		font = CAPTAIN_FONT
 	
 	current_speaker = new_speaker
 	speed = DEFAULT_SPEED
