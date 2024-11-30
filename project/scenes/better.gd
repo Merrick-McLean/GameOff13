@@ -9,11 +9,18 @@ signal bet_made(bet: LiarsDice.Round.Bet)
 		is_locked = new_value
 		place_bet_button.disabled = is_locked
 
+@export var block_mouse_input := false:
+	set(new_value):
+		block_mouse_input = new_value
+		if not is_node_ready(): await ready
+		mouse_blocker.visible = block_mouse_input
+
 @onready var die_count_incrementor : IncrementorUI = $HBoxContainer/DieCount/Incrementor
 @onready var die_face_incrementor : IncrementorUI = $HBoxContainer/DieFace/Incrementor
 @onready var die_count_label : Label = $HBoxContainer/DieCount/Label
 @onready var die_face_texture_rect : DieTextureRect = $HBoxContainer/DieFace/DieTextureRect
 @onready var place_bet_button : Button = $HBoxContainer/Button
+@onready var mouse_blocker : Control = $MouseBlocker
 
 @onready var bet_place_sound : AudioStreamPlayer = $Sounds/BetPlace
 
