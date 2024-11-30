@@ -92,3 +92,12 @@ func get_actor(player: LiarsDice.Player) -> Actor:
 		LiarsDice.Player.PIRATE_LEFT: return Actor.PIRATE_LEFT
 	assert(false)
 	return Actor.CAPTAIN
+
+
+func get_liars_dice_player(actor: Actor) -> LiarsDice.Player:
+	match actor:
+		Actor.CAPTAIN: return LiarsDice.Player.CAPTAIN
+		Actor.PIRATE_RIGHT: return LiarsDice.Player.PIRATE_RIGHT
+		Actor.PIRATE_LEFT: return LiarsDice.Player.PIRATE_LEFT
+	assert(false)
+	return LiarsDice.Player.CAPTAIN

@@ -3,7 +3,6 @@ extends Node3D
 
 signal state_transition_completed(old_state: State, new_state: State)
 
-const NORMAL_FOV = 55.0
 const ZOOMED_FOV = 25.0
 const SENSITIVITY = Vector2(0.0015, 0.0015)
 const PAN_SPEED = 3.0
@@ -144,7 +143,7 @@ func _process(delta: float) -> void:
 	current_ui = new_ui
 	current_gun = new_gun
 	
-	camera.fov = lerp(camera.fov, ZOOMED_FOV if current_cup or state == State.AT_REVEAL else NORMAL_FOV, 10.0 * delta)
+	camera.fov = lerp(camera.fov, ZOOMED_FOV if current_cup or state == State.AT_REVEAL else get_normal_fov(), 10.0 * delta)
 	camera.rotation = shake_manager.get_shake_rotation(delta)
 	
 	## UPDATE ROTATION
@@ -170,6 +169,14 @@ func _process(delta: float) -> void:
 	
 	if current_gun and current_gun.can_pickup and Input.is_action_just_pressed("interact"):
 		current_gun.state = Gun.State.WITH_PLAYER
+
+
+func get_normal_fov() -> float:
+	if not LiarsDice.round: 				return 55.0
+	if LiarsDice.alive_players.size() >= 4:	return 55.0
+	if LiarsDice.alive_players.size() >= 3:	return 50.0
+	return 45.0
+
 
 func get_max_rotation_up(for_state := state) -> float:
 	match(for_state):

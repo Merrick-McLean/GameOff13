@@ -44,6 +44,15 @@ render_target_update_mode = 4
 
 [node name="GameRoom" parent="GameViewportContainer/SubViewport" instance=ExtResource("5_tyn2c")]
 
+[node name="PlayerModel" parent="GameViewportContainer/SubViewport/GameRoom" index="9"]
+is_talking = null
+
+[node name="PlayerModel2" parent="GameViewportContainer/SubViewport/GameRoom" index="10"]
+is_talking = null
+
+[node name="PlayerModel3" parent="GameViewportContainer/SubViewport/GameRoom" index="11"]
+is_talking = null
+
 [node name="UI" type="CanvasLayer" parent="."]
 scale = Vector2(2, 2)
 transform = Transform2D(2, 0, 0, 2, 0, 0)

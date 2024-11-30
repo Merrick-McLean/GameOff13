@@ -1,7 +1,8 @@
-[gd_scene load_steps=11 format=3 uid="uid://ckf78w5o2weeq"]
+[gd_scene load_steps=16 format=3 uid="uid://ckf78w5o2weeq"]
 
 [ext_resource type="Script" path="res://scenes/better.gd" id="1_66jhb"]
 [ext_resource type="PackedScene" uid="uid://d2yutb46w43jl" path="res://scenes/ui/incrementor.tscn" id="1_hwthd"]
+[ext_resource type="FontFile" uid="uid://cb3qxkpyqogew" path="res://fonts/Mogra/Mogra-Regular.ttf" id="2_1la7b"]
 [ext_resource type="Texture2D" uid="uid://c6m1psahdykvr" path="res://sprites/die_faces/1.png" id="2_thqdb"]
 [ext_resource type="Script" path="res://scenes/die_texture_rect.gd" id="4_hn87p"]
 [ext_resource type="Texture2D" uid="uid://dqelcc2w60w8k" path="res://sprites/die_faces/2.png" id="5_xer1f"]
@@ -10,6 +11,22 @@
 [ext_resource type="Texture2D" uid="uid://cshvtkd0t8cmk" path="res://sprites/die_faces/5.png" id="8_wpuk5"]
 [ext_resource type="Texture2D" uid="uid://b0imyn6sd2nyc" path="res://sprites/die_faces/6.png" id="9_nwyhl"]
 [ext_resource type="AudioStream" uid="uid://ekli2xcj4b6q" path="res://sounds/bet_place.wav" id="11_16ctr"]
+[ext_resource type="Texture2D" uid="uid://dmild4dj3m35v" path="res://sprites/bet_button_hover.png" id="11_fakk5"]
+[ext_resource type="Texture2D" uid="uid://bti71b4didewh" path="res://sprites/bet_button.png" id="11_xw3ir"]
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_guilu"]
+texture = ExtResource("11_xw3ir")
+texture_margin_left = 16.0
+texture_margin_top = 13.0
+texture_margin_right = 15.0
+texture_margin_bottom = 13.0
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_ctfxh"]
+texture = ExtResource("11_fakk5")
+texture_margin_left = 16.0
+texture_margin_top = 13.0
+texture_margin_right = 15.0
+texture_margin_bottom = 13.0
 
 [node name="Better" type="Control"]
 layout_mode = 3
@@ -36,12 +53,13 @@ size_flags_horizontal = 3
 [node name="Label" type="Label" parent="HBoxContainer/DieCount"]
 custom_minimum_size = Vector2(0, 150)
 layout_mode = 2
-offset_top = 114.0
-offset_right = 187.0
-offset_bottom = 265.0
+offset_top = 126.0
+offset_right = 196.0
+offset_bottom = 280.0
 theme_override_colors/font_color = Color(0, 0, 0, 1)
-theme_override_font_sizes/font_size = 110
-text = "5x"
+theme_override_fonts/font = ExtResource("2_1la7b")
+theme_override_font_sizes/font_size = 115
+text = "20x"
 horizontal_alignment = 1
 vertical_alignment = 1
 
@@ -66,10 +84,40 @@ faces = Array[Texture2D]([ExtResource("2_thqdb"), ExtResource("5_xer1f"), ExtRes
 layout_mode = 1
 
 [node name="Button" type="Button" parent="HBoxContainer"]
-self_modulate = Color(0, 0, 0, 1)
 custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
-text = "Place"
+theme_override_constants/outline_size = 0
+theme_override_fonts/font = ExtResource("2_1la7b")
+theme_override_styles/hover = SubResource("StyleBoxTexture_guilu")
+theme_override_styles/normal = SubResource("StyleBoxTexture_ctfxh")
+
+[node name="RichTextLabel" type="RichTextLabel" parent="HBoxContainer/Button"]
+layout_mode = 1
+anchors_preset = 14
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_top = -34.5
+offset_bottom = 34.5
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_override_colors/default_color = Color(0, 0, 0, 1)
+theme_override_fonts/normal_font = ExtResource("2_1la7b")
+theme_override_font_sizes/normal_font_size = 90
+bbcode_enabled = true
+text = "[center]B
+E
+T"
+fit_content = true
+
+[node name="MouseBlocker" type="Control" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 
 [node name="Sounds" type="Node" parent="."]
 

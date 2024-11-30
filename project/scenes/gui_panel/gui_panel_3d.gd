@@ -3,7 +3,12 @@ extends Node3D
 
 
 # Used for checking if the mouse is inside the Area3D.
-var is_mouse_inside := false
+var is_mouse_inside := false :
+	set(new_value):
+		is_mouse_inside = new_value
+		better.block_mouse_input = not is_mouse_inside
+		if not is_mouse_inside:
+			node_viewport.push_input(InputEventMouseMotion.new())
 # The last processed input touch/mouse event. To calculate relative movement.
 var last_mouse_position : Variant = null
 # The time of the last event in seconds since engine start.
@@ -28,7 +33,7 @@ func _unhandled_input(event: InputEvent) -> void:
 				# handled via Physics Picking.
 				handle_input_event(event)
 				break
-	node_viewport.push_input(event)
+		node_viewport.push_input(event)
 
 
 
