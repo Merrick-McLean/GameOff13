@@ -1,5 +1,6 @@
 extends Node
 
+signal ready_for_game_start
 
 const DIE_MAX = 6 # 6 sided dice
 const PLAYER_DIE_COUNT = 5 # how many dice each player rolls each time
@@ -25,6 +26,7 @@ func _ready() -> void:
 
 func reset() -> void:
 	round = null
+	if physical: physical.cups_and_dice_visible = false
 	alive_players = [Player.CAPTAIN, Player.PIRATE_RIGHT, Player.SELF, Player.PIRATE_LEFT]
 	if physical: physical.update_alive_players()
 
@@ -35,16 +37,29 @@ func is_out(player: Player) -> bool:
 
 func _process(delta: float) -> void:
 	if Debug.is_just_pressed("test_7") and round == null:
-		while Player.SELF in alive_players:
-			round = Round.new(alive_players, {
-				Player.SELF: 5,
-				Player.PIRATE_RIGHT: 4,
-				Player.CAPTAIN: 4,
-				Player.PIRATE_LEFT: 4
-			})
-			await round.start()
-		reset()
+		await start_new_game()
 
+
+func start_new_game(wait_for_signal_on_first_round := false) -> void:
+	var wait_for_signal := wait_for_signal_on_first_round
+	while Player.SELF in alive_players:
+		round = Round.new(alive_players, {
+			Player.SELF: 5,
+			Player.PIRATE_RIGHT: 4,
+			Player.CAPTAIN: 4,
+			Player.PIRATE_LEFT: 4
+		})
+		
+		await round.start(wait_for_signal)
+		wait_for_signal = false
+	round = null
+
+
+func start_new_life() -> void:
+	assert(not round)
+	reset()
+	Dialogue.reset()
+	Dialogue.play(DialogueInstance.Id.INTRO_DIALOGUE_2)
 
 
 class Round: # should I jsut merge round and bet? - Simpler to just have one big fat class I guess
@@ -113,11 +128,13 @@ class Round: # should I jsut merge round and bet? - Simpler to just have one big
 		LiarsDice.physical.cups[player].set_dice(dice)
 	
 	
-	func start() -> void:
+	func start(wait_for_signal: bool) -> void:
 		# START ROUND
 		await LiarsDice.physical.start_game()
 		push_physical_dice(Player.SELF)
-		dialogue_instance = Dialogue.play(DialogueInstance.Id.ROUND_START_1)
+		if wait_for_signal:
+			await LiarsDice.ready_for_game_start
+		dialogue_instance = Dialogue.play(DialogueInstance.Id.ROUND_START_1, {"round_number": 5 - turn_order.size()})
 		await dialogue_instance.finished
 		
 		# MAIN LOOP
@@ -525,7 +542,8 @@ class Round: # should I jsut merge round and bet? - Simpler to just have one big
 		if resolve_mode == ResolveMode.GURANTEE_LOSS:
 			var current_count_of_die := global_die_table.get_face_count(bet.value)
 			var extra_needed_to_win := bet.amount - current_count_of_die
-			var misses_need_to_lose := global_die_table.undetermined_count - extra_needed_to_win + 1
+			var misses_need_to_lose : int = max(0, global_die_table.undetermined_count - extra_needed_to_win + 1)
+			assert(extra_needed_to_win > 0)
 			assert(misses_need_to_lose >= 0)
 			var miss_faces := range(1, DIE_MAX + 1)
 			miss_faces.erase(bet.value)

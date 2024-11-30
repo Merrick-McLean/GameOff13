@@ -39,6 +39,9 @@ func _process(delta: float) -> void:
 		await instance.finished
 		instance = play(DialogueInstance.Id.TEST_2)
 		await instance.finished
+	
+	if Debug.is_just_pressed(&"test_1"):
+		await play(DialogueInstance.Id.INTRO_DIALOGUE).finished
 
 
 func play(dialogue_id: DialogueInstance.Id, args := {}) -> DialogueInstance:

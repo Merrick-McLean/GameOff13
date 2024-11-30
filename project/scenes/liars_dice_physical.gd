@@ -13,6 +13,12 @@ signal cups_raised
 @onready var better : Better = gui_panel.better
 @onready var animation_player : AnimationPlayer = $AnimationPlayer
 
+var cups_and_dice_visible : bool = false :
+	set(new_value):
+		cups_and_dice_visible = new_value
+		for cup: Cup in cups:
+			cup.visible = cups_and_dice_visible
+
 func _ready() -> void:
 	assert(gun, "Missing gun!")
 	assert(player_camera, "Missing player camera!")
@@ -23,7 +29,8 @@ func _ready() -> void:
 	LiarsDice.physical = self
 	update_alive_players()
 	better.hide()
-	
+	cups_and_dice_visible = false
+	gun.visible = false
 	Dialogue.display_changed.connect(_on_dialogue_display_changed)
 
 
@@ -38,10 +45,6 @@ func update_betting_lock(_u: bool, is_someone_speaking: bool) -> void:
 	better.is_locked = is_someone_speaking
 
 
-func _process(delta: float) -> void:
-	if Debug.is_just_pressed(&"test_1"):
-		await reveal_dice()
-
 
 func _input(event: InputEvent):
 	if event.is_action_pressed(&"interact") and GameMaster.player_in_world:
@@ -51,6 +54,7 @@ func _input(event: InputEvent):
 func start_game() -> void:
 	gun.visible = false
 	gun.can_pickup = false
+	cups_and_dice_visible = true
 	for cup: Cup in cups:
 		cup.target_state = Cup.State.AT_PLAYER
 		cup.target_raised = false
@@ -111,10 +115,11 @@ func update_alive_players() -> void:
 		if player == LiarsDice.Player.SELF:
 			if not player in LiarsDice.alive_players:
 				player_shot.emit()
+				Progress.player_death_count += 1
 		else:
 			if player in LiarsDice.alive_players:
 				player_models[player].alive = true
-				cups[player].visible = true
+				cups[player].visible = true and cups_and_dice_visible
 			else:
 				player_models[player].alive = false
 				cups[player].visible = false

@@ -1,3 +1,4 @@
+class_name LightningOverlay
 extends Control
 
 signal flashed
@@ -7,6 +8,7 @@ signal flashed
 
 func _ready() -> void:
 	flash_white.visible = false
+	GameMaster.lightning_overlay = self
 
 
 func _process(delta: float) -> void:
@@ -17,7 +19,7 @@ func _process(delta: float) -> void:
 func flash() -> void:
 	animation_player.stop()
 	flash_white.visible = false
-	animation_player.play(["lightning_0", "lightning_1", "lightning_2", "lightning_3"].pick_random())
+	animation_player.play(["lightning_1", "lightning_2", "lightning_3", "lightning_4"].pick_random())
 
 func _on_flash_visibility_changed() -> void:
 	if not is_node_ready(): await ready

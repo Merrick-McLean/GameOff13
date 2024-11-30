@@ -66,4 +66,5 @@ func _on_liars_dice_physical_player_shot() -> void:
 
 func _on_animation_player_animation_finished(anim_name: StringName) -> void:
 	if anim_name == "fade":
+		LiarsDice.start_new_life()
 		transition_requested.emit()

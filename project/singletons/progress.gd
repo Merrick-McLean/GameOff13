@@ -7,6 +7,8 @@ extends Node
 
 
 ## PERMANTENT PROGRESS
+var player_death_count := 0
+
 var know_pirate_name := false
 var know_pirate_recruitment := false
 var know_pirate_death := false

@@ -109,8 +109,6 @@ func _process(delta: float) -> void:
 			var collider := detector.get_collider()
 			new_gun = collider.get_parent()
 	
-	#if Debug.is_just_pressed(&"test_1"):
-		#transition_state(State.IN_GAME)
 	#if Debug.is_just_pressed(&"test_2"):
 		#transition_state(State.AT_REVEAL)
 	

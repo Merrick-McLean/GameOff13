@@ -58,7 +58,7 @@ func load_options(options: Array, time_to_accept := 0.0) -> void:
 			continue
 		
 		var option_text : String = options[i]
-		dialogue_option.show()
+		dialogue_option.call_deferred(&"show")
 		if dialogue_separator: 
 			dialogue_separator.show()
 		dialogue_option.text = option_text
