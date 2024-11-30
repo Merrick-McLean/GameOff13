@@ -14,6 +14,7 @@ enum Id {
 	NPC_DEATH_1,
 	QUERY_LIAR,
 	CAPTAIN_SHOOTS,
+	DIALOGUE_PROMPT,
 	
 	## PIRATE DIALOGUE
 	PIRATE_NAME,
@@ -76,7 +77,7 @@ var dialogues : Dictionary = {
 	
 	Id.ROUND_START_1: func(args: Dictionary) -> Dictionary:
 		display.clear_options()
-		await display.say(Dialogue.Actor.CAPTAIN, "Alright lad, now make your bet.")
+		await display.say(Dialogue.Actor.CAPTAIN, "Alright, let's get this game started.")
 		display.clear_speach()
 		return {},
 	
@@ -85,12 +86,12 @@ var dialogues : Dictionary = {
 		var bet : LiarsDice.Round.Bet = args.bet
 		
 		display.clear_options()
-		await display.say(actor, "I bet " + str(bet.amount) + " " + Dialogue.get_die_face_string(bet.value, bet.amount != 1), false)
+		await display.say(actor, "I bet " + Dialogue.get_bet_string(bet), false)
 		return {},
 	
 	Id.NPC_CALL_1: func(args: Dictionary) -> Dictionary:
 		display.clear_options()
-		await display.say(args.actor, str(args.bet.amount) + " " + Dialogue.get_die_face_string(args.bet.value, args.bet.amount != 1) + "? You're a liar!")
+		await display.say(args.actor, Dialogue.get_bet_string(args.bet) + "? You're a liar!")
 		display.clear_speach()
 		return {},
 	
@@ -107,21 +108,9 @@ var dialogues : Dictionary = {
 		return {},
 	
 	Id.QUERY_LIAR: func(args: Dictionary) -> Dictionary:
-		
-		var options : Array[OptionSet]
-		var possible_ids := {}
-		for actor: Dialogue.Actor in args.actors:
-			possible_ids[actor] = get_npc_dialogue_options(actor, args.better == actor)
-			if possible_ids.is_empty(): continue
-			options.append(OptionSet.new(actor, possible_ids[actor].map(get_dialogue_option_lead)))
-		
-		var option_result := await display.push_options(options)
-		var chosen_id : DialogueInstance.Id = possible_ids[option_result.actor][option_result.index]
-		
-		display.clear_options()
-		var result : Dictionary = await Dialogue.play(chosen_id).finished
-		
-		return {"called": result.get("called", false)},
+		var result := await display.push_options([OptionSet.new(args.actor, ["LIAR!", "Pass"])])
+		display.clear_speach()
+		return {"called": result.index == 0},
 	
 	Id.NPC_DEATH_1: func(args: Dictionary) -> Dictionary:
 		display.clear_options()
@@ -134,6 +123,32 @@ var dialogues : Dictionary = {
 		await display.say(Dialogue.Actor.CAPTAIN, "I shoot you now.")
 		display.clear_speach()
 		return {},
+	
+	
+	Id.DIALOGUE_PROMPT: func(args: Dictionary) -> Dictionary:
+		var last_speaking_actor : Dialogue.Actor
+		for i in args.max_dialogue_count:
+			await Dialogue.get_tree().create_timer(0.1).timeout
+			var options : Array[OptionSet]
+			var possible_ids := {}
+			for actor: Dialogue.Actor in args.actors:
+				possible_ids[actor] = get_npc_dialogue_options(actor, false)
+				options.append(OptionSet.new(actor, possible_ids[actor].map(get_dialogue_option_lead)))
+			
+			var option_result := await display.push_options(options)
+			var chosen_id : DialogueInstance.Id = possible_ids[option_result.actor][option_result.index]
+			last_speaking_actor = option_result.actor
+			display.clear_options()
+			var result : Dictionary = await Dialogue.play(chosen_id).finished
+			
+		
+		await display.say(last_speaking_actor, "But that's enough about me. Time to make your bet.")
+		if args.bet.amount > 0:
+			await display.say(last_speaking_actor, "Up the bid from " + Dialogue.get_bet_string(args.bet))
+		display.clear_speach()
+		
+		return {},
+	
 	
 	######################################
 	## PIRATE DIALOGUE
@@ -208,7 +223,7 @@ var dialogues : Dictionary = {
 	Id.PIRATE_SECRET: func(args: Dictionary) -> Dictionary:
 		display.clear_options()
 		await display.say(Dialogue.Actor.PIRATE_LEFT, "Just between us, my dice aren't as random as yours.");
-		await display.say(Dialogue.Actor.PIRATE_LEFT, "With weighted dice, I don't be takin' chances no more.");
+		await display.say(Dialogue.Actor.PIRATE_LEFT, "I don't be takin' chances no more.");
 		display.clear_speach()
 		return {},
 	

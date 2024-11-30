@@ -25,7 +25,7 @@ func _ready() -> void:
 
 func reset() -> void:
 	round = null
-	alive_players = [Player.SELF, Player.PIRATE_LEFT, Player.CAPTAIN, Player.PIRATE_RIGHT]
+	alive_players = [Player.CAPTAIN, Player.PIRATE_RIGHT, Player.SELF, Player.PIRATE_LEFT]
 	if physical: physical.update_alive_players()
 
 
@@ -62,7 +62,11 @@ class Round: # should I jsut merge round and bet? - Simpler to just have one big
 	var ideal_target : Bet # the ideal maximum bet, that has a certain probability >= ideal_probability of being valid
 	var absolute_target : Bet # the maximum valid bet if all undetermined dice are the same number
 	
-	var dialogue_instance : DialogueInstance
+	var dialogue_instance : DialogueInstance :
+		set(new_value):
+			if is_instance_valid(dialogue_instance):
+				dialogue_instance.free()
+			dialogue_instance = new_value
 	var maximum_bet : Bet
 	
 	## SETUP
@@ -129,6 +133,7 @@ class Round: # should I jsut merge round and bet? - Simpler to just have one big
 					break
 			else:
 				assert(get_current_player() == Player.SELF)
+				await LiarsDice.get_tree().create_timer(0.1).timeout
 				prompt_dialogue_options() 
 				var bet := await get_self_bet(current_bet)
 				make_bet(bet)
@@ -429,8 +434,8 @@ class Round: # should I jsut merge round and bet? - Simpler to just have one big
 		assert(last_better != Player.SELF)
 		
 		dialogue_instance = Dialogue.play(DialogueInstance.Id.QUERY_LIAR, {
-			&"actors": turn_order.filter(is_npc).map(Dialogue.get_actor),
-			&"better": Dialogue.get_actor(last_better)}
+			#&"actors": turn_order.filter(is_npc).map(Dialogue.get_actor),
+			&"actor": Dialogue.get_actor(last_better)}
 		)
 		var result : Dictionary = await dialogue_instance.finished
 		
@@ -440,6 +445,12 @@ class Round: # should I jsut merge round and bet? - Simpler to just have one big
 	
 	# Prompts dialogue options to show up
 	func prompt_dialogue_options() -> void:
+		dialogue_instance = Dialogue.play(DialogueInstance.Id.DIALOGUE_PROMPT, {
+			&"actors": turn_order.filter(is_npc).map(Dialogue.get_actor),
+			&"max_dialogue_count": 3,
+			&"bet": current_bet
+			#&"actor": Dialogue.get_actor(last_better)}
+		})
 		pass
 	
 	# get the players bet
@@ -641,7 +652,7 @@ class Round: # should I jsut merge round and bet? - Simpler to just have one big
 		
 		
 		static func create_empty() -> Bet:
-			return Bet.new(0, 1)
+			return Bet.new(0, DIE_MAX)
 		
 		
 		static func from_abs(abs_value: int) -> Bet:
@@ -672,3 +683,4 @@ class Round: # should I jsut merge round and bet? - Simpler to just have one big
 		# excluding the starting bet (this bet), and including the ending bet
 		func distance_to(ending_bet: Bet) -> int:
 			return ending_bet.get_abs() - get_abs()
+		

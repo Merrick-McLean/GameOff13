@@ -1,5 +1,6 @@
 extends Node
 
+signal interact_pressed
 
 var camera_shaker : CameraShakeManager
 var player_in_world := true

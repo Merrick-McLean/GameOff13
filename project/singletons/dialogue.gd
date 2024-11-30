@@ -1,9 +1,15 @@
 extends Node
 
+signal display_changed
 
 const MAX_OPTIONS = 3
 
-var display : DialogueDisplay
+var display : DialogueDisplay :
+	set(new_value):
+		if new_value == display: return
+		var old_value = display
+		display = new_value
+		display_changed.emit(old_value, new_value)
 
 enum Actor {
 	CAPTAIN,
@@ -61,6 +67,10 @@ func get_die_face_string(face: int, plural := false) -> String:
 		5:	return "fives" if plural else "five"
 		6:	return "sixes" if plural else "six"
 	return ""
+
+
+func get_bet_string(bet: LiarsDice.Round.Bet) -> String:
+	return str(bet.amount) + " " + Dialogue.get_die_face_string(bet.value, bet.amount != 1)
 
 
 func get_actor(player: LiarsDice.Player) -> Actor:

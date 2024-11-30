@@ -4,12 +4,16 @@ extends Control
 
 signal bet_made(bet: LiarsDice.Round.Bet)
 
+@export var is_locked := false :
+	set(new_value):
+		is_locked = new_value
+		place_bet_button.disabled = is_locked
 
 @onready var die_count_incrementor : IncrementorUI = $HBoxContainer/DieCount/Incrementor
 @onready var die_face_incrementor : IncrementorUI = $HBoxContainer/DieFace/Incrementor
 @onready var die_count_label : Label = $HBoxContainer/DieCount/Label
 @onready var die_face_texture_rect : DieTextureRect = $HBoxContainer/DieFace/DieTextureRect
-
+@onready var place_bet_button : Button = $HBoxContainer/Button
 
 @onready var bet_place_sound : AudioStreamPlayer = $Sounds/BetPlace
 

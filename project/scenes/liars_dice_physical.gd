@@ -23,8 +23,19 @@ func _ready() -> void:
 	LiarsDice.physical = self
 	update_alive_players()
 	better.hide()
+	
+	Dialogue.display_changed.connect(_on_dialogue_display_changed)
 
 
+func _on_dialogue_display_changed(old_display: DialogueDisplay, new_display: DialogueDisplay) -> void:
+	if old_display:
+		old_display.is_someone_speaking_changed.disconnect(update_betting_lock)
+	if new_display:
+		new_display.is_someone_speaking_changed.connect(update_betting_lock)
+		update_betting_lock(false, new_display.is_someone_speaking)
+
+func update_betting_lock(_u: bool, is_someone_speaking: bool) -> void:
+	better.is_locked = is_someone_speaking
 
 
 func _process(delta: float) -> void:
@@ -66,12 +77,11 @@ func reveal_dice() -> void:
 	player_camera.transition_state(PlayerCamera.State.AT_REVEAL)
 	
 	#await player_camera.state_transition_completed
+	await get_tree().create_timer(0.2)
 	animation_player.stop()
 	animation_player.play("drum_roll")
 	await cups_raised
-	
-	
-	await get_tree().create_timer(1.0).timeout
+	await interact_pressed
 	
 	await kill_unwanted_dice()
 	
