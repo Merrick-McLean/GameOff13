@@ -1,0 +1,123 @@
+[gd_scene load_steps=23 format=3 uid="uid://dc0hmdjrwnopp"]
+
+[ext_resource type="Script" path="res://scenes/intro.gd" id="1_8flft"]
+[ext_resource type="Shader" path="res://shaders/dither_ui.gdshader" id="1_xcn3o"]
+[ext_resource type="Texture2D" uid="uid://coep7114jtuhu" path="res://sprites/intros/ship_test.png" id="2_ut4ej"]
+[ext_resource type="Script" path="res://singletons/palette.gd" id="3_6ydqw"]
+[ext_resource type="Texture2D" uid="uid://6u3rwskseuak" path="res://sprites/intros/wreck_test.png" id="3_bm66u"]
+[ext_resource type="Texture2D" uid="uid://bisw3a062q3rs" path="res://sprites/test_palette.png" id="3_c4wwj"]
+[ext_resource type="Texture2D" uid="uid://bqofcahcgbp1a" path="res://sprites/intros/step_test.png" id="4_ox7jp"]
+[ext_resource type="Texture2D" uid="uid://dpy5wv217kjlu" path="res://sprites/intros/room_test.png" id="5_1dkbv"]
+[ext_resource type="Shader" path="res://shaders/dissolve.gdshader" id="5_4kycd"]
+[ext_resource type="Texture2D" uid="uid://s3ouuqmhjk5d" path="res://shaders/noise/slide4.tres" id="10_13s4u"]
+[ext_resource type="Texture2D" uid="uid://dopi08b2p1aeh" path="res://sprites/intros/start_test.png" id="11_n4nkw"]
+[ext_resource type="AudioStream" uid="uid://dpis0n1ls68jh" path="res://sounds/ambience/waves_1.wav" id="12_x3och"]
+[ext_resource type="AudioStream" uid="uid://b6bfu2gghs8gi" path="res://sounds/ambience/night_island.wav" id="13_uwdir"]
+[ext_resource type="AudioStream" uid="uid://orvvojnvmfot" path="res://sounds/ambience/squeeking.mp3" id="14_etkp2"]
+[ext_resource type="AudioStream" uid="uid://dqa70kmbbc72u" path="res://sounds/ambience/storm1.mp3" id="15_tsajs"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_8d7tl"]
+shader = ExtResource("1_xcn3o")
+shader_parameter/u_color_tex = ExtResource("3_c4wwj")
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_ntdus"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_kttux"]
+shader = ExtResource("5_4kycd")
+shader_parameter/dissolve_value = 1.0
+shader_parameter/dissolve_texture = SubResource("CompressedTexture2D_ntdus")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_qxg5r"]
+shader = ExtResource("5_4kycd")
+shader_parameter/dissolve_value = 1.0
+shader_parameter/dissolve_texture = SubResource("CompressedTexture2D_ntdus")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_1dldv"]
+shader = ExtResource("5_4kycd")
+shader_parameter/dissolve_value = 1.0
+shader_parameter/dissolve_texture = SubResource("CompressedTexture2D_ntdus")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_tmh5u"]
+shader = ExtResource("5_4kycd")
+shader_parameter/dissolve_value = 1.0
+shader_parameter/dissolve_texture = SubResource("CompressedTexture2D_ntdus")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_68dui"]
+shader = ExtResource("5_4kycd")
+shader_parameter/dissolve_value = 1.0
+shader_parameter/dissolve_texture = ExtResource("10_13s4u")
+
+[node name="Node" type="Node"]
+
+[node name="SubViewportContainer" type="SubViewportContainer" parent="."]
+material = SubResource("ShaderMaterial_8d7tl")
+offset_right = 960.0
+offset_bottom = 540.0
+script = ExtResource("3_6ydqw")
+
+[node name="SubViewport" type="SubViewport" parent="SubViewportContainer"]
+handle_input_locally = false
+size = Vector2i(960, 540)
+render_target_update_mode = 4
+
+[node name="Node2D" type="Node2D" parent="SubViewportContainer/SubViewport"]
+scale = Vector2(2, 2)
+script = ExtResource("1_8flft")
+
+[node name="BeachWaves1" type="AudioStreamPlayer" parent="SubViewportContainer/SubViewport/Node2D"]
+stream = ExtResource("12_x3och")
+volume_db = -10.0
+
+[node name="slide4" type="Sprite2D" parent="SubViewportContainer/SubViewport/Node2D"]
+modulate = Color(1, 1, 1, 0.996078)
+self_modulate = Color(1, 1, 1, 0.996078)
+material = SubResource("ShaderMaterial_kttux")
+position = Vector2(240, 135)
+scale = Vector2(0.25, 0.25)
+texture = ExtResource("5_1dkbv")
+
+[node name="slide3" type="Sprite2D" parent="SubViewportContainer/SubViewport/Node2D"]
+modulate = Color(1, 1, 1, 0.996078)
+visibility_layer = 2
+material = SubResource("ShaderMaterial_qxg5r")
+position = Vector2(240, 135)
+scale = Vector2(0.25, 0.25)
+texture = ExtResource("4_ox7jp")
+
+[node name="slide2" type="Sprite2D" parent="SubViewportContainer/SubViewport/Node2D"]
+modulate = Color(1, 1, 1, 0.996078)
+visibility_layer = 4
+material = SubResource("ShaderMaterial_1dldv")
+position = Vector2(240, 135)
+scale = Vector2(0.25, 0.25)
+texture = ExtResource("3_bm66u")
+
+[node name="slide1" type="Sprite2D" parent="SubViewportContainer/SubViewport/Node2D"]
+modulate = Color(1, 1, 1, 0.996078)
+material = SubResource("ShaderMaterial_tmh5u")
+position = Vector2(250, 135)
+scale = Vector2(0.3, 0.3)
+texture = ExtResource("2_ut4ej")
+
+[node name="start" type="Sprite2D" parent="SubViewportContainer/SubViewport/Node2D"]
+material = SubResource("ShaderMaterial_68dui")
+position = Vector2(240, 135)
+scale = Vector2(0.25, 0.25)
+texture = ExtResource("11_n4nkw")
+
+[node name="JungleNight" type="AudioStreamPlayer" parent="SubViewportContainer/SubViewport/Node2D"]
+stream = ExtResource("13_uwdir")
+volume_db = -6.0
+
+[node name="ShipWood" type="AudioStreamPlayer" parent="SubViewportContainer/SubViewport/Node2D"]
+stream = ExtResource("14_etkp2")
+volume_db = -10.0
+
+[node name="Storm1" type="AudioStreamPlayer" parent="SubViewportContainer/SubViewport/Node2D"]
+stream = ExtResource("15_tsajs")
+
+[node name="hum" type="AudioStreamPlayer" parent="SubViewportContainer/SubViewport/Node2D"]
+
+[connection signal="ready" from="SubViewportContainer/SubViewport/Node2D/BeachWaves1" to="SubViewportContainer/SubViewport/Node2D" method="_on_waves_1_ready"]
+[connection signal="ready" from="SubViewportContainer/SubViewport/Node2D/JungleNight" to="SubViewportContainer/SubViewport/Node2D" method="_on_jungle_night_ready"]
+[connection signal="ready" from="SubViewportContainer/SubViewport/Node2D/Storm1" to="SubViewportContainer/SubViewport/Node2D" method="_on_storm_1_ready"]
