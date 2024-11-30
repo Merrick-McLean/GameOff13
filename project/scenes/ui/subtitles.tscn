@@ -1,9 +1,11 @@
-[gd_scene load_steps=6 format=3 uid="uid://buomany872sdo"]
+[gd_scene load_steps=8 format=3 uid="uid://buomany872sdo"]
 
 [ext_resource type="FontFile" uid="uid://60knahgt5qpy" path="res://fonts/OldWizard.ttf" id="1_p0exl"]
 [ext_resource type="Script" path="res://scenes/ui/subtitles.gd" id="1_vp6tu"]
 [ext_resource type="Shader" path="res://shaders/text_outline.gdshader" id="3_qk0le"]
 [ext_resource type="AudioStream" uid="uid://cctp2wpaycc1b" path="res://sounds/talking/talk_1.wav" id="4_m37ah"]
+[ext_resource type="AudioStream" uid="uid://wbrbij761qbl" path="res://sounds/talking/talk_2.wav" id="5_nuovy"]
+[ext_resource type="AudioStream" uid="uid://drgwrepvukgxo" path="res://sounds/talking/talk_3.wav" id="5_u4g80"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_slt1e"]
 shader = ExtResource("3_qk0le")
@@ -47,3 +49,10 @@ scroll_active = false
 
 [node name="Talk1" type="AudioStreamPlayer" parent="Sounds"]
 stream = ExtResource("4_m37ah")
+
+[node name="Talk2" type="AudioStreamPlayer" parent="Sounds"]
+stream = ExtResource("5_nuovy")
+volume_db = -2.0
+
+[node name="Talk3" type="AudioStreamPlayer" parent="Sounds"]
+stream = ExtResource("5_u4g80")

@@ -16,7 +16,9 @@ const SIDE_BUFFER := 10
 			await ready
 		label.add_theme_font_override(&"normal_font", font)
 
-@onready var talk_1_sound := $Sounds/Talk1
+@onready var talk_1_sound : AudioStreamPlayer = $Sounds/Talk1
+@onready var talk_2_sound : AudioStreamPlayer = $Sounds/Talk2
+@onready var talk_3_sound : AudioStreamPlayer = $Sounds/Talk3
 
 var regex : RegEx
 var speed := DEFAULT_SPEED
@@ -41,8 +43,9 @@ var char_index := 0.0 :
 			label.size.x = font.get_string_size(line.bbcodeless_text.left(get_visible_character_count())).x + 4 # + 4 for outline
 		
 		if int(old_value) < int(char_index) and char_index < line.text.length() - 5:
-			talk_1_sound.pitch_scale = randf_range(0.9, 1.1)
-			talk_1_sound.play()
+			var talk_sound := get_talk_sound()
+			talk_sound.pitch_scale = randf_range(0.9, 1.1)
+			talk_sound.play()
 		
 		_update_position()
 
@@ -62,6 +65,14 @@ func _ready() -> void:
 	#regex.compile("(\\[set [_a-zA-Z]\\w*=[\\w\\.]+\\])|(\\[call [_a-zA-Z]\\w*])")
 	var error := regex.compile("\\[.*?\\]")
 	assert(not error)
+
+
+func get_talk_sound(speaker := current_speaker) -> AudioStreamPlayer:
+	match speaker:
+		Dialogue.Actor.PIRATE_LEFT: return talk_2_sound
+		Dialogue.Actor.PIRATE_RIGHT: return talk_3_sound
+		Dialogue.Actor.CAPTAIN: return talk_1_sound
+	return talk_1_sound
 
 
 func init_new_line(new_speaker: Dialogue.Actor, unparsed_line: String) -> void:
