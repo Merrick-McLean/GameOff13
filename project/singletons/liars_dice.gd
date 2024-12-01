@@ -183,6 +183,7 @@ class Round extends Object: # should I jsut merge round and bet? - Simpler to ju
 				var bet := await get_self_bet(current_bet)
 				if is_instance_valid(dialogue_instance): dialogue_instance.free()
 				make_bet(bet)
+				await LiarsDice.get_tree().create_timer(0.3).timeout
 				var caller := get_caller(bet)
 				if caller != Player.NOONE:
 					loser = await call_bet(caller, get_current_player(), bet)
@@ -389,6 +390,9 @@ class Round extends Object: # should I jsut merge round and bet? - Simpler to ju
 	# It is decided by the blind probability of a bet modified based on bet aggressivness and npc recklessness which results in a "percieved success rate"
 	# if true, they call a lie
 	func get_npc_call_probability(npc: Player, bet: Bet, recklessness: float) -> float:
+		
+		if npc == Player.CAPTAIN and turn_order.size() != 2:
+			return 0.0
 		
 		var known_dice := get_known_dice(npc)
 		var call_probability := 1.0 - get_bet_valid_probability(bet.amount, known_dice.get_face_count(bet.value), known_dice.undetermined_count)

@@ -104,7 +104,7 @@ func reveal_dice() -> void:
 	player_camera.transition_state(PlayerCamera.State.AT_REVEAL)
 	
 	#await player_camera.state_transition_completed
-	await get_tree().create_timer(0.2)
+	await get_tree().create_timer(0.2).timeout
 	animation_player.stop()
 	animation_player.play("drum_roll")
 	await cups_raised
@@ -149,6 +149,7 @@ func update_alive_players() -> void:
 
 
 func pirate_shoot() -> void:
+	GameMaster.shake_camera(0.4)
 	navy_shot.emit()
 
 
