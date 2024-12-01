@@ -17,7 +17,13 @@ var target_bob_amplitude := 0.05
 var bob_speed : float = 1.0
 var bob_amplitude := 0.05
 
-@export var player : LiarsDice.Player
+@export var player : LiarsDice.Player :
+	set(new_value):
+		player = new_value
+		if not is_node_ready(): await ready
+		$Model/captainfinal.visible = player == LiarsDice.Player.CAPTAIN
+		$Model/crewfatfinal.visible = player == LiarsDice.Player.PIRATE_RIGHT
+		$Model/crewskinnyfinal.visible = player == LiarsDice.Player.PIRATE_LEFT
 @export var is_talking := false :
 	set(new_value):
 		is_talking = new_value
@@ -35,6 +41,7 @@ var bob_amplitude := 0.05
 
 func _ready() -> void:
 	is_talking = false
+	
 
 func _process(delta: float) -> void:
 	bob_speed = lerp(bob_speed, target_bob_speed, 5 * delta)

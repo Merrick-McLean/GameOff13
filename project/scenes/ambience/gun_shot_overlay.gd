@@ -72,9 +72,11 @@ func _on_liars_dice_physical_player_shot() -> void:
 	if Progress.know_captain_secret:
 		label.text = "I need to find a way out."
 	if Progress.player_death_count_since_know_captain_secret > 0:
-		label.text = "The other pirates may be the key."
+		label.text = "The other pirates may have useful info."
 	if Progress.player_death_count_since_know_captain_secret > 1:
 		label.text = "I'm so close to getting out."
+	if Progress.player_death_count > 0 and not (Progress.know_captain_name and Progress.know_navy_name and Progress.know_pirate_name):
+		label.text = "I should talk with the others more."
 	
 	Progress.player_death_count += 1
 	if Progress.know_captain_secret:

@@ -26,6 +26,7 @@ enum Id {
 	CAPTAIN_SHOOTS,
 	DIALOGUE_PROMPT,
 	
+	
 	## INTRO
 	INTRO_DIALOGUE,
 	INTRO_DIALOGUE_2,
@@ -76,6 +77,7 @@ enum Id {
 	NPC_RESULTS_SUCCESS,
 	NPC_RESULTS_FAILURE,
 	BACK_TO_GAME,
+	PLEASE_TALK_BRO,
 	
 	## NOT REAL DIALOGUES
 	LIAR,
@@ -286,17 +288,27 @@ var dialogues : Dictionary = {
 		LiarsDice.ready_for_game_start.emit()
 		return {},
 	
-Id.GOLDEN_RULE: func(args: Dictionary) -> Dictionary:
-	await display.say(Dialogue.Actor.PIRATE_RIGHT, "Just remember the [wave amp=20.0 freq=5.0 connected=1]Golden Rule[/wave].")
-	await display.say(Dialogue.Actor.PIRATE_LEFT, "[set speed=20]The Captain [set pause_time=0.7]always [set pause_time=0.7]wins.")
+	Id.GOLDEN_RULE: func(args: Dictionary) -> Dictionary:
+		await display.say(Dialogue.Actor.PIRATE_RIGHT, "Just remember the [wave amp=20.0 freq=5.0 connected=1]Golden Rule[/wave].")
+		await display.say(Dialogue.Actor.PIRATE_LEFT, "[set speed=20]The Captain [set pause_time=0.7]always [set pause_time=0.7]wins.")
+		
+		if Progress.know_captain_secret:
+			await display.say(Dialogue.Actor.CAPTAIN, "That's damn right.") ## SAY MY NAME (almost, kind of)
+		else:
+			await display.say(Dialogue.Actor.PIRATE_RIGHT, "[wave amp=20.0 freq=5.0 connected=1]Yo [set pause_time=0.4]ho [set pause_time=0.4]ho[/wave]") 
+		
+		display.clear_speach()
+		return {},
 	
-	if Progress.know_captain_secret:
-		await display.say(Dialogue.Actor.CAPTAIN, "That's damn right.") ## SAY MY NAME (almost, kind of)
-	else:
-		await display.say(Dialogue.Actor.PIRATE_RIGHT, "[wave amp=20.0 freq=5.0 connected=1]Yo [set pause_time=0.4]ho [set pause_time=0.4]ho[/wave]") 
 	
-	display.clear_speach()
-	return {},
+	Id.PLEASE_TALK_BRO: func(args: Dictionary) -> Dictionary:
+		Dialogue.is_betting_locked = true
+		await display.say(Dialogue.Actor.CAPTAIN, "Ye be a quiet one, do ye got any tales to tell?")
+		var result := await display.push_options([OptionSet.new(Dialogue.Actor.CAPTAIN, ["I'd prefer not to."])])
+		await display.say(Dialogue.Actor.CAPTAIN, "Well atleast maybe ye can ask us some question then.")
+		
+		Dialogue.is_betting_locked = false
+		return {},
 	
 	######################################1
 	## PIRATE DIALOGUE

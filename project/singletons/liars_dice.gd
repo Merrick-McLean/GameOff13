@@ -186,6 +186,9 @@ class Round extends Object: # should I jsut merge round and bet? - Simpler to ju
 			else:
 				assert(get_current_player() == Player.SELF)
 				await LiarsDice.get_tree().create_timer(0.1).timeout
+				if not Progress.has_player_done_optional_dialogue and round_number == 1:
+					dialogue_instance = Dialogue.play(DialogueInstance.Id.PLEASE_TALK_BRO)
+					await dialogue_instance.finished
 				prompt_dialogue_options() 
 				var bet := await get_self_bet(current_bet)
 				if is_instance_valid(dialogue_instance): dialogue_instance.free()
@@ -232,10 +235,12 @@ class Round extends Object: # should I jsut merge round and bet? - Simpler to ju
 		var min_distance := 1
 		var max_distance := 8
 		
-		if Progress.know_pirate_death and npc == Player.PIRATE_LEFT:
+		var favoured_npc := get_favoured_npc()
+		
+		if favoured_npc == Player.PIRATE_RIGHT and npc == Player.PIRATE_LEFT:
 			min_distance = 6
 			max_distance = 12
-		if Progress.know_navy_secret and npc == Player.PIRATE_RIGHT:
+		if favoured_npc == Player.PIRATE_LEFT and npc == Player.PIRATE_RIGHT:
 			min_distance = 6
 			max_distance = 12
 		
@@ -303,6 +308,21 @@ class Round extends Object: # should I jsut merge round and bet? - Simpler to ju
 			probability += MathUtils.binomial_probability(i, undetermined_count, 1.0 / DIE_MAX)
 		
 		return probability
+	
+	
+	func get_favoured_npc() -> Player:
+		if not (Player.PIRATE_RIGHT in turn_order and Player.PIRATE_LEFT in turn_order):
+			return Player.NOONE
+		if Progress.know_pirate_death and not Progress.know_navy_secret:
+			return Player.PIRATE_RIGHT
+		if Progress.know_navy_secret and not Progress.know_pirate_death:
+			return Player.PIRATE_LEFT
+		if Dialogue.is_completed(DialogueInstance.Id.NAVY_SECRET_FAIL):
+			return Player.PIRATE_RIGHT
+		if Dialogue.is_completed(DialogueInstance.Id.PIRATE_SECRET_FAIL):
+			return Player.PIRATE_LEFT
+		return Player.NOONE
+		
 	
 	
 	#  TODO: Test this pls
@@ -464,10 +484,11 @@ class Round extends Object: # should I jsut merge round and bet? - Simpler to ju
 		
 		var npc_recklessness = {}
 		
-		if Progress.know_pirate_death and not Progress.know_navy_secret:
+		var favoured_npc := get_favoured_npc()
+		if favoured_npc == Player.PIRATE_RIGHT:
 			npc_recklessness[Player.PIRATE_RIGHT] = -0.6
 			npc_recklessness[Player.PIRATE_LEFT] = 0.3
-		elif Progress.know_navy_secret and not Progress.know_pirate_death:
+		elif favoured_npc == Player.PIRATE_LEFT:
 			npc_recklessness[Player.PIRATE_LEFT] = -0.6
 			npc_recklessness[Player.PIRATE_RIGHT] = 0.3
 		
