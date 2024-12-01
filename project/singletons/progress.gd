@@ -32,6 +32,7 @@ var know_captain_past := false
 var know_captain_crew := false
 var know_captain_now := false
 var know_captain_secret := false
+var know_captain_captive := false
 
 
 func _process(delta: float) -> void:
@@ -68,7 +69,6 @@ func _process(delta: float) -> void:
 		#know_pirate_secret = true
 		
 		know_navy_name = true
-		know_navy_now = true
 		know_navy_ship = true
 		know_navy_sink = true
 		know_navy_is_navy = true

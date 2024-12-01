@@ -1,6 +1,8 @@
 class_name DialogueInstance
 extends Object
 
+var rng = RandomNumberGenerator.new()
+
 signal killed #never actually called lol
 signal finished(index: Dictionary)
 
@@ -54,14 +56,19 @@ enum Id {
 	CAPTAIN_CREW,
 	CAPTAIN_NOW,
 	CAPTAIN_REVEAL,
+	CAPTAIN_ESCAPE,
 	
-	# INTERIM DIALOGUE
-	#NO_LOOK,
-	#FIRST_BET,
-	#POST_CAPTAIN_REVEAL,
-	#ACCUSING,
-	#ACCUSED,
-	#PLAYER_RESULTS,
+	# INTERIM DIALOGUE - TODO IMPLIMENT THESE AND TEST
+	NO_LOOK,
+	QUIET,
+	FIRST_BET,
+	ACCUSING,
+	ACCUSED,
+	PLAYER_RESULTS_SUCCESS,
+	PLAYER_RESULTS_FAILURE,
+	NPC_RESULTS_SUCCESS,
+	NPC_RESULTS_FAILURE,
+	BACK_TO_GAME,
 	
 	## NOT REAL DIALOGUES
 	LIAR,
@@ -72,6 +79,8 @@ var display : DialogueDisplay
 var my_id : Id
 var arguments : Dictionary
 var is_playing := false
+
+var prev_index = -1
 
 var dialogues : Dictionary = {
 	Id.TEST_1: func(args: Dictionary) -> Dictionary:
@@ -125,7 +134,6 @@ var dialogues : Dictionary = {
 		display.clear_options()
 		
 		await display.say(args.actor, "I knew it.")
-		
 		
 		display.clear_speach()
 		return {},
@@ -191,14 +199,12 @@ var dialogues : Dictionary = {
 			if "start_new_round" in result: return result
 		
 		
-		await display.say(last_speaking_actor, "But enough 'bout me. Time to make yer bet.")
+		await display.say(last_speaking_actor, "But enough 'bout me. Time to make yer bet.") # reach randomizer
 		if args.bet.amount > 0:
 			await display.say(last_speaking_actor, "Up the bid from " + Dialogue.get_bet_string(args.bet))
 		display.clear_speach()
 		
 		return {},
-	
-	
 	
 	Id.INTRO_DIALOGUE: func(args: Dictionary) -> Dictionary:
 		display.clear_options()
@@ -250,7 +256,7 @@ var dialogues : Dictionary = {
 		await display.say(Dialogue.Actor.CAPTAIN, "But ye only know the values of yer own.")
 		LiarsDice.physical.pan_camera_to_npc(Dialogue.Actor.CAPTAIN)
 		await display.say(Dialogue.Actor.CAPTAIN, "On ye turn, make a bet.")
-		await display.say(Dialogue.Actor.CAPTAIN, "Bet how many of all the dice share share a certain value.")
+		await display.say(Dialogue.Actor.CAPTAIN, "Bet how many of all the dice share a certain value.")
 		#await display.say(Dialogue.Actor.CAPTAIN, "The tricky part is yer bet includes all the dice.")
 		await display.say(Dialogue.Actor.CAPTAIN, "Even the ones ye don't know.")
 		await display.say(Dialogue.Actor.CAPTAIN, "I might bet 5 dices rolled six.")
@@ -351,9 +357,9 @@ Id.GOLDEN_RULE: func(args: Dictionary) -> Dictionary:
 	Id.PIRATE_SECRET: func(args: Dictionary) -> Dictionary:
 		display.clear_options()
 		await display.say(Dialogue.Actor.PIRATE_LEFT, "Just between us...");
-		await display.say(Dialogue.Actor.PIRATE_LEFT, "I have me some loaded dice.");
-		await display.say(Dialogue.Actor.PIRATE_LEFT, "I always roll 2, 4, 4, 5, 5.");
-		await display.say(Dialogue.Actor.PIRATE_LEFT, "I don't be takin' chances no more.");
+		await display.say(Dialogue.Actor.PIRATE_LEFT, "I have me a set of loaded dice.");
+		await display.say(Dialogue.Actor.PIRATE_LEFT, "I always roll: 2, 4, 4, 5, 5");
+		await display.say(Dialogue.Actor.PIRATE_LEFT, "I don't be takin' any chances no more.");
 		await display.say(Dialogue.Actor.PIRATE_LEFT, "Keep me flintlock close too, should trouble stir.");
 		display.clear_speach()
 		Progress.know_pirate_secret = true
@@ -466,7 +472,7 @@ Id.GOLDEN_RULE: func(args: Dictionary) -> Dictionary:
 		display.clear_options()
 		await display.say(Dialogue.Actor.PIRATE_RIGHT, "I will say it was an infamous crew we plundered. ");
 		await display.say(Dialogue.Actor.PIRATE_RIGHT, "Caught them offguard.");
-		await display.say(Dialogue.Actor.PIRATE_RIGHT, "But I ain't gonna speak to who we sunk... ");
+		await display.say(Dialogue.Actor.PIRATE_RIGHT, "But I ain't gonna speak to who we sunk...");
 		await display.say(Dialogue.Actor.PIRATE_RIGHT, "Some things are better left unsaid around [wave amp=20.0 freq=5.0 connected=1]certain company[/wave]."); # add affect around certain company?
 		display.clear_speach()
 		return {},
@@ -474,7 +480,7 @@ Id.GOLDEN_RULE: func(args: Dictionary) -> Dictionary:
 	Id.NAVY_SECRET: func(args: Dictionary) -> Dictionary: # Should this really be a part of the secret?
 		display.clear_options()
 		await display.say(Dialogue.Actor.PIRATE_RIGHT, "Aye, fortunate buccaneers we were.");
-		await display.say(Dialogue.Actor.PIRATE_RIGHT, "Ah our maiden voyage... ");
+		await display.say(Dialogue.Actor.PIRATE_RIGHT, "Ah our maiden voyage...");
 		await display.say(Dialogue.Actor.PIRATE_RIGHT, "We spotted an anchored boat abouts Bellaforma..."); # add affect?
 		await display.say(Dialogue.Actor.PIRATE_RIGHT, "Thrice the size o' our ship,");
 		await display.say(Dialogue.Actor.PIRATE_RIGHT, "But with half their crew marooned on some wretched isle.");
@@ -565,9 +571,122 @@ Id.GOLDEN_RULE: func(args: Dictionary) -> Dictionary:
 		
 		return {},
 	
+	Id.CAPTAIN_ESCAPE: func(args: Dictionary) -> Dictionary:
+		await display.say(Dialogue.Actor.CAPTAIN, "There be no leaving now, me heartie.") # I wanna use a boat direction term somewhere
+		
+		Progress.know_captain_captive = true
+		return {},
+	
 	#####################################################
 	
+	Id.NO_LOOK: func(args: Dictionary) -> Dictionary:
+		display.clear_options()
+		await display.say(Dialogue.Actor.CAPTAIN, "Bold that ye don't even look at yer dice.")
+		return {},
 	
+	Id.QUIET: func(args: Dictionary) -> Dictionary:
+		#display.clear_options()
+		await display.say(Dialogue.Actor.CAPTAIN, "Not one for small talk, are ye?.")
+		return {},
+
+	Id.FIRST_BET: func(args: Dictionary, current_actor) -> Dictionary:
+		await display.say(current_actor, "Ye think I would lie this quick?")
+		return {},
+		
+	Id.ACCUSING: func(args: Dictionary,current_actor) -> Dictionary:
+		var i = randi_range(0,4)
+		match i:
+			0:
+				await display.say(current_actor, "Ye call me a liar?")
+			1:
+				await display.say(current_actor, "Ye not trust my claim?")
+			2:
+				await display.say(current_actor, "Let's let the dice decide.")
+			3:
+				await display.say(current_actor, "Best ye not test me matey.")
+			4:
+				await display.say(current_actor, "Liar, am I?")
+		return {},
+		
+	Id.ACCUSED: func(args: Dictionary, current_actor) -> Dictionary:
+		# display.clear_speach() #perhaps?
+		# display.clear_options() #perhaps?
+		var i = randi_range(0,5)
+		match i:
+			0:
+				await display.say(current_actor, "I don't trust yer claim, me heartie.")
+			1:
+				await display.say(current_actor, "I'm afraid ye be a liar...")
+			2:
+				await display.say(current_actor, "I think we be needin' to test that claim.")
+			3:
+				await display.say(current_actor, "Ye be full o' lies!")
+			4:
+				await display.say(current_actor, "Yer tongue’s twisted as a sailor’s knot!")
+			5:
+				await display.say(current_actor, "LIAR!")
+		return {},
+		
+	Id.PLAYER_RESULTS_SUCCESS: func(args: Dictionary, current_actor) -> Dictionary:
+		var i = randi_range(0,3)
+		match i:
+			0:
+				await display.say(current_actor, "Shiver me timbers!")
+			1:
+				await display.say(current_actor, "Ye be lucky this time, buccaneer.")
+			2:
+				await display.say(current_actor, "I should've been more trustin' o' a picaroon like yerself")
+			3:
+				await display.say(current_actor, "Lady luck is on ye side, it seems.")
+		return {},
+		
+	Id.PLAYER_RESULTS_FAILURE: func(args: Dictionary, current_actor) -> Dictionary:
+		var i = randi_range(0,5)
+		match i:
+			0:
+				await display.say(current_actor, "Gotcha!")
+			1:
+				await display.say(current_actor, "It's time ye walk the plank.")
+			2:
+				await display.say(current_actor, "Ye be lying, ye sneaky scoundrel.")
+			3:
+				await display.say(current_actor, "I could spot that lie from the crow's nest.")
+			4:
+				await display.say(current_actor, "No suprise there.")
+			5:
+				await display.say(current_actor, "I caught ye lying through yer teeth.")
+
+		return {},
+	
+	Id.NPC_RESULTS_SUCCESS: func(args: Dictionary,current_actor) -> Dictionary:
+		var i = randi_range(0,3)
+		match i:
+			0:
+				await display.say(current_actor, "The truth be in the dice!")
+			1:
+				await display.say(current_actor, "Seems fate favours me.")
+			2:
+				await display.say(current_actor, "There ye have it.")
+			3:
+				await display.say(current_actor, "The dice tell no lies.")
+		return {},
+	
+	Id.NPC_RESULTS_FAILURE: func(args: Dictionary, current_actor) -> Dictionary:
+		var i = randi_range(0,3)
+		match i:
+			0:
+				await display.say(current_actor, "So close!")
+			1:
+				await display.say(current_actor, "I almost snuck by ye.")
+			2:
+				await display.say(current_actor, "Arrgh!")
+			3:
+				await display.say(current_actor, "That be the way of the sea.")
+		return {},
+	
+	Id.BACK_TO_GAME: func(args: Dictionary, last_speaking_actor) -> Dictionary:
+		await display.say(last_speaking_actor, "But enough 'bout me. Time to make yer bet.")
+		return {},
 	
 	Id.LIAR: func(args: Dictionary) -> Dictionary:
 		await Dialogue.get_tree().create_timer(0.1).timeout
@@ -655,6 +774,7 @@ func can_give_option(id: Id) -> bool:
 		Id.CAPTAIN_SHIP_2: 		return	not Progress.know_captain_secret and Progress.know_captain_ship and not Progress.know_captain_past
 		Id.CAPTAIN_CREW: 		return	not Progress.know_captain_secret and not Progress.know_captain_crew and Progress.know_captain_name
 		Id.CAPTAIN_NOW: 		return	not Progress.know_captain_secret and not Progress.know_captain_now and Progress.know_captain_name 
+		Id.CAPTAIN_ESCAPE: 		return	Progress.know_captain_secret and not Progress.know_captain_captive # do we need to make sure its also the next round?  double checl memclean
 	return true
 
 
@@ -687,13 +807,13 @@ func get_dialogue_option_lead(id: Id) -> String:
 		Id.CAPTAIN_SHIP_2: 		return "How'd ye become captain?"
 		Id.CAPTAIN_CREW: 		return "Is this yer whole crew?"
 		Id.CAPTAIN_NOW: 		return "Are ye cursed?"
+		Id.CAPTAIN_ESCAPE:		return "Let me go, ye knave!"
 		
 		Id.PASS: 				return "Pass"
 		Id.LIAR:				return "LIAR!"
 	
 	assert(false, "Missing dialogue lead")
 	return ""
-
 
 
 class OptionSet:
