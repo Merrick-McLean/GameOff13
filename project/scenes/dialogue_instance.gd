@@ -552,16 +552,17 @@ Id.GOLDEN_RULE: func(args: Dictionary) -> Dictionary:
 		
 		await display.say(Dialogue.Actor.CAPTAIN, "Victory be mine again.")
 		await display.say(Dialogue.Actor.CAPTAIN, "I s'pose there ain't no need fer the ruse.")
-		await display.say(Dialogue.Actor.CAPTAIN, "I be sendin ye back to play again.")
+		await display.say(Dialogue.Actor.CAPTAIN, "It is I[set pause_timer=0.5], who be sendin ye back in time to play again.")
 		await display.say(Dialogue.Actor.CAPTAIN, "Every time ye 'die', a bit more wind fills me sails.")
 		await display.say(Dialogue.Actor.CAPTAIN, "So a few extra rounds don't hurt.")
 		await display.say(Dialogue.Actor.CAPTAIN, "An' I must confess...")
 		await display.say(Dialogue.Actor.CAPTAIN, "There be no secret to eternal life fer the likes o' ye.")
 		await display.say(Dialogue.Actor.CAPTAIN, "Pretty soon ye'll be like the rest of us.")
+		await display.say(Dialogue.Actor.CAPTAIN, "The only thing immortal be yer service to this crew.") # calls into question validity of other crewmates free will?
 		
 		LiarsDice.physical.is_captain_gun_drawn = true
 		
-		await display.say(Dialogue.Actor.CAPTAIN, "The only thing immortal be yer service to this crew.") # calls into question validity of other crewmates free will?
+		await display.say(Dialogue.Actor.CAPTAIN, "I'll see ye next round...")
 		
 		Progress.know_captain_secret = true
 		
