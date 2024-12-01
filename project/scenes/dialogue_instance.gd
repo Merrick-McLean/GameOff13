@@ -255,6 +255,7 @@ var dialogues : Dictionary = {
 		else:
 			await display.say(Dialogue.Actor.CAPTAIN, "I'm sure ye already know how to play.")
 			await Dialogue.play(Id.GOLDEN_RULE).finished
+			LiarsDice.start_new_game(false)
 		
 		return {},
 	

@@ -5,7 +5,7 @@ extends SettingsAbstract
 
 #region Settings
 
-var is_in_fullscreen := false : 
+var is_in_fullscreen := true : 
 	set(new_value):
 		if is_in_fullscreen == new_value: return
 		is_in_fullscreen = new_value
