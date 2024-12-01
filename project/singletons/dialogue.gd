@@ -63,7 +63,7 @@ func get_actor_name(actor : Actor) -> String:
 	match actor:
 		Actor.CAPTAIN: 			return "Captain"
 		Actor.PIRATE_LEFT: 		return "Roberts" if Progress.know_pirate_name else "???"
-		Actor.PIRATE_RIGHT: 	return "Elias" if Progress.know_navy_name else "???"
+		Actor.PIRATE_RIGHT: 	return "Shaw" if Progress.know_navy_name else "???"
 	
 	return "Unknown"
 

@@ -2,14 +2,14 @@
 
 [ext_resource type="Script" path="res://scenes/intro.gd" id="1_36yco"]
 [ext_resource type="Texture2D" uid="uid://dpy5wv217kjlu" path="res://sprites/intros/room_test.png" id="1_kv0tb"]
-[ext_resource type="Texture2D" uid="uid://6u3rwskseuak" path="res://sprites/intros/wreck_test.png" id="2_pllyl"]
-[ext_resource type="Texture2D" uid="uid://coep7114jtuhu" path="res://sprites/intros/ship_test.png" id="3_4buva"]
+[ext_resource type="Texture2D" uid="uid://bsx2e0eiw5imy" path="res://sprites/intros/wreck_test.png" id="2_pllyl"]
+[ext_resource type="Texture2D" uid="uid://cmthf6mojjfhu" path="res://sprites/intros/ship_test.png" id="3_4buva"]
 [ext_resource type="Texture2D" uid="uid://dopi08b2p1aeh" path="res://sprites/intros/start_test.png" id="4_iia0v"]
 [ext_resource type="AudioStream" uid="uid://bhl3fp84626yx" path="res://sounds/page_turn_1.wav" id="6_vi8my"]
 [ext_resource type="AudioStream" uid="uid://dekjusepskxdl" path="res://sounds/page_turn_2.wav" id="7_6h1tk"]
 [ext_resource type="AudioStream" uid="uid://dg7jfjes7bwhw" path="res://sounds/page_turn_3.wav" id="8_pnplx"]
 [ext_resource type="Shader" path="res://shaders/dissolve.gdshader" id="9_wdi8m"]
-[ext_resource type="Texture2D" uid="uid://bqofcahcgbp1a" path="res://sprites/intros/step_test.png" id="11_4ejdh"]
+[ext_resource type="Texture2D" uid="uid://dk1wcj88hsp2m" path="res://sprites/intros/step_test.png" id="11_4ejdh"]
 [ext_resource type="PackedScene" uid="uid://m4sjrkkcu5oi" path="res://scenes/intro_slide.tscn" id="13_j35ee"]
 [ext_resource type="Script" path="res://scenes/slide_label.gd" id="14_nwmpd"]
 [ext_resource type="Texture2D" uid="uid://b4ptdlphbwve8" path="res://shaders/noise/slide1.tres" id="14_re8q1"]
@@ -73,7 +73,7 @@ offset_top = 75.0
 offset_right = 232.0
 offset_bottom = 171.0
 bbcode_enabled = true
-text = "[center]I enter the captains quarters. Dim light from a hanging lantern reveals a table in front of me. Three pirates sit patiently awaiting a fourth's arrival.  I take a seat..."
+text = "[center]I enter the captains quarters. Dim light from a hanging lantern reveals a table in front of me. Three pirates sit patiently awaiting a fourth's arrival. "
 
 [node name="Slide3" parent="." instance=ExtResource("13_j35ee")]
 material = SubResource("ShaderMaterial_a673w")
@@ -85,10 +85,10 @@ scale = Vector2(0.25, 0.25)
 texture = ExtResource("11_4ejdh")
 
 [node name="SlideLabel" parent="Slide3" instance=ExtResource("15_4nbvl")]
-offset_left = -177.0
-offset_top = 97.5
-offset_right = 124.0
-offset_bottom = 193.5
+offset_left = -184.0
+offset_top = 83.0
+offset_right = 35.0
+offset_bottom = 179.0
 text = "The deck creaks ominously as I step aboard, the air heavy with the scent of brine. "
 
 [node name="Slide2" parent="." instance=ExtResource("13_j35ee")]
@@ -101,11 +101,11 @@ scale = Vector2(0.25, 0.25)
 texture = ExtResource("2_pllyl")
 
 [node name="SlideLabel" parent="Slide2" instance=ExtResource("15_4nbvl")]
-offset_left = -230.5
-offset_top = 59.0
-offset_right = 202.5
-offset_bottom = 155.0
-text = "I spy a shipwreck. From the outside, a broken hull half-submerged in the sand and worn by the elements. It’s constantly hammered by crashing waves invigorated by the night’s storm."
+offset_left = -77.0
+offset_top = 78.0
+offset_right = 253.0
+offset_bottom = 126.0
+text = "I spy a shipwreck. From the outside, a broken hull, half-submerged in the sand and worn by the elements."
 
 [node name="Slide1" parent="." instance=ExtResource("13_j35ee")]
 material = SubResource("ShaderMaterial_twyp7")
@@ -138,6 +138,16 @@ theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 bbcode_enabled = true
 text = "[center][Click to start]"
 script = ExtResource("14_nwmpd")
+
+[node name="SlideLabel2" parent="Start" instance=ExtResource("15_4nbvl")]
+offset_left = -227.0
+offset_top = -13.5
+offset_right = 232.0
+offset_bottom = 82.5
+theme_override_colors/default_color = Color(1, 1, 1, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+bbcode_enabled = true
+text = "[center]The Captain Always Wins"
 
 [node name="Camera2D" type="Camera2D" parent="."]
 position = Vector2(240, 135)
