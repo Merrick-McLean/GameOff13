@@ -24,7 +24,7 @@ var mouse_position := Vector2.ZERO
 
 
 func _unhandled_input(event: InputEvent) -> void:
-	
+	if not Input.mouse_mode == Input.MOUSE_MODE_CAPTURED: return
 	# Check if the event is a non-mouse/non-touch event
 	if is_mouse_inside:
 		for mouse_event: Variant in [InputEventMouseButton, InputEventScreenTouch]:

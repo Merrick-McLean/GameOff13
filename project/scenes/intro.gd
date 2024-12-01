@@ -32,8 +32,6 @@ func _ready() -> void:
 		slide.visible = true
 		slides[slide_index].dissolve_percent = 1.0
 	
-	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
-	
 	pass 
 	
 func dissolve() -> void:  
@@ -63,7 +61,7 @@ func _process(delta: float) -> void:
 		is_active = true
 	
 	if ready_for_next_dissolve():
-		if Input.is_action_just_pressed("interact") and is_active:
+		if GameMaster.is_interact_just_pressed() and is_active:
 			dissolve()
 	
 	if is_dissolving:

@@ -40,7 +40,7 @@ func _process(delta: float) -> void:
 	else:
 		label.visible_ratio = 0.0
 	
-	if Input.is_action_just_pressed("interact"):
+	if GameMaster.is_interact_just_pressed():
 		if label.visible_ratio >= 1.0 and not animation_player.current_animation == "fade":
 			animation_player.play("fade")
 		elif show_text:

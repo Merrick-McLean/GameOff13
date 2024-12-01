@@ -58,7 +58,7 @@ func _process(delta: float) -> void:
 	
 	var is_accepting := false
 	if visible and is_hovered:
-		if time_to_accept == 0.0 and Input.is_action_just_pressed("interact") and GameMaster.player_in_world:
+		if time_to_accept == 0.0 and GameMaster.is_interact_just_pressed() and GameMaster.player_in_world:
 			select_sound.play()
 			selected.emit()
 		elif get_hold_percentage() < 1.0 and Input.is_action_pressed("interact") and GameMaster.player_in_world:

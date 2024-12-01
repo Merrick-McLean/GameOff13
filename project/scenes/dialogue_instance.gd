@@ -671,7 +671,7 @@ Id.GOLDEN_RULE: func(args: Dictionary) -> Dictionary:
 			3:
 				await display.say(args.actor, Dialogue.get_bet_string(args.bet) + "? Ye be full o' lies!")
 			4:
-				await display.say(args.actor, Dialogue.get_bet_string(args.bet) + "? Yer tongue's twisted as a sailor’s knot!")
+				await display.say(args.actor, Dialogue.get_bet_string(args.bet) + "? Yer tongue's twisted as a sailor's knot!")
 			5:
 				await display.say(args.actor, "LIAR!")
 		

@@ -33,11 +33,6 @@ var is_active := false :
 	set(new_value):
 		is_active = new_value
 		camera.current = is_active
-		
-		if is_active:
-			Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
-		else:
-			Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
 
 var is_panning := false
 
@@ -110,6 +105,7 @@ func pan_to_point(world_position: Vector3) -> void:
 
 
 func _unhandled_input(event: InputEvent) -> void:
+	if not Input.mouse_mode == Input.MOUSE_MODE_CAPTURED: return
 	if event is InputEventMouseMotion and GameMaster.player_in_world and not is_panning:
 		mouse_position += event.relative * SENSITIVITY
 
@@ -166,7 +162,7 @@ func _process(delta: float) -> void:
 	global_position = start_position.lerp(end_position, transition_percent)
 	
 	
-	if current_gun and current_gun.can_pickup and Input.is_action_just_pressed("interact"):
+	if current_gun and current_gun.can_pickup and GameMaster.is_interact_just_pressed():
 		current_gun.state = Gun.State.WITH_PLAYER
 
 
