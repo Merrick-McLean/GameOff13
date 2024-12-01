@@ -62,7 +62,7 @@ func _process(delta: float) -> void:
 				subtitles.target_x = unprojected_position.x / 2
 			
 			var weighted_displacement := (displacement * Vector2(1.2, 2.2)).length()
-			dialogue_options_ui.visible_percentage = clamp(remap(weighted_displacement, 170, 200, 1.0, 0.0), 0.0, 1.0)
+			dialogue_options_ui.visible_percentage = 1 if abs(displacement.x) < 150 and abs(displacement.y) < 200 else 0
 
 
 func say(new_speaker: Dialogue.Actor, unparsed_line: String, wait_for_continue := true, is_skippable := true) -> void:

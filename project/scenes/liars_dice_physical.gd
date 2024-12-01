@@ -11,12 +11,18 @@ signal ready_for_credits
 @export var gui_panel : GuiPanel
 @export var pirate_gun : Gun
 @export var captain_gun : Gun
-@export var final_captain_point : Node3D
+@export var captain_dailogue_point : Node3D
+@export var pirate_left_dailogue_point : Node3D
+@export var pirate_right_dailogue_point : Node3D
 @onready var cups := get_tree().get_nodes_in_group(&"Cups")
 @onready var player_models := get_tree().get_nodes_in_group(&"PlayerModels")
 @onready var better : Better = gui_panel.better
 @onready var animation_player : AnimationPlayer = $AnimationPlayer
-
+@onready var dialogue_points := {
+	Dialogue.Actor.CAPTAIN: captain_dailogue_point,
+	Dialogue.Actor.PIRATE_LEFT: pirate_left_dailogue_point,
+	Dialogue.Actor.PIRATE_RIGHT: pirate_right_dailogue_point,
+}
 
 
 var cups_and_dice_visible : bool = false :
@@ -35,7 +41,9 @@ func _ready() -> void:
 	assert(player_camera, "Missing player camera!")
 	assert(better, "Missing better!")
 	assert(captain_gun, "Missing captain's gun!")
-	assert(final_captain_point, "Missing final captain point")
+	assert(captain_dailogue_point, "Missing dialogue point.")
+	assert(pirate_left_dailogue_point, "Missing dialogue point.")
+	assert(pirate_right_dailogue_point, "Missing dialogue point.")
 	cups.sort_custom(func(a: Cup, b: Cup) -> bool: return a.player < b.player)
 	player_models.sort_custom(func(a: PlayerModel, b: PlayerModel) -> bool: return a.player < b.player)
 	player_models.insert(0, null)
@@ -148,9 +156,13 @@ func pan_camera_to_pirate_gun() -> void:
 	pirate_gun.can_pickup = true
 	player_camera.pan_to_point(pirate_gun.global_position)
 
-func pan_camera_to_captain() -> void:
-	player_camera.pan_to_point(final_captain_point.global_position)
+func pan_camera_to_npc(npc: Dialogue.Actor) -> void:
+	player_camera.pan_to_point(dialogue_points[npc].global_position)
 
 
 func play_credits() -> void:
 	ready_for_credits.emit()
+
+
+func pan_camera_to_cup() -> void:
+	player_camera.pan_to_point(cups[LiarsDice.Player.SELF].global_position)
