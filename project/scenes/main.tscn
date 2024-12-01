@@ -50,7 +50,7 @@ render_target_update_mode = 4
 [node name="GameRoom" parent="GameViewportContainer/SubViewport" instance=ExtResource("5_tyn2c")]
 
 [node name="PirateGun" parent="GameViewportContainer/SubViewport/GameRoom" index="32"]
-transform = Transform3D(0.00621274, 0.999928, -0.0102349, 0.00599625, 0.0101976, 0.99993, 0.999963, -0.00627369, -0.00593247, -1.48723, 0.498987, -0.0520414)
+transform = Transform3D(0.00621274, 0.999928, -0.0102348, 0.00599625, 0.0101976, 0.99993, 0.999963, -0.00627369, -0.00593246, -1.48723, 0.498987, -0.0520414)
 
 [node name="CaptainGun" parent="GameViewportContainer/SubViewport/GameRoom" index="35"]
 transform = Transform3D(-0.998964, 0.01603, 0.0425877, 0.043501, 0.061754, 0.997143, 0.0133543, 0.997963, -0.0623874, -0.532882, 0.417418, -1.1687)
@@ -81,12 +81,6 @@ render_target_update_mode = 4
 mouse_filter = 1
 viewport = NodePath("../../../../GameViewportContainer/SubViewport")
 
-[node name="LightningOverlay" parent="UI/SubViewportContainer/SubViewport" instance=ExtResource("9_jrsup")]
-
-[node name="GunShotOverlay" parent="UI/SubViewportContainer/SubViewport" instance=ExtResource("10_aqcw8")]
-
-[node name="Credits" parent="UI/SubViewportContainer/SubViewport" instance=ExtResource("10_gbpir")]
-
 [node name="Crosshair" type="Control" parent="UI/SubViewportContainer/SubViewport"]
 layout_mode = 3
 anchors_preset = 15
@@ -112,6 +106,12 @@ offset_bottom = 4.0
 grow_horizontal = 2
 grow_vertical = 2
 texture = ExtResource("12_hpb2h")
+
+[node name="LightningOverlay" parent="UI/SubViewportContainer/SubViewport" instance=ExtResource("9_jrsup")]
+
+[node name="GunShotOverlay" parent="UI/SubViewportContainer/SubViewport" instance=ExtResource("10_aqcw8")]
+
+[node name="Credits" parent="UI/SubViewportContainer/SubViewport" instance=ExtResource("10_gbpir")]
 
 [node name="IntroCutscene" parent="UI/SubViewportContainer/SubViewport" instance=ExtResource("11_q7g3d")]
 

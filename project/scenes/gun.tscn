@@ -4,7 +4,7 @@
 [ext_resource type="PackedScene" uid="uid://falqgkrwym7t" path="res://models/flintlock.glb" id="2_xr4v5"]
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_kku8f"]
-radius = 0.180896
+radius = 0.290213
 
 [node name="Gun" type="Node3D"]
 script = ExtResource("1_a6anj")
@@ -29,5 +29,5 @@ collision_layer = 0
 collision_mask = 0
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Hurtbox"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.0467287, -0.0298959)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.0467287, -0.171042)
 shape = SubResource("SphereShape3D_kku8f")
