@@ -51,12 +51,14 @@ func _process(delta: float) -> void:
 
 
 func _on_lightning_overlay_flashed() -> void:
+	GameMaster.ambience.is_enabled = true
 	is_active = false
 
 
 func _on_liars_dice_physical_player_shot() -> void:
 	is_active = true
 	GameMaster.player_in_world = false
+	GameMaster.ambience.is_enabled = false
 	GameMaster.kill_lightning()
 	in_transition = false
 	

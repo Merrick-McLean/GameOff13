@@ -250,12 +250,11 @@ var dialogues : Dictionary = {
 		await display.say(Dialogue.Actor.CAPTAIN, "But ye only know the values of yer own.")
 		LiarsDice.physical.pan_camera_to_npc(Dialogue.Actor.CAPTAIN)
 		await display.say(Dialogue.Actor.CAPTAIN, "On ye turn, make a bet.")
-		await display.say(Dialogue.Actor.CAPTAIN, "Bet how many of all the dice share share a certain value.")
-		#await display.say(Dialogue.Actor.CAPTAIN, "The tricky part is yer bet includes all the dice.")
-		await display.say(Dialogue.Actor.CAPTAIN, "Even the ones ye don't know.")
+		await display.say(Dialogue.Actor.CAPTAIN, "Of how many dice ye thinks share a certain value.")
+		await display.say(Dialogue.Actor.CAPTAIN, "Yer bet includes all the dice. Even the other players'.")
 		await display.say(Dialogue.Actor.CAPTAIN, "I might bet 5 dices rolled six.")
-		#await display.say(Dialogue.Actor.CAPTAIN, "But, ye might reckon there only be 4.")
-		await display.say(Dialogue.Actor.CAPTAIN, "But ye could call me a [shake rate=20.0 level=5 connected=1]LIAR![/shake]...")
+		await display.say(Dialogue.Actor.CAPTAIN, "But, if ye might reckon there only be 4.")
+		await display.say(Dialogue.Actor.CAPTAIN, "Ye could call me a [shake rate=20.0 level=5 connected=1]LIAR![/shake]...")
 		await display.say(Dialogue.Actor.CAPTAIN, "An' then we'll settle who's right.")
 		await display.say(Dialogue.Actor.CAPTAIN, "The only catch[set speed=5]...")
 		await display.say(Dialogue.Actor.CAPTAIN, "Ye must always bet a bigger value than the last player.")
@@ -559,6 +558,9 @@ Id.GOLDEN_RULE: func(args: Dictionary) -> Dictionary:
 		await display.say(Dialogue.Actor.CAPTAIN, "An' I must confess...")
 		await display.say(Dialogue.Actor.CAPTAIN, "There be no secret to eternal life fer the likes o' ye.")
 		await display.say(Dialogue.Actor.CAPTAIN, "Pretty soon ye'll be like the rest of us.")
+		
+		LiarsDice.physical.is_captain_gun_drawn = true
+		
 		await display.say(Dialogue.Actor.CAPTAIN, "The only thing immortal be yer service to this crew.") # calls into question validity of other crewmates free will?
 		
 		Progress.know_captain_secret = true

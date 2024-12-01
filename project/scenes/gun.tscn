@@ -8,7 +8,6 @@ radius = 0.290213
 
 [node name="Gun" type="Node3D"]
 script = ExtResource("1_a6anj")
-is_outline_enabled = null
 
 [node name="Model" type="Node3D" parent="."]
 

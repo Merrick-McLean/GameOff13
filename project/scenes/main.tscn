@@ -50,10 +50,10 @@ render_target_update_mode = 4
 [node name="GameRoom" parent="GameViewportContainer/SubViewport" instance=ExtResource("5_tyn2c")]
 
 [node name="PirateGun" parent="GameViewportContainer/SubViewport/GameRoom" index="32"]
-is_outline_enabled = null
+is_outline_enabled = false
 
 [node name="CaptainGun" parent="GameViewportContainer/SubViewport/GameRoom" index="35"]
-is_outline_enabled = null
+is_outline_enabled = false
 
 [node name="UI" type="CanvasLayer" parent="."]
 scale = Vector2(2, 2)

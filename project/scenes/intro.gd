@@ -47,6 +47,7 @@ func dissolve() -> void:
 		0: 
 			GameMaster.ambience.is_enabled = false
 		1: 
+			GameMaster.ambience.ambience_level = 1
 			GameMaster.ambience.is_enabled = true
 			GameMaster.ambience.is_inside = false
 		2: 
