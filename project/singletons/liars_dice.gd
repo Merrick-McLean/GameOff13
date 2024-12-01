@@ -45,8 +45,8 @@ func start_new_game(wait_for_signal_on_first_round := false) -> void:
 	while Player.SELF in alive_players:
 		round = Round.new(alive_players, {
 			Player.SELF: 5,
-			Player.PIRATE_RIGHT: 4,
-			Player.CAPTAIN: 3,
+			Player.PIRATE_RIGHT: 4 if Progress.player_death_count < 2 else 2,
+			Player.CAPTAIN: 3 if Progress.player_death_count < 2 else 2,
 			Player.PIRATE_LEFT: 5
 		}, { # WEIGHTED DICE
 			Player.PIRATE_LEFT: [2, 4, 4, 5, 5]
@@ -168,7 +168,8 @@ class Round extends Object: # should I jsut merge round and bet? - Simpler to ju
 		var loser := Player.NOONE
 		while true:
 			if is_npc(get_current_player()):
-				var bet := get_npc_bet(get_current_player(), current_bet, 1, 8) # TODO: get this range finding properly
+				var min_max := get_npc_bet_range(get_current_player())
+				var bet := get_npc_bet(get_current_player(), current_bet, min_max[0], min_max[1])
 				make_bet(bet)
 				await npc_say_bet(get_current_player(), bet)
 				var call := await prompt_player_call(get_current_player())
@@ -209,6 +210,20 @@ class Round extends Object: # should I jsut merge round and bet? - Simpler to ju
 		result.undetermined_count = total_die_count - determined_dice_count
 		
 		return result
+	
+	
+	func get_npc_bet_range(npc: Player) -> Array[int]:
+		var min_distance := 1
+		var max_distance := 8
+		
+		if Progress.know_pirate_death and npc == Player.PIRATE_LEFT:
+			min_distance = 6
+			max_distance = 12
+		if Progress.know_navy_secret and npc == Player.PIRATE_RIGHT:
+			min_distance = 6
+			max_distance = 12
+		
+		return [min_distance, max_distance]
 	
 	
 	# returns a die table with the known and unknown dice for a certain player
@@ -429,9 +444,20 @@ class Round extends Object: # should I jsut merge round and bet? - Simpler to ju
 				return crew_mates.pick_random()
 			return Player.CAPTAIN
 		
+		var npc_recklessness = {}
+		
+		if Progress.know_pirate_death and not Progress.know_navy_secret:
+			npc_recklessness[Player.PIRATE_RIGHT] = -0.6
+			npc_recklessness[Player.PIRATE_LEFT] = 0.3
+		elif Progress.know_navy_secret and not Progress.know_pirate_death:
+			npc_recklessness[Player.PIRATE_LEFT] = -0.6
+			npc_recklessness[Player.PIRATE_RIGHT] = 0.3
+		
 		# DO PROBABILITY THING
 		for npc: Player in turn_order.filter(is_npc):
-			var probability = get_npc_call_probability(npc, player_bet, 0.0) #TODO: modify the recklessness
+			var recklessness = 0.0
+			
+			var probability = get_npc_call_probability(npc, player_bet, npc_recklessness.get(npc, 0.0)) #TODO: modify the recklessness
 			if randf() < probability:
 				return npc
 		
