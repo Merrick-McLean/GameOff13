@@ -569,7 +569,7 @@ Id.GOLDEN_RULE: func(args: Dictionary) -> Dictionary:
 		display.clear_options()
 		await display.say(Dialogue.Actor.CAPTAIN, "I wouldn't call it a curse.");
 		await display.say(Dialogue.Actor.CAPTAIN, "Me ship's me home again.");
-		await display.say(Dialogue.Actor.CAPTAIN, "An' any pirate who meets reaches the ocean floor,"); 
+		await display.say(Dialogue.Actor.CAPTAIN, "An' any pirate who meets the ocean floor,"); 
 		await display.say(Dialogue.Actor.CAPTAIN, "May find a place among me crew."); 
 		Progress.know_captain_now = true
 		display.clear_speach()
