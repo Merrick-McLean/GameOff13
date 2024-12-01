@@ -97,12 +97,12 @@ func _ready() -> void:
 func pan_to_point(world_position: Vector3) -> void:
 	var displacement := (world_position - global_position)
 	
-	var horizontal_angle := Vector2(displacement.z, displacement.x).angle()
+	var horizontal_angle := Vector2(-displacement.z, displacement.x).angle()
 	var vertical_angle := Vector2(Vector2(displacement.x, displacement.z).length(), displacement.y).angle()
 	
 	pan_target = Vector2(
 		inverse_lerp(-get_max_rotation_sideways(), get_max_rotation_sideways(), horizontal_angle),
-		inverse_lerp(-get_max_rotation_down(), get_max_rotation_up(), vertical_angle)
+		inverse_lerp(get_max_rotation_up(), -get_max_rotation_down(), vertical_angle)
 	)
 	
 
@@ -172,10 +172,10 @@ func _process(delta: float) -> void:
 
 
 func get_normal_fov() -> float:
-	if not LiarsDice.round: 				return 55.0
-	if LiarsDice.alive_players.size() >= 4:	return 55.0
-	if LiarsDice.alive_players.size() >= 3:	return 50.0
-	return 45.0
+	if not LiarsDice.round: 				return 62.0
+	if LiarsDice.alive_players.size() >= 4:	return 57.0
+	if LiarsDice.alive_players.size() >= 3:	return 52.0
+	return 52.0
 
 
 func get_max_rotation_up(for_state := state) -> float:

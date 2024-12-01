@@ -144,7 +144,7 @@ var dialogues : Dictionary = {
 			LiarsDice.physical.pan_camera_to_pirate_gun()
 			display.say(Dialogue.Actor.CAPTAIN, "But the Captain [set pause_time=0.7]always [set pause_time=0.7]wins.", false, false)
 			await LiarsDice.physical.pirate_gun.picked_up
-			#LiarsDice.physical.pan_camera_to_captain()
+			LiarsDice.physical.pan_camera_to_npc(Dialogue.Actor.CAPTAIN)
 			await display.get_tree().create_timer(0.5).timeout
 			await display.say(Dialogue.Actor.CAPTAIN, "Avast their matey.")
 			await display.say(Dialogue.Actor.CAPTAIN, "We don't gotta part ways like this.")
@@ -236,7 +236,9 @@ var dialogues : Dictionary = {
 		await display.say(Dialogue.Actor.CAPTAIN, "Not to worry.")
 		LiarsDice.start_new_game(true)
 		await display.say(Dialogue.Actor.CAPTAIN, "We each have 5 dice to our name.")
+		LiarsDice.physical.pan_camera_to_cup()
 		await display.say(Dialogue.Actor.CAPTAIN, "But ye only know the values of yer own.")
+		LiarsDice.physical.pan_camera_to_npc(Dialogue.Actor.CAPTAIN)
 		await display.say(Dialogue.Actor.CAPTAIN, "On ye turn, make a bet.")
 		await display.say(Dialogue.Actor.CAPTAIN, "An' tell us how many dice ye think share one side.")
 		await display.say(Dialogue.Actor.CAPTAIN, "The tricky part is yer bet includes all the dice.")

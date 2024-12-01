@@ -1,4 +1,4 @@
-[gd_scene load_steps=15 format=3 uid="uid://ckdxm5eyc6dyu"]
+[gd_scene load_steps=16 format=3 uid="uid://ckdxm5eyc6dyu"]
 
 [ext_resource type="Shader" path="res://shaders/dither.gdshader" id="1_kkj7l"]
 [ext_resource type="Texture2D" uid="uid://bisw3a062q3rs" path="res://sprites/test_palette.png" id="2_frn0b"]
@@ -12,6 +12,7 @@
 [ext_resource type="PackedScene" uid="uid://ccl6s4a88a7ya" path="res://scenes/ui/credits.tscn" id="10_gbpir"]
 [ext_resource type="PackedScene" uid="uid://uectnsyeae55" path="res://scenes/intro_cutscene.tscn" id="11_q7g3d"]
 [ext_resource type="PackedScene" uid="uid://dnhnh4gnp56hx" path="res://scenes/ambience/ambience.tscn" id="12_80d8s"]
+[ext_resource type="Texture2D" uid="uid://dkvqmn7e1hqvt" path="res://sprites/Crosshair.png" id="12_hpb2h"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_r6w7f"]
 shader = ExtResource("1_kkj7l")
@@ -29,7 +30,6 @@ shader_parameter/u_color_tex = ExtResource("2_frn0b")
 [node name="Main" type="Node"]
 
 [node name="Ambience" parent="." instance=ExtResource("12_80d8s")]
-hum_loudness = null
 
 [node name="GameViewportContainer" type="SubViewportContainer" parent="."]
 texture_filter = 1
@@ -48,12 +48,6 @@ size = Vector2i(960, 540)
 render_target_update_mode = 4
 
 [node name="GameRoom" parent="GameViewportContainer/SubViewport" instance=ExtResource("5_tyn2c")]
-
-[node name="PirateGun" parent="GameViewportContainer/SubViewport/GameRoom" index="31"]
-transform = Transform3D(0.00621274, 0.999928, -0.0102348, 0.00599625, 0.0101976, 0.99993, 0.999963, -0.00627369, -0.00593246, -1.48723, 0.498987, -0.0520414)
-
-[node name="CaptainGun" parent="GameViewportContainer/SubViewport/GameRoom" index="34"]
-transform = Transform3D(-0.998964, 0.01603, 0.0425877, 0.043501, 0.061754, 0.997143, 0.0133543, 0.997963, -0.0623874, -0.532882, 0.417418, -1.1687)
 
 [node name="UI" type="CanvasLayer" parent="."]
 scale = Vector2(2, 2)
@@ -86,6 +80,32 @@ viewport = NodePath("../../../../GameViewportContainer/SubViewport")
 [node name="GunShotOverlay" parent="UI/SubViewportContainer/SubViewport" instance=ExtResource("10_aqcw8")]
 
 [node name="Credits" parent="UI/SubViewportContainer/SubViewport" instance=ExtResource("10_gbpir")]
+
+[node name="Crosshair" type="Control" parent="UI/SubViewportContainer/SubViewport"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_right = -480.0
+offset_bottom = -270.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="TextureRect" type="TextureRect" parent="UI/SubViewportContainer/SubViewport/Crosshair"]
+custom_minimum_size = Vector2(8, 8)
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -4.0
+offset_top = -4.0
+offset_right = 4.0
+offset_bottom = 4.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("12_hpb2h")
 
 [node name="IntroCutscene" parent="UI/SubViewportContainer/SubViewport" instance=ExtResource("11_q7g3d")]
 visible = false

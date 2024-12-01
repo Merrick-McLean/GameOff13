@@ -532,10 +532,12 @@ class Round extends Object: # should I jsut merge round and bet? - Simpler to ju
 		
 		# RESOLVE DICE
 		var resolve_mode := ResolveMode.RANDOM
-		if callee == Player.CAPTAIN: 										resolve_mode = ResolveMode.GURANTEE_WIN
-		elif caller == Player.CAPTAIN: 										resolve_mode = ResolveMode.GURANTEE_LOSS
-		elif callee == Player.SELF and favour_mode == FavourMode.PLAYER: 	resolve_mode = ResolveMode.GURANTEE_WIN
-		elif caller == Player.SELF and favour_mode == FavourMode.PLAYER: 	resolve_mode = ResolveMode.GURANTEE_LOSS
+		var can_gurantee_win := global_die_table.get_face_count(bet.value) + global_die_table.undetermined_count >= bet.amount
+		var can_gurantee_lose := global_die_table.get_face_count(bet.value) < bet.amount
+		if callee == Player.CAPTAIN: 															resolve_mode = ResolveMode.GURANTEE_WIN
+		elif caller == Player.CAPTAIN: 															resolve_mode = ResolveMode.GURANTEE_LOSS
+		elif can_gurantee_win and callee == Player.SELF and favour_mode == FavourMode.PLAYER: 	resolve_mode = ResolveMode.GURANTEE_WIN
+		elif can_gurantee_lose and caller == Player.SELF and favour_mode == FavourMode.PLAYER: 	resolve_mode = ResolveMode.GURANTEE_LOSS
 		
 		resolve_dice(bet, resolve_mode)
 		
