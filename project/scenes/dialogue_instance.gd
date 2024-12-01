@@ -636,7 +636,7 @@ func can_give_option(id: Id) -> bool:
 		Id.PIRATE_DEATH_2: 		return Progress.know_pirate_recruitment and not Progress.know_pirate_death
 		Id.PIRATE_DEATH_3: 		return Dialogue.is_completed(Id.PIRATE_DEATH_2) and not Progress.know_pirate_death # follow up
 		Id.PIRATE_NOW: 			return	not Progress.know_pirate_now and Progress.know_pirate_recruitment
-		Id.PIRATE_SECRET_FAIL: 	return	not Progress.know_pirate_secret and Progress.know_pirate_name and Progress.know_pirate_recruitment
+		Id.PIRATE_SECRET_FAIL: 	return	not Progress.know_pirate_secret and Progress.know_pirate_name and Progress.know_pirate_recruitment and not LiarsDice.is_out(LiarsDice.Player.PIRATE_RIGHT)
 		Id.PIRATE_SECRET: 		return	not Progress.know_pirate_secret and Progress.know_pirate_name and Progress.know_pirate_recruitment and LiarsDice.is_out(LiarsDice.Player.PIRATE_RIGHT)
 		Id.PIRATE_REVEAL:		return Progress.know_captain_secret and Progress.know_navy_secret and not LiarsDice.is_out(LiarsDice.Player.PIRATE_RIGHT) and Progress.know_pirate_death # Added so we need to know both sides # do we also need to know pirate secret, he keeps a gun on him? Why do we NEED to know captain secret. means we have to get to 1v1 once before we can cause the fight! We also need to hear about his death
 		
