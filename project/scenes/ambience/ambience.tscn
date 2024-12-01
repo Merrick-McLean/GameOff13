@@ -16,16 +16,19 @@ hum_loudness = 0.3
 [node name="Waves" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("1_2yexf")
 volume_db = -5.0
+stream_paused = true
 bus = &"Outside"
 
 [node name="Hum" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("3_bi37s")
 volume_db = -10.4576
+stream_paused = true
 bus = &"Ambience"
 
 [node name="Storm" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("4_dv23c")
 volume_db = -3.852
+stream_paused = true
 bus = &"Outside"
 
 [node name="ShipWood" type="AudioStreamPlayer" parent="."]
@@ -35,9 +38,11 @@ bus = &"Ambience"
 [node name="JungleNight" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("6_y0bsw")
 volume_db = -6.0
+stream_paused = true
 bus = &"Ambience"
 
 [node name="Static" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("7_xq3d8")
 volume_db = -6456.58
+stream_paused = true
 bus = &"Ambience"
