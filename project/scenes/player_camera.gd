@@ -137,9 +137,6 @@ func _process(delta: float) -> void:
 			var collider := detector.get_collider()
 			new_gun = collider.get_parent()
 	
-	if Debug.is_just_pressed(&"test_2"):
-		pan_to_point(Vector3(-0.904, 0.671, 0.018))
-	
 	# update zoom
 	current_cup = new_cup
 	current_ui = new_ui

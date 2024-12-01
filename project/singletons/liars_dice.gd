@@ -255,7 +255,7 @@ class Round extends Object: # should I jsut merge round and bet? - Simpler to ju
 	func pass_turn() -> void: # HANDLE WHEN SOMEONE IS OUT
 		player_index += 1
 		player_index = player_index % turn_order.size()
-		if player_index == turn_order.front():
+		if player_index == 0:
 			round_number += 1
 	
 	# sets the players current bet

@@ -43,12 +43,6 @@ func _process(delta: float) -> void:
 	model.scale.y = lerp(1.0, 1.0 + bob_amplitude, scale_offset)
 	model.scale.x = 1.0 / sqrt(model.scale.y)
 	model.scale.z = 1.0 /  sqrt(model.scale.y)
-	
-	if Engine.is_editor_hint(): return
-	if Debug.is_just_pressed("test_9") and player == LiarsDice.Player.PIRATE_RIGHT:
-		_kill()
-	if Debug.is_just_pressed("test_8")  and player == LiarsDice.Player.PIRATE_RIGHT:
-		_revive()
 
 
 func _revive():

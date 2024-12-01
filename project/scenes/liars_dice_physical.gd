@@ -14,6 +14,8 @@ signal ready_for_credits
 @export var captain_dailogue_point : Node3D
 @export var pirate_left_dailogue_point : Node3D
 @export var pirate_right_dailogue_point : Node3D
+@export var die_spawning_particles : GPUParticles3D
+@export var die_spawning_sound : AudioStreamPlayer
 @onready var cups := get_tree().get_nodes_in_group(&"Cups")
 @onready var player_models := get_tree().get_nodes_in_group(&"PlayerModels")
 @onready var better : Better = gui_panel.better
@@ -44,6 +46,8 @@ func _ready() -> void:
 	assert(captain_dailogue_point, "Missing dialogue point.")
 	assert(pirate_left_dailogue_point, "Missing dialogue point.")
 	assert(pirate_right_dailogue_point, "Missing dialogue point.")
+	assert(die_spawning_sound)
+	assert(die_spawning_particles)
 	cups.sort_custom(func(a: Cup, b: Cup) -> bool: return a.player < b.player)
 	player_models.sort_custom(func(a: PlayerModel, b: PlayerModel) -> bool: return a.player < b.player)
 	player_models.insert(0, null)
@@ -83,6 +87,10 @@ func start_game() -> void:
 		cup.target_raised = false
 		for die: Die in cup.dice.get_children():
 			die.is_alive = true
+	
+	die_spawning_sound.play()
+	die_spawning_particles.emitting = true
+	
 	player_camera.transition_state(PlayerCamera.State.IN_GAME)
 
 

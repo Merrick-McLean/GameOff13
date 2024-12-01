@@ -79,7 +79,7 @@ func regenerate_state_points() -> void:
 func _process(delta: float) -> void:
 	if Engine.is_editor_hint() and not simulate_in_editor: return
 	
-	if Debug.is_just_pressed("test_5") and pirate == Dialogue.Actor.PIRATE_LEFT:
+	if not Engine.is_editor_hint() and Debug.is_just_pressed("test_5") and pirate == Dialogue.Actor.PIRATE_LEFT:
 		state = State.ON_TABLE
 		can_pickup = true
 	

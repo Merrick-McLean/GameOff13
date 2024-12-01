@@ -10,14 +10,14 @@
 offsets = PackedFloat32Array(0, 0.170124, 0.460581, 0.680498, 1)
 colors = PackedColorArray(1, 1, 1, 1, 0.978721, 0.791762, 0, 1, 0.6, 0.4152, 0.204, 0.745098, 0.44, 0.17468, 0.1452, 0.729412, 0, 0, 0, 0)
 
-[sub_resource type="GradientTexture1D" id="GradientTexture1D_nhvvh"]
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_arl1e"]
 gradient = SubResource("Gradient_kc4ao")
 
 [sub_resource type="Curve" id="Curve_0tgvh"]
 _data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(0.754647, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), -11.5344, 0.0, 0, 0]
 point_count = 3
 
-[sub_resource type="CurveTexture" id="CurveTexture_13usj"]
+[sub_resource type="CurveTexture" id="CurveTexture_h83if"]
 curve = SubResource("Curve_0tgvh")
 
 [sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_txqts"]
@@ -36,10 +36,10 @@ gravity = Vector3(0, 4, 0)
 damping_min = 2.637
 damping_max = 4.0
 scale_min = 0.5
-scale_curve = SubResource("CurveTexture_13usj")
-color_ramp = SubResource("GradientTexture1D_nhvvh")
+scale_curve = SubResource("CurveTexture_h83if")
+color_ramp = SubResource("GradientTexture1D_arl1e")
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_wcush"]
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_5s8au"]
 transparency = 1
 vertex_color_use_as_albedo = true
 albedo_texture = ExtResource("2_ar825")
@@ -50,14 +50,14 @@ particles_anim_v_frames = 1
 particles_anim_loop = false
 
 [sub_resource type="QuadMesh" id="QuadMesh_f14h2"]
-material = SubResource("StandardMaterial3D_wcush")
+material = SubResource("StandardMaterial3D_5s8au")
 size = Vector2(0.7, 0.7)
 
 [node name="PlayerModel" type="Node3D" groups=["PlayerModels"]]
 script = ExtResource("1_ed6li")
 
 [node name="Model" type="Node3D" parent="."]
-transform = Transform3D(1.00636, 0, 0, 0, 0.987398, 0, 0, 0, 1.00636, 0, 0, 0)
+transform = Transform3D(1.00403, 0, 0, 0, 0.991985, 0, 0, 0, 1.00403, 0, 0, 0)
 
 [node name="CSGMesh3D" type="CSGMesh3D" parent="Model"]
 mesh = SubResource("CapsuleMesh_4s0jj")
