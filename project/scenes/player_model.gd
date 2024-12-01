@@ -23,7 +23,7 @@ var bob_amplitude := 0.05
 		if not is_node_ready(): await ready
 		$Model/captainfinal.visible = player == LiarsDice.Player.CAPTAIN
 		$Model/crewfatfinal.visible = player == LiarsDice.Player.PIRATE_RIGHT
-		$Model/crewskinnyfinal.visible = player == LiarsDice.Player.PIRATE_LEFT
+		$Model/skinnycrew.visible = player == LiarsDice.Player.PIRATE_LEFT
 @export var is_talking := false :
 	set(new_value):
 		is_talking = new_value

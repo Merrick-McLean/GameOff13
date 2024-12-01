@@ -84,4 +84,9 @@ func get_current_slide() -> IntroSlide:
 
 
 func ready_for_next_dissolve() -> bool:
-	return not is_dissolving and not dissolve_sound.playing
+	return not is_dissolving and not dissolve_sound.playing and slide_index != 0
+
+
+func _on_label_game_started() -> void:
+	dissolve()
+	pass # Replace with function body.

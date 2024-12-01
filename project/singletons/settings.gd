@@ -49,7 +49,10 @@ func _ready() -> void:
 		&"are_sfx_muted",
 	]
 	
+	
 	super._ready()
+	
+	_update_window()
 
 
 func _process(delta: float) -> void:

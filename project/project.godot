@@ -10,10 +10,11 @@ config_version=5
 
 [application]
 
-config/name="GameOff13"
+config/name="The Captain Always Wins"
 run/main_scene="res://scenes/start.tscn"
 config/features=PackedStringArray("4.3", "Forward Plus")
-config/icon="res://sprites/icon.svg"
+config/icon="res://sprites/Icon.png"
+config/windows_native_icon="res://sprites/Icon.ico"
 
 [autoload]
 
