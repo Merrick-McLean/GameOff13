@@ -158,7 +158,7 @@ texture = ExtResource("12_aigix")
 [node name="Tree" type="Node2D" parent="Slide2"]
 modulate = Color(1, 1, 1, 0.996078)
 position = Vector2(-237, 151)
-rotation = 0.00659623
+rotation = 0.00279225
 scale = Vector2(0.25, 0.25)
 script = ExtResource("14_eriop")
 
@@ -205,7 +205,7 @@ script = ExtResource("18_yne20")
 
 [node name="Sprite" type="Sprite2D" parent="Slide1/Boat"]
 modulate = Color(1, 1, 1, 0.996078)
-position = Vector2(0, -4.19412)
+position = Vector2(0, 5.61929)
 texture = ExtResource("17_g2o4e")
 
 [node name="Island" type="Sprite2D" parent="Slide1"]
@@ -225,6 +225,7 @@ scale = Vector2(0.25, 0.25)
 texture = ExtResource("4_iia0v")
 
 [node name="Label" type="Label" parent="Start"]
+visible = false
 texture_filter = 1
 material = SubResource("ShaderMaterial_yitnj")
 anchors_preset = 15
@@ -251,6 +252,7 @@ pitch_scale = 0.25
 
 [node name="Bang" type="AudioStreamPlayer" parent="Start/Label"]
 stream = ExtResource("25_la77a")
+volume_db = -10.0
 pitch_scale = 0.5
 
 [node name="SlideLabel2" parent="Start" instance=ExtResource("15_4nbvl")]
