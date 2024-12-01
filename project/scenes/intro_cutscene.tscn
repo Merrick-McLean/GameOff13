@@ -1,10 +1,10 @@
 [gd_scene load_steps=31 format=3 uid="uid://uectnsyeae55"]
 
 [ext_resource type="Script" path="res://scenes/intro.gd" id="1_36yco"]
-[ext_resource type="Texture2D" uid="uid://dpy5wv217kjlu" path="res://sprites/intros/room_test.png" id="1_kv0tb"]
 [ext_resource type="Texture2D" uid="uid://dopi08b2p1aeh" path="res://sprites/intros/start_test.png" id="4_iia0v"]
 [ext_resource type="AudioStream" uid="uid://bhl3fp84626yx" path="res://sounds/page_turn_1.wav" id="6_vi8my"]
 [ext_resource type="AudioStream" uid="uid://dekjusepskxdl" path="res://sounds/page_turn_2.wav" id="7_6h1tk"]
+[ext_resource type="Texture2D" uid="uid://cnqqwhf3qguav" path="res://sprites/intros/quarters.png" id="8_5etir"]
 [ext_resource type="AudioStream" uid="uid://dg7jfjes7bwhw" path="res://sounds/page_turn_3.wav" id="8_pnplx"]
 [ext_resource type="Shader" path="res://shaders/dissolve.gdshader" id="9_wdi8m"]
 [ext_resource type="Texture2D" uid="uid://b3kfwdxurbtrj" path="res://sprites/intros/deck_clouds.png" id="10_4d0mw"]
@@ -85,7 +85,7 @@ dissolve_texture = ExtResource("14_re8q1")
 [node name="Sprite" type="Sprite2D" parent="Slide4"]
 modulate = Color(1, 1, 1, 0.996078)
 scale = Vector2(0.25, 0.25)
-texture = ExtResource("1_kv0tb")
+texture = ExtResource("8_5etir")
 
 [node name="SlideLabel" parent="Slide4" instance=ExtResource("15_4nbvl")]
 offset_left = -227.0
@@ -96,6 +96,7 @@ bbcode_enabled = true
 text = "[center]I enter the captains quarters. Dim light from a hanging lantern reveals a table in front of me. Three ghostly pirates sit patiently awaiting a fourth's arrival. "
 
 [node name="Slide3" parent="." instance=ExtResource("13_j35ee")]
+visible = false
 material = SubResource("ShaderMaterial_a673w")
 dissolve_texture = ExtResource("14_re8q1")
 
@@ -156,7 +157,7 @@ texture = ExtResource("12_aigix")
 [node name="Tree" type="Node2D" parent="Slide2"]
 modulate = Color(1, 1, 1, 0.996078)
 position = Vector2(-237, 151)
-rotation = 0.0147042
+rotation = 0.0121636
 scale = Vector2(0.25, 0.25)
 script = ExtResource("14_eriop")
 
@@ -203,7 +204,7 @@ script = ExtResource("18_yne20")
 
 [node name="Sprite" type="Sprite2D" parent="Slide1/Boat"]
 modulate = Color(1, 1, 1, 0.996078)
-position = Vector2(0, 4.98268)
+position = Vector2(0, 3.75172)
 texture = ExtResource("17_g2o4e")
 
 [node name="Island" type="Sprite2D" parent="Slide1"]
@@ -214,6 +215,7 @@ texture = ExtResource("19_3glrt")
 [node name="SlideLabel" parent="Slide1" instance=ExtResource("15_4nbvl")]
 
 [node name="Start" parent="." instance=ExtResource("13_j35ee")]
+visible = false
 material = SubResource("ShaderMaterial_yvam0")
 dissolve_texture = ExtResource("14_re8q1")
 

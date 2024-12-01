@@ -658,7 +658,7 @@ var dialogues : Dictionary = {
 	
 	Id.NO_LOOK: func(args: Dictionary) -> Dictionary:
 		display.clear_options()
-		await display.say(Dialogue.Actor.CAPTAIN, "Bold that ye don't even look at yer dice.")
+		await display.say(Dialogue.Actor.CAPTAIN, "Ye don't even look at yer dice, bold.")
 		await display.say(Dialogue.Actor.CAPTAIN, "To each there own I guess...")
 		display.clear_speach()
 		return {},
@@ -671,8 +671,8 @@ var dialogues : Dictionary = {
 		return {},
 	
 	Id.FIRST_BET: func(args: Dictionary) -> Dictionary:
-		await display.say(args.actor, "Ye think I would lie this quick?")
-		await display.say(args.actor, "I'll give ye a second chance to change yer mind.")
+		await display.say(args.actor, "Ye think I would fib so soon?")
+		await display.say(args.actor, "I'll give ye a chance to change yer mind.")
 		display.clear_speach()
 		return {"do_second_chance": true},
 		
@@ -682,7 +682,7 @@ var dialogues : Dictionary = {
 		ACCUSING_i = i
 		match i:
 			0:
-				await display.say(args.actor, "Ye call me a liar?")
+				await display.say(args.actor, "Ye dare call me a liar?")
 			1:
 				await display.say(args.actor, "Ye not trust my claim?")
 			2:

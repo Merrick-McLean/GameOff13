@@ -71,7 +71,6 @@ var mouse_position := Vector2(0.5, 0.3):
 		mouse_position = new_value
 		mouse_position = mouse_position.clamp(Vector2.ZERO, Vector2.ONE)
 
-
 @onready var state_points := {} # keys are State: values are Node3D
 
 var state := State.IN_GAME
