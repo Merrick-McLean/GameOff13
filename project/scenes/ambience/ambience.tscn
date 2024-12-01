@@ -12,7 +12,6 @@
 script = ExtResource("1_gax4s")
 is_hum_playing = true
 hum_loudness = 0.3
-is_enabled = true
 
 [node name="Waves" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("1_2yexf")
@@ -40,5 +39,5 @@ bus = &"Ambience"
 
 [node name="Static" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("7_xq3d8")
-volume_db = -264.134
+volume_db = -6456.58
 bus = &"Ambience"

@@ -323,7 +323,7 @@ Id.GOLDEN_RULE: func(args: Dictionary) -> Dictionary:
 		await display.say(Dialogue.Actor.PIRATE_LEFT, "And a glint o' a [wave amp=20.0 freq=5.0 connected=1]golden cutlass[/wave] through my guts."); # glint, glimmer, flash or shine
 		await display.say(Dialogue.Actor.PIRATE_LEFT, "Wasn't much of a battle,");
 		await display.say(Dialogue.Actor.PIRATE_LEFT, "More an unfortuante turn o' events.");
-		await display.say(Dialogue.Actor.PIRATE_LEFT, "I saw the freebooter who sent me to my watery grave."); # used to say "laid eyes on" nicer but too long
+		await display.say(Dialogue.Actor.PIRATE_LEFT, "I never saw the freebooter who sent me to my watery grave."); # used to say "laid eyes on" nicer but too long
 		Progress.know_pirate_death = true
 		display.clear_speach()
 		return {},

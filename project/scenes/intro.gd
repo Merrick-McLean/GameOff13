@@ -16,10 +16,8 @@ var slide_index := 0 :
 			camera.enabled = is_active
 		if not is_node_ready(): await ready
 		GameMaster.player_in_world = not is_active
-		
 
-@onready var storm := $Storm1
-@onready var hum := $hum
+
 @onready var dissolve_sound := $DissolveSound
 @onready var camera := $Camera2D
 
