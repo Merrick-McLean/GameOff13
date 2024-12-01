@@ -11,5 +11,5 @@ void fragment(){
 	vec4 noise_texture = texture(dissolve_texture, SCREEN_UV);
 	main_texture.a *= floor(dissolve_value + min(1, noise_texture.x));
 	COLOR = main_texture;
-	
+
 }
