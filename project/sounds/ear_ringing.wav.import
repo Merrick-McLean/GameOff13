@@ -13,7 +13,7 @@ dest_files=["res://.godot/imported/ear_ringing.wav-487818499052fc464f0bd0e9fafe7
 [params]
 
 force/8_bit=false
-force/mono=false
+force/mono=true
 force/max_rate=false
 force/max_rate_hz=44100
 edit/trim=false

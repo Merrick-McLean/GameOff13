@@ -12,7 +12,7 @@ dest_files=["res://.godot/imported/infinite_hum.mp3-a4f1e84c422f46a3e368e416554d
 
 [params]
 
-loop=false
+loop=true
 loop_offset=0
 bpm=0
 beat_count=0

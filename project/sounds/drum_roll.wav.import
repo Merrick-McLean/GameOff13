@@ -13,7 +13,7 @@ dest_files=["res://.godot/imported/drum_roll.wav-0c5e65005b022f503a31a978c450194
 [params]
 
 force/8_bit=false
-force/mono=false
+force/mono=true
 force/max_rate=false
 force/max_rate_hz=44100
 edit/trim=false

@@ -13,7 +13,7 @@ dest_files=["res://.godot/imported/smoke_poof.wav-cc0e62c93ed248c3ab410de2bf1ad5
 [params]
 
 force/8_bit=false
-force/mono=false
+force/mono=true
 force/max_rate=false
 force/max_rate_hz=44100
 edit/trim=false

@@ -13,7 +13,7 @@ dest_files=["res://.godot/imported/lightning-04.wav-20fa2e80a5b8ffc9d59b5b3f3032
 [params]
 
 force/8_bit=false
-force/mono=false
+force/mono=true
 force/max_rate=false
 force/max_rate_hz=44100
 edit/trim=false

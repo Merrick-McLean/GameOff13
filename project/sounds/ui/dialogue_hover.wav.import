@@ -13,7 +13,7 @@ dest_files=["res://.godot/imported/dialogue_hover.wav-81810be9dffb7a264a0cbaf9bd
 [params]
 
 force/8_bit=false
-force/mono=false
+force/mono=true
 force/max_rate=false
 force/max_rate_hz=44100
 edit/trim=false

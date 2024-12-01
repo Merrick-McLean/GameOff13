@@ -13,7 +13,7 @@ dest_files=["res://.godot/imported/bet_place.wav-02be95ee991a9e70df64b62460ffb29
 [params]
 
 force/8_bit=false
-force/mono=false
+force/mono=true
 force/max_rate=false
 force/max_rate_hz=44100
 edit/trim=false

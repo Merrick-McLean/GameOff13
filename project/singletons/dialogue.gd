@@ -9,6 +9,8 @@ var display : DialogueDisplay :
 		if new_value == display: return
 		var old_value = display
 		display = new_value
+		display.clear_options()
+		display.clear_speach()
 		if LiarsDice.physical: LiarsDice.physical.update_betting_lock()
 
 enum Actor {

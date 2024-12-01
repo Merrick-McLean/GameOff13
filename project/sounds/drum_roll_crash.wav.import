@@ -13,7 +13,7 @@ dest_files=["res://.godot/imported/drum_roll_crash.wav-5be6a3c9ad1aacf512cf7a1c1
 [params]
 
 force/8_bit=false
-force/mono=false
+force/mono=true
 force/max_rate=false
 force/max_rate_hz=44100
 edit/trim=false

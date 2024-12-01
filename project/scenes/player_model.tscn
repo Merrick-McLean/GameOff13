@@ -57,7 +57,7 @@ size = Vector2(0.7, 0.7)
 script = ExtResource("1_ed6li")
 
 [node name="Model" type="Node3D" parent="."]
-transform = Transform3D(0.99241, 0, 0, 0, 1.01535, 0, 0, 0, 0.99241, 0, 0, 0)
+transform = Transform3D(1.00636, 0, 0, 0, 0.987398, 0, 0, 0, 1.00636, 0, 0, 0)
 
 [node name="CSGMesh3D" type="CSGMesh3D" parent="Model"]
 mesh = SubResource("CapsuleMesh_4s0jj")
