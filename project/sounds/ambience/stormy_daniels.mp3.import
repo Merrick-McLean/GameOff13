@@ -12,7 +12,7 @@ dest_files=["res://.godot/imported/stormy_daniels.mp3-48fd0417bb89a10b24807bb044
 
 [params]
 
-loop=false
+loop=true
 loop_offset=0
 bpm=0
 beat_count=0

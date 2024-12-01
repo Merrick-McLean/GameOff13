@@ -19,12 +19,14 @@ bus = &"Outside"
 
 [node name="Hum" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("3_bi37s")
-volume_db = -10.0
+volume_db = inf_neg
+stream_paused = true
 bus = &"Ambience"
 
 [node name="Storm" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("4_dv23c")
 volume_db = -3.852
+stream_paused = true
 bus = &"Outside"
 
 [node name="ShipWood" type="AudioStreamPlayer" parent="."]

@@ -116,3 +116,4 @@ texture = ExtResource("12_hpb2h")
 [connection signal="transition_requested" from="UI/SubViewportContainer/SubViewport/GunShotOverlay" to="UI/SubViewportContainer/SubViewport/LightningOverlay" method="_on_gun_shot_overlay_transition_requested"]
 
 [editable path="GameViewportContainer/SubViewport/GameRoom"]
+[editable path="GameViewportContainer/SubViewport/GameRoom/Table"]
