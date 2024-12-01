@@ -1,19 +1,26 @@
-[gd_scene load_steps=21 format=3 uid="uid://uectnsyeae55"]
+[gd_scene load_steps=28 format=3 uid="uid://uectnsyeae55"]
 
 [ext_resource type="Script" path="res://scenes/intro.gd" id="1_36yco"]
 [ext_resource type="Texture2D" uid="uid://dpy5wv217kjlu" path="res://sprites/intros/room_test.png" id="1_kv0tb"]
-[ext_resource type="Texture2D" uid="uid://bsx2e0eiw5imy" path="res://sprites/intros/wreck_test.png" id="2_pllyl"]
-[ext_resource type="Texture2D" uid="uid://cmthf6mojjfhu" path="res://sprites/intros/ship_test.png" id="3_4buva"]
 [ext_resource type="Texture2D" uid="uid://dopi08b2p1aeh" path="res://sprites/intros/start_test.png" id="4_iia0v"]
 [ext_resource type="AudioStream" uid="uid://bhl3fp84626yx" path="res://sounds/page_turn_1.wav" id="6_vi8my"]
 [ext_resource type="AudioStream" uid="uid://dekjusepskxdl" path="res://sounds/page_turn_2.wav" id="7_6h1tk"]
 [ext_resource type="AudioStream" uid="uid://dg7jfjes7bwhw" path="res://sounds/page_turn_3.wav" id="8_pnplx"]
 [ext_resource type="Shader" path="res://shaders/dissolve.gdshader" id="9_wdi8m"]
-[ext_resource type="Texture2D" uid="uid://dk1wcj88hsp2m" path="res://sprites/intros/step_test.png" id="11_4ejdh"]
+[ext_resource type="Texture2D" uid="uid://b3kfwdxurbtrj" path="res://sprites/intros/deck_clouds.png" id="10_4d0mw"]
+[ext_resource type="Texture2D" uid="uid://dtig7q0oov4ph" path="res://sprites/intros/deck.png" id="11_ssec2"]
+[ext_resource type="Texture2D" uid="uid://veq0mm8h116e" path="res://sprites/intros/shipwreck_clouds.png" id="12_8ymh5"]
+[ext_resource type="Texture2D" uid="uid://c3vqgerodxbsi" path="res://sprites/intros/shipwreck.png" id="12_aigix"]
+[ext_resource type="Texture2D" uid="uid://byubm45hwhoqi" path="res://sprites/intros/island_clouds.png" id="12_c2cec"]
 [ext_resource type="PackedScene" uid="uid://m4sjrkkcu5oi" path="res://scenes/intro_slide.tscn" id="13_j35ee"]
+[ext_resource type="Texture2D" uid="uid://cedr0jti33pl6" path="res://sprites/intros/shipwreck_tree_full.png" id="13_pdjcm"]
+[ext_resource type="Script" path="res://scenes/tree.gd" id="14_eriop"]
 [ext_resource type="Script" path="res://scenes/slide_label.gd" id="14_nwmpd"]
 [ext_resource type="Texture2D" uid="uid://b4ptdlphbwve8" path="res://shaders/noise/slide1.tres" id="14_re8q1"]
 [ext_resource type="PackedScene" uid="uid://cibs0nss0va1b" path="res://scenes/slide_label.tscn" id="15_4nbvl"]
+[ext_resource type="Texture2D" uid="uid://bqkbf771255gk" path="res://sprites/intros/island_boat.png" id="17_g2o4e"]
+[ext_resource type="Script" path="res://scenes/boat.gd" id="18_yne20"]
+[ext_resource type="Texture2D" uid="uid://ctjpu8bh7oie8" path="res://sprites/intros/island.png" id="19_3glrt"]
 
 [sub_resource type="AudioStreamRandomizer" id="AudioStreamRandomizer_qcpn8"]
 streams_count = 3
@@ -76,14 +83,29 @@ bbcode_enabled = true
 text = "[center]I enter the captains quarters. Dim light from a hanging lantern reveals a table in front of me. Three ghostly pirates sit patiently awaiting a fourth's arrival. "
 
 [node name="Slide3" parent="." instance=ExtResource("13_j35ee")]
-visible = false
 material = SubResource("ShaderMaterial_a673w")
 dissolve_texture = ExtResource("14_re8q1")
+
+[node name="ColorRect" type="ColorRect" parent="Slide3"]
+offset_left = -267.0
+offset_top = -157.0
+offset_right = 289.0
+offset_bottom = 158.0
+
+[node name="Parallax2D" type="Parallax2D" parent="Slide3"]
+repeat_size = Vector2(480, 0)
+autoscroll = Vector2(14, 0)
+repeat_times = 3
+
+[node name="Clouds" type="Sprite2D" parent="Slide3/Parallax2D"]
+modulate = Color(1, 1, 1, 0.996078)
+scale = Vector2(0.25, 0.25)
+texture = ExtResource("10_4d0mw")
 
 [node name="Sprite" type="Sprite2D" parent="Slide3"]
 modulate = Color(1, 1, 1, 0.996078)
 scale = Vector2(0.25, 0.25)
-texture = ExtResource("11_4ejdh")
+texture = ExtResource("11_ssec2")
 
 [node name="SlideLabel" parent="Slide3" instance=ExtResource("15_4nbvl")]
 offset_left = -184.0
@@ -97,10 +119,40 @@ visible = false
 material = SubResource("ShaderMaterial_sciv0")
 dissolve_texture = ExtResource("14_re8q1")
 
-[node name="Sprite" type="Sprite2D" parent="Slide2"]
+[node name="ColorRect" type="ColorRect" parent="Slide2"]
+offset_left = -267.0
+offset_top = -157.0
+offset_right = 289.0
+offset_bottom = 158.0
+
+[node name="Parallax2D" type="Parallax2D" parent="Slide2"]
+repeat_size = Vector2(480, 0)
+autoscroll = Vector2(10, 0)
+repeat_times = 3
+
+[node name="Clouds" type="Sprite2D" parent="Slide2/Parallax2D"]
 modulate = Color(1, 1, 1, 0.996078)
 scale = Vector2(0.25, 0.25)
-texture = ExtResource("2_pllyl")
+texture = ExtResource("12_8ymh5")
+
+[node name="Ship" type="Sprite2D" parent="Slide2"]
+modulate = Color(1, 1, 1, 0.996078)
+scale = Vector2(0.25, 0.25)
+texture = ExtResource("12_aigix")
+
+[node name="Tree" type="Node2D" parent="Slide2"]
+modulate = Color(1, 1, 1, 0.996078)
+position = Vector2(-237, 151)
+rotation = -0.00584584
+scale = Vector2(0.25, 0.25)
+script = ExtResource("14_eriop")
+
+[node name="Tree2" type="Sprite2D" parent="Slide2/Tree"]
+modulate = Color(1, 1, 1, 0.996078)
+position = Vector2(940.709, -530.746)
+rotation = -0.00439679
+texture = ExtResource("13_pdjcm")
+metadata/_edit_lock_ = true
 
 [node name="SlideLabel" parent="Slide2" instance=ExtResource("15_4nbvl")]
 offset_left = -77.0
@@ -114,10 +166,37 @@ visible = false
 material = SubResource("ShaderMaterial_twyp7")
 dissolve_texture = ExtResource("14_re8q1")
 
-[node name="Sprite" type="Sprite2D" parent="Slide1"]
+[node name="ColorRect" type="ColorRect" parent="Slide1"]
+offset_left = -267.0
+offset_top = -157.0
+offset_right = 289.0
+offset_bottom = 158.0
+
+[node name="Parallax2D" type="Parallax2D" parent="Slide1"]
+repeat_size = Vector2(480, 0)
+autoscroll = Vector2(6, 0)
+repeat_times = 3
+
+[node name="Clouds" type="Sprite2D" parent="Slide1/Parallax2D"]
 modulate = Color(1, 1, 1, 0.996078)
 scale = Vector2(0.25, 0.25)
-texture = ExtResource("3_4buva")
+texture = ExtResource("12_c2cec")
+
+[node name="Boat" type="Node2D" parent="Slide1"]
+modulate = Color(1, 1, 1, 0.996078)
+position = Vector2(0, -3)
+scale = Vector2(0.25, 0.25)
+script = ExtResource("18_yne20")
+
+[node name="Sprite" type="Sprite2D" parent="Slide1/Boat"]
+modulate = Color(1, 1, 1, 0.996078)
+position = Vector2(0, -5.23544)
+texture = ExtResource("17_g2o4e")
+
+[node name="Island" type="Sprite2D" parent="Slide1"]
+modulate = Color(1, 1, 1, 0.996078)
+scale = Vector2(0.25, 0.25)
+texture = ExtResource("19_3glrt")
 
 [node name="SlideLabel" parent="Slide1" instance=ExtResource("15_4nbvl")]
 

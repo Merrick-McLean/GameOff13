@@ -16,10 +16,8 @@ var slide_index := 0 :
 			camera.enabled = is_active
 		if not is_node_ready(): await ready
 		GameMaster.player_in_world = not is_active
-		
 
-@onready var storm := $Storm1
-@onready var hum := $hum
+
 @onready var dissolve_sound := $DissolveSound
 @onready var camera := $Camera2D
 
@@ -47,6 +45,7 @@ func dissolve() -> void:
 		0: 
 			GameMaster.ambience.is_enabled = false
 		1: 
+			GameMaster.ambience.ambience_level = 1
 			GameMaster.ambience.is_enabled = true
 			GameMaster.ambience.is_inside = false
 		2: 

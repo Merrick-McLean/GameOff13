@@ -27,3 +27,6 @@ func flash_lightning() -> void:
 func kill_lightning() -> void:
 	if lightning_overlay:
 		lightning_overlay.stop()
+
+func free_object(obj: Object) -> void:
+	obj.free()

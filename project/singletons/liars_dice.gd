@@ -197,7 +197,7 @@ class Round extends Object: # should I jsut merge round and bet? - Simpler to ju
 		await kill_player(loser)
 		
 		finished.emit()
-		free()
+		GameMaster.free_object(self)
 	
 	
 	func roll(total_die_count: int, determined_dice_count := total_die_count) -> DieTable:

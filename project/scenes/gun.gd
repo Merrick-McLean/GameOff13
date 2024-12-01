@@ -4,6 +4,8 @@ extends Node3D
 
 signal picked_up
 
+const OUTLINE_MATERIAL = preload("res://scenes/outline_material.tres")
+
 enum State {
 	ON_TABLE,
 	WITH_PLAYER,
@@ -29,16 +31,41 @@ enum State {
 		if is_node_ready(): regenerate_state_points()
 @export var simulate_in_editor := false
 
+@export var is_outline_enabled := false :
+	set(new_value):
+		is_outline_enabled = new_value
+		for material: ShaderMaterial in materials:
+			material.set_shader_parameter("outline_width", 4 if is_outline_enabled else 0)
+
 @onready var hurtbox := $Hurtbox
 @onready var state_points := []
+@onready var model := $Model
 
 var is_clamped := false
-var is_hovered := false
+var is_hovered := false :
+	set(new_value):
+		is_hovered = new_value
+		is_outline_enabled = is_hovered
+var materials : Array[ShaderMaterial] = []
 
 
 
 func _ready() -> void:
 	regenerate_state_points()
+	
+	if not Engine.is_editor_hint():
+		for node: Node in model.find_children("*"):
+			if not node is MeshInstance3D: continue
+			var model := node as MeshInstance3D
+			model.mesh = model.mesh.duplicate(true)
+			for i: int in model.mesh.get_surface_count():
+				var material := model.mesh.surface_get_material(i)
+				var shader_material := OUTLINE_MATERIAL.duplicate()
+				shader_material.set_shader_parameter("outline_color", Color.WHITE)
+				shader_material.set_shader_parameter("outline_width", 0)
+				model.mesh.surface_set_material(i, shader_material)
+				shader_material.next_pass = material
+				materials.append(shader_material)
 
 
 func regenerate_state_points() -> void:
@@ -51,6 +78,11 @@ func regenerate_state_points() -> void:
 
 func _process(delta: float) -> void:
 	if Engine.is_editor_hint() and not simulate_in_editor: return
+	
+	if Debug.is_just_pressed("test_5") and pirate == Dialogue.Actor.PIRATE_LEFT:
+		state = State.ON_TABLE
+		can_pickup = true
+	
 	var target_scale : Vector3 = Vector3.ONE  * (1.2 if is_hovered and can_pickup else 1)
 	scale = scale.lerp(target_scale, delta * 10)
 	if state < state_points.size():

@@ -146,6 +146,8 @@ func update_alive_players() -> void:
 			else:
 				player_models[player].alive = false
 				cups[player].visible = false
+	
+	GameMaster.ambience.ambience_level = 5 - LiarsDice.alive_players.size()
 
 
 func pirate_shoot() -> void:

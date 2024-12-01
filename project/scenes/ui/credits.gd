@@ -4,6 +4,7 @@ extends Control
 
 
 func play() -> void:
+	GameMaster.ambience.is_enabled = false
 	$AnimationPlayer.play("credits")
 
 

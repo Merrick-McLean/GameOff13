@@ -256,12 +256,12 @@ var dialogues : Dictionary = {
 		await display.say(Dialogue.Actor.CAPTAIN, "But ye only know the values of yer own.")
 		LiarsDice.physical.pan_camera_to_npc(Dialogue.Actor.CAPTAIN)
 		await display.say(Dialogue.Actor.CAPTAIN, "On ye turn, make a bet.")
-		await display.say(Dialogue.Actor.CAPTAIN, "Bet how many of all the dice share a certain value.")
+		await display.say(Dialogue.Actor.CAPTAIN, "Bet how many of all the dice ye thinks share a certain value.")
 		#await display.say(Dialogue.Actor.CAPTAIN, "The tricky part is yer bet includes all the dice.")
-		await display.say(Dialogue.Actor.CAPTAIN, "Even the ones ye don't know.")
+		await display.say(Dialogue.Actor.CAPTAIN, "Including the ones ye don't know.")
 		await display.say(Dialogue.Actor.CAPTAIN, "I might bet 5 dices rolled six.")
-		#await display.say(Dialogue.Actor.CAPTAIN, "But, ye might reckon there only be 4.")
-		await display.say(Dialogue.Actor.CAPTAIN, "But ye could call me a [shake rate=20.0 level=5 connected=1]LIAR![/shake]...")
+		await display.say(Dialogue.Actor.CAPTAIN, "But, if ye might reckon there only be 4.")
+		await display.say(Dialogue.Actor.CAPTAIN, "Ye could call me a [shake rate=20.0 level=5 connected=1]LIAR![/shake]...")
 		await display.say(Dialogue.Actor.CAPTAIN, "An' then we'll settle who's right.")
 		await display.say(Dialogue.Actor.CAPTAIN, "The only catch[set speed=5]...")
 		await display.say(Dialogue.Actor.CAPTAIN, "Ye must always bet a bigger value than the last player.")
@@ -330,7 +330,7 @@ Id.GOLDEN_RULE: func(args: Dictionary) -> Dictionary:
 		await display.say(Dialogue.Actor.PIRATE_LEFT, "And a glint o' a [wave amp=20.0 freq=5.0 connected=1]golden cutlass[/wave] through my guts."); # glint, glimmer, flash or shine
 		await display.say(Dialogue.Actor.PIRATE_LEFT, "Wasn't much of a battle,");
 		await display.say(Dialogue.Actor.PIRATE_LEFT, "More an unfortuante turn o' events.");
-		await display.say(Dialogue.Actor.PIRATE_LEFT, "I saw the freebooter who sent me to my watery grave."); # used to say "laid eyes on" nicer but too long
+		await display.say(Dialogue.Actor.PIRATE_LEFT, "I never saw the freebooter who sent me to my watery grave."); # used to say "laid eyes on" nicer but too long
 		Progress.know_pirate_death = true
 		display.clear_speach()
 		return {},
@@ -559,13 +559,17 @@ Id.GOLDEN_RULE: func(args: Dictionary) -> Dictionary:
 		
 		await display.say(Dialogue.Actor.CAPTAIN, "Victory be mine again.")
 		await display.say(Dialogue.Actor.CAPTAIN, "I s'pose there ain't no need fer the ruse.")
-		await display.say(Dialogue.Actor.CAPTAIN, "I be sendin ye back to play again.")
+		await display.say(Dialogue.Actor.CAPTAIN, "It is I[set pause_timer=0.5], who be sendin ye back in time to play again.")
 		await display.say(Dialogue.Actor.CAPTAIN, "Every time ye 'die', a bit more wind fills me sails.")
 		await display.say(Dialogue.Actor.CAPTAIN, "So a few extra rounds don't hurt.")
 		await display.say(Dialogue.Actor.CAPTAIN, "An' I must confess...")
 		await display.say(Dialogue.Actor.CAPTAIN, "There be no secret to eternal life fer the likes o' ye.")
 		await display.say(Dialogue.Actor.CAPTAIN, "Pretty soon ye'll be like the rest of us.")
 		await display.say(Dialogue.Actor.CAPTAIN, "The only thing immortal be yer service to this crew.") # calls into question validity of other crewmates free will?
+		
+		LiarsDice.physical.is_captain_gun_drawn = true
+		
+		await display.say(Dialogue.Actor.CAPTAIN, "I'll see ye next round...")
 		
 		Progress.know_captain_secret = true
 		
@@ -753,7 +757,7 @@ func can_give_option(id: Id) -> bool:
 		Id.PIRATE_DEATH_2: 		return Progress.know_pirate_recruitment and not Progress.know_pirate_death
 		Id.PIRATE_DEATH_3: 		return Dialogue.is_completed(Id.PIRATE_DEATH_2) and not Progress.know_pirate_death # follow up
 		Id.PIRATE_NOW: 			return	not Progress.know_pirate_now and Progress.know_pirate_recruitment
-		Id.PIRATE_SECRET_FAIL: 	return	not Progress.know_pirate_secret and Progress.know_pirate_name and Progress.know_pirate_recruitment
+		Id.PIRATE_SECRET_FAIL: 	return	not Progress.know_pirate_secret and Progress.know_pirate_name and Progress.know_pirate_recruitment and not LiarsDice.is_out(LiarsDice.Player.PIRATE_RIGHT)
 		Id.PIRATE_SECRET: 		return	not Progress.know_pirate_secret and Progress.know_pirate_name and Progress.know_pirate_recruitment and LiarsDice.is_out(LiarsDice.Player.PIRATE_RIGHT)
 		Id.PIRATE_REVEAL:		return Progress.know_captain_secret and Progress.know_navy_secret and not LiarsDice.is_out(LiarsDice.Player.PIRATE_RIGHT) and Progress.know_pirate_death # Added so we need to know both sides # do we also need to know pirate secret, he keeps a gun on him? Why do we NEED to know captain secret. means we have to get to 1v1 once before we can cause the fight! We also need to hear about his death
 		
