@@ -6,6 +6,13 @@ var rng = RandomNumberGenerator.new()
 signal killed #never actually called lol
 signal finished(index: Dictionary)
 
+static var ACCUSED_i : int
+static var ACCUSING_i : int
+static var NPC_RESULTS_SUCCESS_i : int
+static var NPC_RESULTS_FAILURE_i : int
+static var PLAYER_RESULTS_FAILURE_i : int
+static var PLAYER_RESULTS_SUCCESS_i : int
+
 enum Id {
 	TEST_1,
 	TEST_2,
@@ -196,6 +203,7 @@ var dialogues : Dictionary = {
 			last_speaking_actor = option_result.actor
 			display.clear_options()
 			result = await Dialogue.play(chosen_id).finished
+			Progress.has_player_done_optional_dialogue = true
 			if "start_new_round" in result: return result
 		
 		
@@ -586,106 +594,142 @@ Id.GOLDEN_RULE: func(args: Dictionary) -> Dictionary:
 	Id.NO_LOOK: func(args: Dictionary) -> Dictionary:
 		display.clear_options()
 		await display.say(Dialogue.Actor.CAPTAIN, "Bold that ye don't even look at yer dice.")
+		await display.say(Dialogue.Actor.CAPTAIN, "To each there own I guess...")
+		display.clear_speach()
 		return {},
 	
 	Id.QUIET: func(args: Dictionary) -> Dictionary:
 		#display.clear_options()
-		await display.say(Dialogue.Actor.CAPTAIN, "Not one for small talk, are ye?.")
+		await display.say(Dialogue.Actor.CAPTAIN, "Not one for small talk, are ye?")
+		await display.say(Dialogue.Actor.CAPTAIN, "Why not entertain us a bit?")
+		display.clear_speach()
 		return {},
-
-	Id.FIRST_BET: func(args: Dictionary, current_actor) -> Dictionary:
-		await display.say(current_actor, "Ye think I would lie this quick?")
-		return {},
+	
+	Id.FIRST_BET: func(args: Dictionary) -> Dictionary:
+		await display.say(args.actor, "Ye think I would lie this quick?")
+		await display.say(args.actor, "I'll give ye a second chance to change yer mind.")
+		display.clear_speach()
+		return {"do_second_chance": true},
 		
-	Id.ACCUSING: func(args: Dictionary,current_actor) -> Dictionary:
-		var i = randi_range(0,4)
+	Id.ACCUSING: func(args: Dictionary) -> Dictionary:
+		var i := ACCUSING_i
+		while i == ACCUSING_i: i = randi_range(0, 4)
+		ACCUSING_i = i
 		match i:
 			0:
-				await display.say(current_actor, "Ye call me a liar?")
+				await display.say(args.actor, "Ye call me a liar?")
 			1:
-				await display.say(current_actor, "Ye not trust my claim?")
+				await display.say(args.actor, "Ye not trust my claim?")
 			2:
-				await display.say(current_actor, "Let's let the dice decide.")
+				await display.say(args.actor, "Let's let the dice decide.")
 			3:
-				await display.say(current_actor, "Best ye not test me matey.")
+				await display.say(args.actor, "Best ye not test me matey.")
 			4:
-				await display.say(current_actor, "Liar, am I?")
+				await display.say(args.actor, "Liar, am I?")
+		
+		display.clear_speach()
+		
 		return {},
 		
-	Id.ACCUSED: func(args: Dictionary, current_actor) -> Dictionary:
+	Id.ACCUSED: func(args: Dictionary) -> Dictionary:
 		# display.clear_speach() #perhaps?
 		# display.clear_options() #perhaps?
-		var i = randi_range(0,5)
+		
+		var i := ACCUSED_i
+		while i == ACCUSED_i: i = randi_range(0, 5)
+		ACCUSED_i = i
 		match i:
 			0:
-				await display.say(current_actor, "I don't trust yer claim, me heartie.")
+				await display.say(args.actor, Dialogue.get_bet_string(args.bet) + "? I don't trust yer claim, me heartie.")
 			1:
-				await display.say(current_actor, "I'm afraid ye be a liar...")
+				await display.say(args.actor, Dialogue.get_bet_string(args.bet) + "? I'm afraid ye be a liar...")
 			2:
-				await display.say(current_actor, "I think we be needin' to test that claim.")
+				await display.say(args.actor, Dialogue.get_bet_string(args.bet) + "? I think we be needin' to test that claim.")
 			3:
-				await display.say(current_actor, "Ye be full o' lies!")
+				await display.say(args.actor, Dialogue.get_bet_string(args.bet) + "? Ye be full o' lies!")
 			4:
-				await display.say(current_actor, "Yer tongue’s twisted as a sailor’s knot!")
+				await display.say(args.actor, Dialogue.get_bet_string(args.bet) + "? Yer tongue’s twisted as a sailor’s knot!")
 			5:
-				await display.say(current_actor, "LIAR!")
+				await display.say(args.actor, "LIAR!")
+		
+		display.clear_speach()
+		
 		return {},
 		
-	Id.PLAYER_RESULTS_SUCCESS: func(args: Dictionary, current_actor) -> Dictionary:
-		var i = randi_range(0,3)
+	Id.PLAYER_RESULTS_SUCCESS: func(args: Dictionary) -> Dictionary:
+		var i := PLAYER_RESULTS_SUCCESS_i
+		while i == PLAYER_RESULTS_SUCCESS_i: i = randi_range(0, 3)
+		PLAYER_RESULTS_SUCCESS_i = i
 		match i:
 			0:
-				await display.say(current_actor, "Shiver me timbers!")
+				await display.say(args.actor, "Shiver me timbers!")
 			1:
-				await display.say(current_actor, "Ye be lucky this time, buccaneer.")
+				await display.say(args.actor, "Ye be lucky this time, buccaneer.")
 			2:
-				await display.say(current_actor, "I should've been more trustin' o' a picaroon like yerself")
+				await display.say(args.actor, "I should've been more trustin' o' a picaroon like yerself")
 			3:
-				await display.say(current_actor, "Lady luck is on ye side, it seems.")
+				await display.say(args.actor, "Lady luck is on ye side, it seems.")
+		
+		display.clear_speach()
+		
 		return {},
 		
-	Id.PLAYER_RESULTS_FAILURE: func(args: Dictionary, current_actor) -> Dictionary:
-		var i = randi_range(0,5)
+	Id.PLAYER_RESULTS_FAILURE: func(args: Dictionary) -> Dictionary:
+		var i := PLAYER_RESULTS_FAILURE_i
+		while i == PLAYER_RESULTS_FAILURE_i: i = randi_range(0, 5)
+		PLAYER_RESULTS_FAILURE_i = i
 		match i:
 			0:
-				await display.say(current_actor, "Gotcha!")
+				await display.say(args.actor, "Gotcha!")
 			1:
-				await display.say(current_actor, "It's time ye walk the plank.")
+				await display.say(args.actor, "It's time ye walk the plank.")
 			2:
-				await display.say(current_actor, "Ye be lying, ye sneaky scoundrel.")
+				await display.say(args.actor, "Ye be lying, ye sneaky scoundrel.")
 			3:
-				await display.say(current_actor, "I could spot that lie from the crow's nest.")
+				await display.say(args.actor, "I could spot that lie from the crow's nest.")
 			4:
-				await display.say(current_actor, "No suprise there.")
+				await display.say(args.actor, "No suprise there.")
 			5:
-				await display.say(current_actor, "I caught ye lying through yer teeth.")
-
+				await display.say(args.actor, "I caught ye lying through yer teeth.")
+		
+		display.clear_speach()
+		
 		return {},
 	
-	Id.NPC_RESULTS_SUCCESS: func(args: Dictionary,current_actor) -> Dictionary:
-		var i = randi_range(0,3)
+	Id.NPC_RESULTS_SUCCESS: func(args: Dictionary) -> Dictionary:
+		var i := NPC_RESULTS_SUCCESS_i
+		while i == NPC_RESULTS_SUCCESS_i: i = randi_range(0, 3)
+		NPC_RESULTS_SUCCESS_i = i
 		match i:
 			0:
-				await display.say(current_actor, "The truth be in the dice!")
+				await display.say(args.actor, "The truth be in the dice!")
 			1:
-				await display.say(current_actor, "Seems fate favours me.")
+				await display.say(args.actor, "Seems fate favours me.")
 			2:
-				await display.say(current_actor, "There ye have it.")
+				await display.say(args.actor, "There ye have it.")
 			3:
-				await display.say(current_actor, "The dice tell no lies.")
+				await display.say(args.actor, "The dice tell no lies.")
+		
+		display.clear_speach()
+		
 		return {},
 	
-	Id.NPC_RESULTS_FAILURE: func(args: Dictionary, current_actor) -> Dictionary:
-		var i = randi_range(0,3)
+	Id.NPC_RESULTS_FAILURE: func(args: Dictionary) -> Dictionary:
+		var i := NPC_RESULTS_FAILURE_i
+		while i == NPC_RESULTS_FAILURE_i: i = randi_range(0, 3)
+		NPC_RESULTS_FAILURE_i = i
 		match i:
 			0:
-				await display.say(current_actor, "So close!")
+				await display.say(args.actor, "So close!")
 			1:
-				await display.say(current_actor, "I almost snuck by ye.")
+				await display.say(args.actor, "I almost snuck by ye.")
 			2:
-				await display.say(current_actor, "Arrgh!")
+				await display.say(args.actor, "Arrgh!")
 			3:
-				await display.say(current_actor, "That be the way of the sea.")
+				await display.say(args.actor, "That be the way of the sea.")
+		
+		display.clear_speach()
+		
 		return {},
 	
 	Id.BACK_TO_GAME: func(args: Dictionary, last_speaking_actor) -> Dictionary:
@@ -757,8 +801,8 @@ func can_give_option(id: Id) -> bool:
 		Id.PIRATE_DEATH_2: 		return Progress.know_pirate_recruitment and not Progress.know_pirate_death
 		Id.PIRATE_DEATH_3: 		return Dialogue.is_completed(Id.PIRATE_DEATH_2) and not Progress.know_pirate_death # follow up
 		Id.PIRATE_NOW: 			return	not Progress.know_pirate_now and Progress.know_pirate_recruitment
-		Id.PIRATE_SECRET_FAIL: 	return	not Progress.know_pirate_secret and Progress.know_pirate_name and Progress.know_pirate_recruitment and not LiarsDice.is_out(LiarsDice.Player.PIRATE_RIGHT)
-		Id.PIRATE_SECRET: 		return	not Progress.know_pirate_secret and Progress.know_pirate_name and Progress.know_pirate_recruitment and LiarsDice.is_out(LiarsDice.Player.PIRATE_RIGHT)
+		Id.PIRATE_SECRET_FAIL: 	return	not Progress.know_pirate_secret and Progress.know_pirate_name and Progress.know_pirate_recruitment
+		Id.PIRATE_SECRET: 		return	not Progress.know_pirate_secret and Progress.know_pirate_name and Progress.know_pirate_recruitment and LiarsDice.is_out(LiarsDice.Player.PIRATE_RIGHT) and Dialogue.is_completed(Id.PIRATE_SECRET_FAIL)
 		Id.PIRATE_REVEAL:		return Progress.know_captain_secret and Progress.know_navy_secret and not LiarsDice.is_out(LiarsDice.Player.PIRATE_RIGHT) and Progress.know_pirate_death # Added so we need to know both sides # do we also need to know pirate secret, he keeps a gun on him? Why do we NEED to know captain secret. means we have to get to 1v1 once before we can cause the fight! We also need to hear about his death
 		
 		Id.NAVY_NAME: 			return	not Progress.know_navy_name
@@ -768,8 +812,8 @@ func can_give_option(id: Id) -> bool:
 		Id.NAVY_SHIP_2: 		return	not Progress.know_navy_ship and Dialogue.is_completed(Id.NAVY_SHIP) # follow up
 		Id.NAVY_EVENT_1: 		return	not Progress.know_navy_sink and Progress.know_navy_ship
 		Id.NAVY_IS_NAVY: 		return	not Progress.know_navy_is_navy and Progress.know_navy_sink
-		Id.NAVY_SECRET_FAIL: 	return	Progress.know_navy_ship and not LiarsDice.is_out(LiarsDice.Player.PIRATE_LEFT)
-		Id.NAVY_SECRET: 		return	Progress.know_navy_ship and LiarsDice.is_out(LiarsDice.Player.PIRATE_LEFT)
+		Id.NAVY_SECRET_FAIL: 	return	Progress.know_navy_ship
+		Id.NAVY_SECRET: 		return	Progress.know_navy_ship and LiarsDice.is_out(LiarsDice.Player.PIRATE_LEFT) and Dialogue.is_completed(Id.NAVY_SECRET_FAIL)
 		Id.NAVY_SECRET_2: 		return	Dialogue.is_completed(Id.NAVY_SECRET)
 		
 		Id.CAPTAIN_NAME: 		return	not Progress.know_captain_secret and not Progress.know_captain_name

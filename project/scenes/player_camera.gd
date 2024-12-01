@@ -53,6 +53,8 @@ var current_cup : Cup :
 		if current_cup:	current_cup.target_raised = false
 		current_cup = new_value
 		if current_cup:	current_cup.target_raised = true
+		if current_cup and LiarsDice.round and LiarsDice.round.get_current_player() == LiarsDice.Player.SELF:
+			Progress.has_player_looked_at_cup = true
 
 var current_ui : GuiPanel :
 	set(new_value):

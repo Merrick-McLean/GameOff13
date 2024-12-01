@@ -9,6 +9,9 @@ extends Node
 ## PERMANTENT PROGRESS
 var player_death_count := 0
 var player_death_count_since_know_captain_secret := 0
+var has_player_looked_at_cup := false
+var has_player_done_optional_dialogue := false
+var has_player_called_liar := false
 
 var know_pirate_name := false
 var know_pirate_recruitment := false

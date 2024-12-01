@@ -143,7 +143,7 @@ texture = ExtResource("12_aigix")
 [node name="Tree" type="Node2D" parent="Slide2"]
 modulate = Color(1, 1, 1, 0.996078)
 position = Vector2(-237, 151)
-rotation = -0.00584584
+rotation = 0.0146332
 scale = Vector2(0.25, 0.25)
 script = ExtResource("14_eriop")
 
@@ -190,7 +190,7 @@ script = ExtResource("18_yne20")
 
 [node name="Sprite" type="Sprite2D" parent="Slide1/Boat"]
 modulate = Color(1, 1, 1, 0.996078)
-position = Vector2(0, -5.23544)
+position = Vector2(0, -5.92499)
 texture = ExtResource("17_g2o4e")
 
 [node name="Island" type="Sprite2D" parent="Slide1"]
@@ -211,7 +211,6 @@ scale = Vector2(0.25, 0.25)
 texture = ExtResource("4_iia0v")
 
 [node name="SlideLabel" parent="Start" instance=ExtResource("15_4nbvl")]
-visible = false
 offset_left = -227.0
 offset_top = 46.5
 offset_right = 232.0

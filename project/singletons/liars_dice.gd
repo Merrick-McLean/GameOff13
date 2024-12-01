@@ -87,6 +87,7 @@ class Round extends Object: # should I jsut merge round and bet? - Simpler to ju
 	var turn_order: Array[Player]
 	var player_index : int # holds the INDEX of turn_order, whose players turn it is. NOT the player id itself
 	var player_rolls : Dictionary # maps player ids to dice tables
+	var round_number := 0
 	
 	var global_die_table : DieTable # all the dice in the game
 	
@@ -174,6 +175,11 @@ class Round extends Object: # should I jsut merge round and bet? - Simpler to ju
 				await npc_say_bet(get_current_player(), bet)
 				var call := await prompt_player_call(get_current_player())
 				
+				if call and round_number == 0 and player_index < turn_order.find(Player.SELF):
+					dialogue_instance = Dialogue.play(DialogueInstance.Id.FIRST_BET, {"actor": Dialogue.get_actor(get_current_player())})
+					await dialogue_instance.finished
+					call = await prompt_player_call(get_current_player())
+				
 				if call:
 					loser = await call_bet(Player.SELF, get_current_player(), bet)
 					break
@@ -183,6 +189,10 @@ class Round extends Object: # should I jsut merge round and bet? - Simpler to ju
 				prompt_dialogue_options() 
 				var bet := await get_self_bet(current_bet)
 				if is_instance_valid(dialogue_instance): dialogue_instance.free()
+				Dialogue.display.clear_options()
+				# SPECIAL DIALGOUES :)
+				
+				
 				make_bet(bet)
 				await LiarsDice.get_tree().create_timer(0.3).timeout
 				var caller := get_caller(bet)
@@ -191,6 +201,12 @@ class Round extends Object: # should I jsut merge round and bet? - Simpler to ju
 					
 					print("BET CALLED! Loser "  + str(loser))
 					break
+				elif not Progress.has_player_looked_at_cup and not Dialogue.is_completed(DialogueInstance.Id.NO_LOOK):
+					dialogue_instance = Dialogue.play(DialogueInstance.Id.NO_LOOK)
+					await dialogue_instance.finished
+				elif not Progress.has_player_done_optional_dialogue  and not Dialogue.is_completed(DialogueInstance.Id.QUIET):
+					dialogue_instance = Dialogue.play(DialogueInstance.Id.QUIET)
+					await dialogue_instance.finished
 				await npcs_react(get_current_player(), bet)
 			await pass_turn()
 		
@@ -239,6 +255,8 @@ class Round extends Object: # should I jsut merge round and bet? - Simpler to ju
 	func pass_turn() -> void: # HANDLE WHEN SOMEONE IS OUT
 		player_index += 1
 		player_index = player_index % turn_order.size()
+		if player_index == turn_order.front():
+			round_number += 1
 	
 	# sets the players current bet
 	func make_bet(bet: Bet) -> void:
@@ -478,24 +496,24 @@ class Round extends Object: # should I jsut merge round and bet? - Simpler to ju
 	
 	
 	func npc_say_call(caller: Player, last_bet: Bet) -> void:
-		dialogue_instance = Dialogue.play(DialogueInstance.Id.NPC_CALL_1, {&"actor": Dialogue.get_actor(caller), &"bet": last_bet})
+		dialogue_instance = Dialogue.play(DialogueInstance.Id.ACCUSED, {&"actor": Dialogue.get_actor(caller), &"bet": last_bet})
 		await dialogue_instance.finished
 	
 	
 	func npc_react_result(caller: Player, callee: Player, loser: Player) -> void:
 		if is_npc(caller):
 			if caller == loser:
-				dialogue_instance = Dialogue.play(DialogueInstance.Id.NPC_LOSE_1, {&"actor": Dialogue.get_actor(caller)})
+				dialogue_instance = Dialogue.play(DialogueInstance.Id.PLAYER_RESULTS_SUCCESS, {&"actor": Dialogue.get_actor(caller)})
 				await dialogue_instance.finished
 			else:
-				dialogue_instance =  Dialogue.play(DialogueInstance.Id.NPC_WIN_1, {&"actor": Dialogue.get_actor(caller)})
+				dialogue_instance =  Dialogue.play(DialogueInstance.Id.PLAYER_RESULTS_FAILURE, {&"actor": Dialogue.get_actor(caller)})
 				await dialogue_instance.finished
 		else:
 			if callee == loser:
-				dialogue_instance =  Dialogue.play(DialogueInstance.Id.NPC_LOSE_1, {&"actor": Dialogue.get_actor(callee)})
+				dialogue_instance =  Dialogue.play(DialogueInstance.Id.NPC_RESULTS_FAILURE, {&"actor": Dialogue.get_actor(callee)})
 				await dialogue_instance.finished
 			else:
-				dialogue_instance =  Dialogue.play(DialogueInstance.Id.NPC_WIN_1, {&"actor": Dialogue.get_actor(callee)})
+				dialogue_instance =  Dialogue.play(DialogueInstance.Id.NPC_RESULTS_SUCCESS, {&"actor": Dialogue.get_actor(callee)})
 				await dialogue_instance.finished
 			
 	
@@ -559,6 +577,10 @@ class Round extends Object: # should I jsut merge round and bet? - Simpler to ju
 	func call_bet(caller: Player, callee: Player, bet: Bet) -> Player:
 		if is_npc(caller):
 			await npc_say_call(caller, bet)
+		else:
+			Progress.has_player_called_liar = true
+			dialogue_instance = Dialogue.play(DialogueInstance.Id.ACCUSING, {&"actor": Dialogue.get_actor(callee)})
+			await dialogue_instance.finished
 		
 		# RESOLVE DICE
 		var resolve_mode := ResolveMode.RANDOM
