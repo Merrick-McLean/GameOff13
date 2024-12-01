@@ -68,7 +68,7 @@ func _process(delta: float) -> void:
 		#know_pirate_secret = true
 		
 		know_navy_name = true
-		know_navy_now = true
+		#know_navy_now = true
 		know_navy_ship = true
 		know_navy_sink = true
 		know_navy_is_navy = true
