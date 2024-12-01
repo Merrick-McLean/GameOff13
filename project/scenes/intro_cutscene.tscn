@@ -1,4 +1,4 @@
-[gd_scene load_steps=20 format=3 uid="uid://uectnsyeae55"]
+[gd_scene load_steps=21 format=3 uid="uid://uectnsyeae55"]
 
 [ext_resource type="Script" path="res://scenes/intro.gd" id="1_36yco"]
 [ext_resource type="Texture2D" uid="uid://dpy5wv217kjlu" path="res://sprites/intros/room_test.png" id="1_kv0tb"]
@@ -11,6 +11,7 @@
 [ext_resource type="Shader" path="res://shaders/dissolve.gdshader" id="9_wdi8m"]
 [ext_resource type="Texture2D" uid="uid://bqofcahcgbp1a" path="res://sprites/intros/step_test.png" id="11_4ejdh"]
 [ext_resource type="PackedScene" uid="uid://m4sjrkkcu5oi" path="res://scenes/intro_slide.tscn" id="13_j35ee"]
+[ext_resource type="Script" path="res://scenes/slide_label.gd" id="14_nwmpd"]
 [ext_resource type="Texture2D" uid="uid://b4ptdlphbwve8" path="res://shaders/noise/slide1.tres" id="14_re8q1"]
 [ext_resource type="PackedScene" uid="uid://cibs0nss0va1b" path="res://scenes/slide_label.tscn" id="15_4nbvl"]
 
@@ -72,7 +73,7 @@ offset_top = 75.0
 offset_right = 232.0
 offset_bottom = 171.0
 bbcode_enabled = true
-text = "[center]I enter the captains quarters. Dim light from a hanging lantern reveals a table in front of me. Three pirates sit patiently awaiting a fourth’s arrival.  I take a seat..."
+text = "[center]I enter the captains quarters. Dim light from a hanging lantern reveals a table in front of me. Three pirates sit patiently awaiting a fourth's arrival.  I take a seat..."
 
 [node name="Slide3" parent="." instance=ExtResource("13_j35ee")]
 material = SubResource("ShaderMaterial_a673w")
@@ -118,7 +119,6 @@ texture = ExtResource("3_4buva")
 [node name="SlideLabel" parent="Slide1" instance=ExtResource("15_4nbvl")]
 
 [node name="Start" parent="." instance=ExtResource("13_j35ee")]
-visible = false
 material = SubResource("ShaderMaterial_yvam0")
 dissolve_texture = ExtResource("14_re8q1")
 
@@ -128,13 +128,16 @@ scale = Vector2(0.25, 0.25)
 texture = ExtResource("4_iia0v")
 
 [node name="SlideLabel" parent="Start" instance=ExtResource("15_4nbvl")]
+visible = false
 offset_left = -227.0
 offset_top = 46.5
 offset_right = 232.0
 offset_bottom = 142.5
 theme_override_colors/default_color = Color(1, 1, 1, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 bbcode_enabled = true
 text = "[center][Click to start]"
+script = ExtResource("14_nwmpd")
 
 [node name="Camera2D" type="Camera2D" parent="."]
 position = Vector2(240, 135)

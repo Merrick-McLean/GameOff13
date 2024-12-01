@@ -9,12 +9,13 @@
 
 [node name="Ambience" type="Node"]
 script = ExtResource("1_gax4s")
-is_creaking_wood_playing = true
+hum_loudness = 0.4
 
 [node name="Waves" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("1_2yexf")
 volume_db = -5.0
-bus = &"Ambience"
+stream_paused = true
+bus = &"Outside"
 
 [node name="Hum" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("3_bi37s")
@@ -24,7 +25,7 @@ bus = &"Ambience"
 [node name="Storm" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("4_dv23c")
 volume_db = -3.852
-bus = &"Ambience"
+bus = &"Outside"
 
 [node name="ShipWood" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("2_efyiq")
@@ -33,4 +34,5 @@ bus = &"Ambience"
 [node name="JungleNight" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("6_y0bsw")
 volume_db = -6.0
+stream_paused = true
 bus = &"Ambience"

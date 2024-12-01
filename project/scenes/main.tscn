@@ -28,6 +28,9 @@ shader_parameter/u_color_tex = ExtResource("2_frn0b")
 
 [node name="Main" type="Node"]
 
+[node name="Ambience" parent="." instance=ExtResource("12_80d8s")]
+hum_loudness = null
+
 [node name="GameViewportContainer" type="SubViewportContainer" parent="."]
 texture_filter = 1
 material = SubResource("ShaderMaterial_r6w7f")
@@ -86,8 +89,6 @@ viewport = NodePath("../../../../GameViewportContainer/SubViewport")
 
 [node name="IntroCutscene" parent="UI/SubViewportContainer/SubViewport" instance=ExtResource("11_q7g3d")]
 visible = false
-
-[node name="Ambience" parent="." instance=ExtResource("12_80d8s")]
 
 [connection signal="navy_shot" from="GameViewportContainer/SubViewport/GameRoom/LiarsDicePhysical" to="UI/SubViewportContainer/SubViewport/GunShotOverlay" method="_on_liars_dice_physical_navy_shot"]
 [connection signal="player_shot" from="GameViewportContainer/SubViewport/GameRoom/LiarsDicePhysical" to="UI/SubViewportContainer/SubViewport/GunShotOverlay" method="_on_liars_dice_physical_player_shot"]

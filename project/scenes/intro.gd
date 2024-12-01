@@ -7,11 +7,12 @@ var dissolve_speed := 0.6
 var slide_index := 0 :
 	set(new_value):
 		slide_index = clamp(new_value, 0, slides.size() - 1)
+		
 @export var is_active := true :
 	set(new_value):
 		is_active = new_value
-		if is_active:
-			visible = true
+		if not is_dissolving:
+			visible = is_active
 			camera.enabled = is_active
 		if not is_node_ready(): await ready
 		GameMaster.player_in_world = not is_active
@@ -27,7 +28,8 @@ var slide_index := 0 :
 
 
 func _ready() -> void:
-	is_active = is_active
+	GameMaster.ambience.is_enabled = false
+	is_active = not Debug.is_enabled
 	for slide: IntroSlide in slides:
 		slide.visible = true
 		slides[slide_index].dissolve_percent = 1.0
@@ -37,13 +39,29 @@ func _ready() -> void:
 	pass 
 	
 func dissolve() -> void:  
+	is_dissolving = true
 	if slide_index == slides.size() - 1:
 		is_active = false
 	dissolve_sound.play()
-	is_dissolving = true
+	match slide_index + 1:
+		0: 
+			GameMaster.ambience.is_enabled = false
+		1: 
+			GameMaster.ambience.is_enabled = true
+			GameMaster.ambience.is_inside = false
+		2: 
+			GameMaster.ambience.is_hum_playing = true
+		3: 
+			GameMaster.ambience.is_creaking_wood_playing = true
+		4: 
+			GameMaster.ambience.is_inside = true
+	
 	
 	
 func _process(delta: float) -> void:
+	
+	if Debug.is_just_pressed(&"test_1"):
+		is_active = true
 	
 	if ready_for_next_dissolve():
 		if Input.is_action_just_pressed("interact") and is_active:

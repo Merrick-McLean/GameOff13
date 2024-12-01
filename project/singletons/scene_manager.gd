@@ -1,7 +1,7 @@
 extends Node
 
 
-var scene_id : int = MOVEMENT_TEST :
+var scene_id : int = MAIN_SCENE :
 	set(new_value):
 		scene_id = new_value % SCENE_COUNT
 

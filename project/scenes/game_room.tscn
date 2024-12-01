@@ -211,7 +211,7 @@ alpha = 0.0
 transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0.136297, 0.645246, 0.654077)
 
 [node name="PirateGunTablePoint" parent="." instance=ExtResource("10_5dxfy")]
-transform = Transform3D(-1.87085e-08, 0.79229, -0.610145, -1, 4.37114e-08, 8.74228e-08, 9.59345e-08, 0.610145, 0.79229, -0.903795, 0.670828, 0.018029)
+transform = Transform3D(-1.87085e-08, 0.79229, -0.610145, -1, 4.37114e-08, 8.74228e-08, 9.59345e-08, 0.610145, 0.79229, -1.00931, 0.661269, 0.0532961)
 pirate = 1
 
 [node name="PirateGunDrawnPoint" parent="." instance=ExtResource("10_5dxfy")]
@@ -225,7 +225,7 @@ state = 2
 pirate = 1
 
 [node name="PirateGun" parent="." instance=ExtResource("9_jguw1")]
-transform = Transform3D(0.00620982, 0.999929, -0.0102043, 0.00597835, 0.0101672, 0.99993, 0.999962, -0.00627041, -0.00591479, -1.48723, 0.498987, -0.0520414)
+transform = Transform3D(0.00621274, 0.999928, -0.0102348, 0.00599625, 0.0101976, 0.99993, 0.999963, -0.00627369, -0.00593246, -1.48723, 0.498987, -0.0520414)
 state = 2
 pirate = 1
 simulate_in_editor = true

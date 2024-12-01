@@ -1,6 +1,7 @@
-[gd_scene load_steps=3 format=3 uid="uid://dhjdg84dddbbl"]
+[gd_scene load_steps=4 format=3 uid="uid://dhjdg84dddbbl"]
 
 [ext_resource type="Script" path="res://scenes/gun.gd" id="1_a6anj"]
+[ext_resource type="PackedScene" uid="uid://falqgkrwym7t" path="res://models/flintlock.glb" id="2_xr4v5"]
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_kku8f"]
 radius = 0.180896
@@ -12,11 +13,16 @@ script = ExtResource("1_a6anj")
 
 [node name="CSGBox3D" type="CSGBox3D" parent="Model"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.00680047, 0.00684807, -0.00596514)
+visible = false
 size = Vector3(0.0844421, 0.199951, 0.0737305)
 
 [node name="CSGBox3D2" type="CSGBox3D" parent="Model"]
 transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, -0.00680047, 0.0684647, -0.0743549)
+visible = false
 size = Vector3(0.0844421, 0.199951, 0.0737305)
+
+[node name="Sketchfab_Scene2" parent="Model" instance=ExtResource("2_xr4v5")]
+transform = Transform3D(1.2, 0, 0, 0, 1.2, 0, 0, 0, 1.2, 0, 0.0259638, -0.136898)
 
 [node name="Hurtbox" type="Area3D" parent="."]
 collision_layer = 0

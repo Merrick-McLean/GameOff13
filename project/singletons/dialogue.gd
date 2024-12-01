@@ -50,9 +50,6 @@ func _process(delta: float) -> void:
 		await instance.finished
 		instance = play(DialogueInstance.Id.TEST_2)
 		await instance.finished
-	
-	if Debug.is_just_pressed(&"test_1"):
-		await play(DialogueInstance.Id.INTRO_DIALOGUE).finished
 
 
 func play(dialogue_id: DialogueInstance.Id, args := {}) -> DialogueInstance:
@@ -65,8 +62,8 @@ func get_actor_name(actor : Actor) -> String:
 	assert(actor < Actor.COUNT)
 	match actor:
 		Actor.CAPTAIN: 			return "Captain"
-		Actor.PIRATE_LEFT: 		return "Roberts" if Progress.know_pirate_name else "Pirate 1"
-		Actor.PIRATE_RIGHT: 	return "Elias" if Progress.know_navy_name else "Pirate 2"
+		Actor.PIRATE_LEFT: 		return "Roberts" if Progress.know_pirate_name else "???"
+		Actor.PIRATE_RIGHT: 	return "Elias" if Progress.know_navy_name else "???"
 	
 	return "Unknown"
 

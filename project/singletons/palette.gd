@@ -29,6 +29,10 @@ var color_3 := Color.LIGHT_STEEL_BLUE :
 var is_texture_update_queued := false
 
 func _ready() -> void:
+	color_3 = Color("#AF8559")
+	color_2 = Color("#7D4B2A")
+	color_1 = Color("#472D1E")
+	color_0 = Color("#1D0E07")
 	_update_texture()
 
 func _process(delta: float) -> void:
