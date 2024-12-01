@@ -305,8 +305,8 @@ var dialogues : Dictionary = {
 		await display.say(Dialogue.Actor.PIRATE_LEFT, "Then a searing pain in my back...");
 		await display.say(Dialogue.Actor.PIRATE_LEFT, "And a glint o' a golden cutlass through my guts."); # glint, glimmer, flash or shine
 		await display.say(Dialogue.Actor.PIRATE_LEFT, "Wasn't much of a battle,");
-		await display.say(Dialogue.Actor.PIRATE_LEFT, "More an unfortuante turn o'events.");
-		await display.say(Dialogue.Actor.PIRATE_LEFT, "I Never laid eyes on the freebooter who sent me to my watery grave.");
+		await display.say(Dialogue.Actor.PIRATE_LEFT, "More an unfortuante turn o' events.");
+		await display.say(Dialogue.Actor.PIRATE_LEFT, "I saw the freebooter who sent me to my watery grave."); # used to say "laid eyes on" nicer but too long
 		Progress.know_pirate_death = true
 		Progress.know_pirate_death = true
 		display.clear_speach()
@@ -398,7 +398,7 @@ var dialogues : Dictionary = {
 	Id.NAVY_NOW_2: func(args: Dictionary) -> Dictionary:
 		display.clear_options()
 		await display.say(Dialogue.Actor.PIRATE_RIGHT, "Aye, we are... but not what we once were. ");
-		await display.say(Dialogue.Actor.PIRATE_RIGHT, "We be bound by this cursed shore. ");
+		await display.say(Dialogue.Actor.PIRATE_RIGHT, "We be bound by to this damned boat. ");
 		await display.say(Dialogue.Actor.PIRATE_RIGHT, "Thanks to Captin Reaver, we live...");
 		await display.say(Dialogue.Actor.PIRATE_RIGHT, "But not truly.");
 		display.clear_speach()
@@ -635,9 +635,9 @@ func can_give_option(id: Id) -> bool:
 
 func get_dialogue_option_lead(id: Id) -> String:
 	match id:
-		Id.PIRATE_REVEAL:		return "Elias killed ye."
+		Id.PIRATE_REVEAL:		return "Shaw killed ye."
 		Id.PIRATE_NAME: 		return "What be yer name?"
-		Id.PIRATE_NAME_2: 		return "Why Snarling Roberts?"
+		Id.PIRATE_NAME_2: 		return "Why 'Snarling'?"
 		Id.PIRATE_DEATH_1: 		return "Do ye call this home?"
 		Id.PIRATE_DEATH_2: 		return "How'd ye meet yer fate?"
 		Id.PIRATE_DEATH_3: 		return "So ye died in battle?"

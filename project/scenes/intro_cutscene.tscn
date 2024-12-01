@@ -73,9 +73,10 @@ offset_top = 75.0
 offset_right = 232.0
 offset_bottom = 171.0
 bbcode_enabled = true
-text = "[center]I enter the captains quarters. Dim light from a hanging lantern reveals a table in front of me. Three pirates sit patiently awaiting a fourth's arrival. "
+text = "[center]I enter the captains quarters. Dim light from a hanging lantern reveals a table in front of me. Three ghostly pirates sit patiently awaiting a fourth's arrival. "
 
 [node name="Slide3" parent="." instance=ExtResource("13_j35ee")]
+visible = false
 material = SubResource("ShaderMaterial_a673w")
 dissolve_texture = ExtResource("14_re8q1")
 
@@ -92,6 +93,7 @@ offset_bottom = 179.0
 text = "The deck creaks ominously as I step aboard, the air heavy with the scent of brine. "
 
 [node name="Slide2" parent="." instance=ExtResource("13_j35ee")]
+visible = false
 material = SubResource("ShaderMaterial_sciv0")
 dissolve_texture = ExtResource("14_re8q1")
 
@@ -108,6 +110,7 @@ offset_bottom = 126.0
 text = "I spy a shipwreck. From the outside, a broken hull, half-submerged in the sand and worn by the elements."
 
 [node name="Slide1" parent="." instance=ExtResource("13_j35ee")]
+visible = false
 material = SubResource("ShaderMaterial_twyp7")
 dissolve_texture = ExtResource("14_re8q1")
 
@@ -119,6 +122,7 @@ texture = ExtResource("3_4buva")
 [node name="SlideLabel" parent="Slide1" instance=ExtResource("15_4nbvl")]
 
 [node name="Start" parent="." instance=ExtResource("13_j35ee")]
+visible = false
 material = SubResource("ShaderMaterial_yvam0")
 dissolve_texture = ExtResource("14_re8q1")
 
