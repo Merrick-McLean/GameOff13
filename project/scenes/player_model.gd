@@ -24,6 +24,8 @@ var bob_amplitude := 0.05
 		target_bob_speed = 10.0 if is_talking else resting_animation_speed
 		target_bob_amplitude = 0.04 if is_talking else 0.02
 
+@export var turn_direction := 0
+
 @onready var model := $Model
 @onready var smoke_particles := $SmokeParticles
 @onready var poof_sound := $Sounds/PoofSound
@@ -38,6 +40,8 @@ func _process(delta: float) -> void:
 	bob_speed = lerp(bob_speed, target_bob_speed, 5 * delta)
 	bob_amplitude = lerp(bob_amplitude, target_bob_amplitude, 5 * delta)
 	animation_time += delta * bob_speed
+	
+	model.rotation.y = lerp(model.rotation.y, float(turn_direction) * 0.3, delta * 5)
 	
 	var scale_offset = sin(animation_time)
 	model.scale.y = lerp(1.0, 1.0 + bob_amplitude, scale_offset)

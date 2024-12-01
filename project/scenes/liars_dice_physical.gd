@@ -83,10 +83,14 @@ func start_game() -> void:
 	cups_and_dice_visible = true
 	better.visible = false
 	for cup: Cup in cups:
+		cup.snap_to_state(Cup.State.AT_REVEAL)
 		cup.target_state = Cup.State.AT_PLAYER
 		cup.target_raised = false
 		for die: Die in cup.dice.get_children():
 			die.is_alive = true
+	
+	for model: PlayerModel in player_models:
+		if is_instance_valid(model): model.turn_direction = 0
 	
 	die_spawning_sound.play()
 	die_spawning_particles.emitting = true

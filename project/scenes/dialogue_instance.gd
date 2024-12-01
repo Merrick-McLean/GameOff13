@@ -390,15 +390,20 @@ Id.GOLDEN_RULE: func(args: Dictionary) -> Dictionary:
 		if Progress.know_pirate_death:
 			var result := await display.push_options([OptionSet.new(Dialogue.Actor.PIRATE_LEFT, ["He has a golden cutlass."])]) # integrate "he be a cheat" here somewehre?
 			await display.say(Dialogue.Actor.PIRATE_LEFT, "A golden cutlass[set speed=3]...");
+			LiarsDice.physical.player_models[LiarsDice.Player.PIRATE_LEFT].turn_direction = 1
 			await display.say(Dialogue.Actor.PIRATE_LEFT, "That true Shaw? Are ye the one?");
+			LiarsDice.physical.player_models[LiarsDice.Player.PIRATE_RIGHT].turn_direction = -1
 			await display.say(Dialogue.Actor.PIRATE_LEFT, "The coward who stormed an anchored boat...");
 			await display.say(Dialogue.Actor.PIRATE_LEFT, "And drove a blade in me back?");
 			await display.say(Dialogue.Actor.PIRATE_LEFT, "That puney crew... nay... they couldn't.");
 			await display.say(Dialogue.Actor.PIRATE_LEFT, "Let me see yer sword, Elias."); 
 			await display.say(Dialogue.Actor.PIRATE_RIGHT, "I don't know what this swab be blabberin' 'bout.");
 			LiarsDice.physical.pirate_gun.state = Gun.State.DRAWN
+			
 			await display.say(Dialogue.Actor.PIRATE_LEFT, "DRAW YER SWORD NOW, YE SCURVY DOG!");
-			await display.say(Dialogue.Actor.PIRATE_RIGHT, "Let's just calm down 'ere for a second.");
+			await display.say(Dialogue.Actor.PIRATE_RIGHT, "Let's just calm down 'ere for a second.", false);
+			await display.get_tree().create_timer(0.1).timeout
+			display.clear_speach()
 			LiarsDice.physical.pirate_shoot()
 			LiarsDice.kill_npc(LiarsDice.Player.PIRATE_RIGHT)
 			await display.get_tree().create_timer(1.0).timeout

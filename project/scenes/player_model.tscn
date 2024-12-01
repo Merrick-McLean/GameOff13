@@ -1,10 +1,13 @@
-[gd_scene load_steps=12 format=3 uid="uid://dwmxnlp6u7b1h"]
+[gd_scene load_steps=13 format=3 uid="uid://dwmxnlp6u7b1h"]
 
 [ext_resource type="Script" path="res://scenes/player_model.gd" id="1_ed6li"]
 [ext_resource type="Texture2D" uid="uid://dp2bsm08yqas1" path="res://sprites/smoke.png" id="2_ar825"]
 [ext_resource type="AudioStream" uid="uid://d2yl88pet03hd" path="res://sounds/smoke_poof.wav" id="3_yfrvm"]
 
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_4s0jj"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_3b72k"]
+size = Vector3(0.5, 0.3, 0.5)
 
 [sub_resource type="Gradient" id="Gradient_kc4ao"]
 offsets = PackedFloat32Array(0, 0.170124, 0.460581, 0.680498, 1)
@@ -55,12 +58,17 @@ size = Vector2(0.7, 0.7)
 
 [node name="PlayerModel" type="Node3D" groups=["PlayerModels"]]
 script = ExtResource("1_ed6li")
+is_turned_left = null
 
 [node name="Model" type="Node3D" parent="."]
-transform = Transform3D(1.00403, 0, 0, 0, 0.991985, 0, 0, 0, 1.00403, 0, 0, 0)
+transform = Transform3D(0.993072, 0, 0, 0, 1.014, 0, 0, 0, 0.993072, 0, 0, 0)
 
 [node name="CSGMesh3D" type="CSGMesh3D" parent="Model"]
 mesh = SubResource("CapsuleMesh_4s0jj")
+
+[node name="CSGMesh3D2" type="CSGMesh3D" parent="Model"]
+transform = Transform3D(0.962141, 0, 0, 0, 1.08025, 0, 0, 0, 0.962141, 0, 0.504646, -0.261488)
+mesh = SubResource("BoxMesh_3b72k")
 
 [node name="SmokeParticles" type="GPUParticles3D" parent="."]
 emitting = false

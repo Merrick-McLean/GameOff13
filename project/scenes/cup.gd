@@ -118,6 +118,10 @@ func get_target_alpha() -> float:
 		return 0.0
 	return 1.0
 
+
+func snap_to_state(state: State) -> void:
+	global_position = STATE_POINTS[state].global_position
+
 #func spawn_dice(values: Array) -> void:
 	#for i in LiarsDice.PLAYER_DIE_COUNT:
 		#spawn_die(values[i], Vector3.ZERO) # use the i to vary the locations of the dice (or physics)
